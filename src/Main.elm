@@ -142,7 +142,7 @@ update message model =
                             navKeyMap
 
                         EditingSelected ->
-                            editKeyMap
+                            inputKeyMap
 
                 findMapping =
                     List.Extra.find (Tuple.first >> applyTo keyEvent)
@@ -188,8 +188,8 @@ navKeyMap =
     ]
 
 
-editKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-editKeyMap =
+inputKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
+inputKeyMap =
     [ ( HotKey.is "Enter", appendNewAndStartEditing )
     , ( HotKey.isMeta "Enter", saveEditing )
     , ( HotKey.is "Escape", saveEditing )
