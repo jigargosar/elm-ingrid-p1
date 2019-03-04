@@ -199,7 +199,7 @@ editKeyMap =
 
 focusInputCmd model =
     Browser.Dom.focus (getEditInputDomId <| ItemTree.getSelectedTree model.cursor)
-        |> Task.attempt (Debug.log "focusing master input" >> (\_ -> NOP))
+        |> Task.attempt (Debug.log "focusing master input" >> Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
 initEditingMode model =
@@ -227,9 +227,8 @@ edit model =
 
 
 moveUp model =
-    ( overCursor ItemTree.moveUp model
-    , ensureEditInputFocusCmd model
-    )
+    Update.pure ( overCursor ItemTree.moveUp model
+     |> Update.effect ensureEditInputFocusCmd
 
 
 moveDown model =

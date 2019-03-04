@@ -1,4 +1,4 @@
-module Update exposing (andThen, pure)
+module Update exposing (andThen, pure, effect)
 
 
 andThen fn ( model, cmd ) =
@@ -11,3 +11,7 @@ andThen fn ( model, cmd ) =
 
 pure model =
     ( model, Cmd.none )
+
+
+effect fn (model, cmd) =
+    (model, Cmd.batch [cmd, fn model)
