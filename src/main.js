@@ -1,5 +1,5 @@
 // noinspection JSUnresolvedVariable
-import { getCached, setCache } from './cache-helpers'
+import { getCached } from './cache-helpers'
 import * as R from 'ramda'
 import {
   compose,
@@ -107,9 +107,9 @@ app.ports.newItemDoc.subscribe(function([parent, idx]) {
     .catch(console.error)
 })
 
-app.ports.toJsCache.subscribe(model => {
-  setCache('elm-main', model)
-})
+// app.ports.toJsCache.subscribe(model => {
+//   setCache('elm-main', model)
+// })
 
 app.ports.bulkItemDocs.subscribe(bulkItemDocs)
 
