@@ -252,13 +252,14 @@ selectForward model =
     ( overCursor ItemTree.forward model, Cmd.none )
 
 
+idGen : Generator String
+idGen =
+    Random.int 999999999 Random.maxInt
+        |> Random.map String.fromInt
+
+
 appendNewAndStartEditing model =
     let
-        idGen : Generator String
-        idGen =
-            Random.int 999999999 Random.maxInt
-                |> Random.map String.fromInt
-
         ( id, newSeed ) =
             Random.step idGen model.seed
     in
@@ -273,11 +274,6 @@ appendNewAndStartEditing model =
 
 prependNewAndStartEditing model =
     let
-        idGen : Generator String
-        idGen =
-            Random.int 999999999 Random.maxInt
-                |> Random.map String.fromInt
-
         ( id, newSeed ) =
             Random.step idGen model.seed
     in
