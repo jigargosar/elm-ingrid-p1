@@ -331,11 +331,29 @@ viewCursor model =
 
 
 viewItemForest selected children =
-    div [] (children |> List.map (viewTreeItem selected))
+    div [ classes [ ml3 ] ] (children |> List.map (viewTreeItem selected))
 
 
 viewTreeItem selected tree =
-    div [] [ t <| ItemTree.treeLabel tree ]
+    let
+        labelClasses =
+            let
+                defaultClasses =
+                    [ pa1, bb, bw1, b__black_30, fw4 ]
+
+                selectedClasses =
+                    [ bg_light_red, white, br ]
+            in
+            if tree == selected then
+                defaultClasses ++ selectedClasses
+
+            else
+                defaultClasses
+    in
+    div [ classes [ pa3 ] ]
+        [ span [ classes labelClasses ]
+            [ t <| ItemTree.treeLabel tree ]
+        ]
 
 
 viewRootTreeItem selected root =
