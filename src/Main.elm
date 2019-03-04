@@ -231,12 +231,11 @@ appendNewAndStartEditing model =
         ( id, newSeed ) =
             Random.step idGen model.seed
     in
-    ( { model
-        | cursor = ItemTree.appendNew id model.cursor
-        , seed = newSeed
-      }
-    , Cmd.none
-    )
+    Update.pure
+        { model
+            | cursor = ItemTree.appendNew id model.cursor
+            , seed = newSeed
+        }
         |> Update.andThen initEditingMode
 
 
@@ -245,12 +244,11 @@ prependNewAndStartEditing model =
         ( id, newSeed ) =
             Random.step idGen model.seed
     in
-    ( { model
-        | cursor = ItemTree.prependNew id model.cursor
-        , seed = newSeed
-      }
-    , Cmd.none
-    )
+    Update.pure
+        { model
+            | cursor = ItemTree.prependNew id model.cursor
+            , seed = newSeed
+        }
         |> Update.andThen initEditingMode
 
 
