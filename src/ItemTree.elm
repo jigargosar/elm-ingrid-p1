@@ -145,9 +145,8 @@ indent cursor =
             (\prevSibTree ->
                 Tree.Zipper.removeTree cursor
                     |> Maybe.andThen (Tree.Zipper.findNext ((==) (Tree.label prevSibTree)))
-                    |> Maybe.withDefault cursor
-                    |> Tree.Zipper.mapTree (Tree.prependChild selected)
-                    |> Tree.Zipper.forward
+                    |> Maybe.map (Tree.Zipper.mapTree (Tree.prependChild selected))
+                    |> Maybe.andThen Tree.Zipper.forward
             )
         |> Maybe.withDefault cursor
 
