@@ -298,9 +298,23 @@ viewCursor model =
 
         isRootSelected =
             selectedNode == root
+
+        fragmentClasses =
+            let
+                defaultClasses =
+                    [ pa1, f3, bb, bw2, b__black_30, fw4 ]
+
+                selectedClasses =
+                    [ bg_light_red, white, br ]
+            in
+            if isRootSelected then
+                defaultClasses ++ selectedClasses
+
+            else
+                defaultClasses
     in
     div [ classes [ pa3 ] ]
-        [ span [ classes [ f3, bb, bw2, b__black_30, fw4 ] ]
+        [ span [ classes fragmentClasses ]
             [ t rootFragment ]
         ]
 
