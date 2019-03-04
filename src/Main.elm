@@ -166,7 +166,7 @@ edit model =
         )
 
     else
-        ( model
+        ( { model | viewMode = EditingSelected }
         , Cmd.batch []
         )
 
