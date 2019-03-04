@@ -405,7 +405,7 @@ viewTreeItem selected tree =
                     [ pa1, dib ]
 
                 selectedClasses =
-                    [ bg_light_red, white, br ]
+                    [ bg_light_red, white, br, bb, bw1, b__black_30 ]
 
                 hasVisibleChildrenClasses =
                     [ bb, bw2, b__black_30 ]
