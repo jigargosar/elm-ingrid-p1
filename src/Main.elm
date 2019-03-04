@@ -428,7 +428,8 @@ viewEditItemLabel tree =
                     ]
                 , value content
                 , onInput ContentChanged
-                , Html.Events.on "keydown" (Json.Decode.map InputKeyEventReceived keyEventDecoder)
+                , Html.Events.preventDefaultOn "keydown"
+                    (Json.Decode.map (\ke -> ( InputKeyEventReceived ke, True )) keyEventDecoder)
                 ]
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
