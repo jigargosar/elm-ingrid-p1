@@ -298,7 +298,7 @@ viewCursor model =
             model.viewMode == EditingSelected
     in
     div [ classes [ pl3 ] ]
-        [ viewRootTreeItem selected root
+        [ viewRootTreeItem isEditing selected root
         , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
 
@@ -336,7 +336,7 @@ viewItemTree isEditing selected tree =
         ]
 
 
-viewRootTreeItem selected root =
+viewRootTreeItem isEditing selected root =
     let
         labelClasses =
             let
