@@ -88,31 +88,30 @@ appendNew id cursor =
             createEmptyNode id
 
         newZipper =
-            if selectedTree cursor == rootTree cursor then
-                prependChild newTree cursor
+            if cursor == Zipper.root cursor then
+                {- prependChild newTree cursor -}
+                cursor
 
             else
                 Zipper.append newTree cursor
     in
-    Zipper.forward newZipper
+    Zipper.findNext (eqs (Tree.label newTree)) newZipper
         |> Maybe.withDefault newZipper
 
 
 prependNew : String -> ItemTreeCursor -> ItemTreeCursor
-prependNew id cursor =
-    let
-        newTree =
-            createEmptyNode id
+prependNew id zipper =
+    if zipper == Zipper.root zipper then
+        appendNew id zipper
 
-        newZipper =
-            if selectedTree cursor == rootTree cursor then
-                prependChild newTree cursor
-
-            else
-                Zipper.prepend newTree cursor
-    in
-    Zipper.backward newZipper
-        |> Maybe.withDefault newZipper
+    else
+        let
+            newTree =
+                createEmptyNode id
+        in
+        Zipper.prepend newTree zipper
+            |> Zipper.findPrevious (eqs (Tree.label newTree))
+            |> Maybe.withDefault zipper
 
 
 createEmptyNode : String -> ItemTree
