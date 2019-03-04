@@ -4,8 +4,9 @@ import Browser
 import Browser.Dom
 import Browser.Events exposing (onKeyDown)
 import HotKey exposing (KeyEvent)
-import Html exposing (Html, div, input)
-import Html.Attributes exposing (value)
+import Html exposing (Html, div, input, textarea)
+import Html.Attributes exposing (style, value)
+import Html.Events exposing (onInput)
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -91,6 +92,7 @@ type Msg
     = NOP
     | KeyDownReceived KeyEvent
     | InitReceived
+    | ContentChanged String
 
 
 getItemDomId : Item -> String
@@ -107,6 +109,9 @@ update message model =
     case message of
         NOP ->
             ( model, Cmd.none )
+
+        ContentChanged newContent ->
+            ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
 
         InitReceived ->
             ( model
@@ -339,7 +344,26 @@ viewEditItemLabel tree =
         content =
             ItemTree.treeFragment tree
     in
-    input [ Html.Attributes.id "master-input", classes [ pa3, ba, b__black_50 ], value content ] [ t <| content ]
+    div [ classes [ dib, relative, "pre-wrap", "break-word" ] ]
+        [ textarea
+            [ Html.Attributes.id "master-input"
+            , classes
+                [ pa0
+                , bn
+                , b__black_50
+                , absolute
+                , o_10
+                , "pre-wrap"
+                , "break-word"
+                ]
+            , value content
+            , onInput ContentChanged
+            , style "width" "100%"
+            , style "height" "100%"
+            ]
+            []
+        , div [ classes [ dib, "pre-wrap", "break-word" ] ] [ t content ]
+        ]
 
 
 viewItemTree isEditing selected tree =

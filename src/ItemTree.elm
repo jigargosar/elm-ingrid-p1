@@ -12,6 +12,7 @@ module ItemTree exposing
     , outdent
     , prependNew
     , rootTree
+    , setContent
     , treeChildren
     , treeFragment
     , treeId
@@ -190,3 +191,7 @@ moveDown zipper =
                     |> Maybe.andThen Zipper.nextSibling
             )
         |> Maybe.withDefault zipper
+
+
+setContent newContent =
+    Zipper.mapLabel (\label -> { label | fragment = newContent })

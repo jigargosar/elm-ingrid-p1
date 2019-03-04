@@ -6,6 +6,18 @@
 
 body,
 #main,
-body > div[data-elm-hot=true] {
+body > div[data-elm-hot='true'] {
   height: 100%;
+}
+
+//.ws-pre{
+//  white-space: pre;
+//}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.break-word {
+  word-break: break-word;
 }
