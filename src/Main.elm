@@ -421,10 +421,10 @@ viewCursor model =
 
 
 viewItemForest selected children =
-    div [ classes [ pl3 ] ] (children |> List.map (viewTreeItem selected))
+    div [ classes [ pl3 ] ] (children |> List.map (viewItemTree selected))
 
 
-viewTreeItem selected tree =
+viewItemTree selected tree =
     let
         labelClasses =
             let
@@ -443,9 +443,12 @@ viewTreeItem selected tree =
             else
                 defaultClasses ++ notSelectedClasses
     in
-    div [ classes [ h2, flex, items_center ] ]
-        [ div [ classes labelClasses ]
-            [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
+    div []
+        [ div [ classes [ h2, flex, items_center ] ]
+            [ div [ classes labelClasses ]
+                [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
+            ]
+        , viewItemForest selected (ItemTree.treeChildren tree)
         ]
 
 
