@@ -265,8 +265,6 @@ view model =
             , viewShortcutHint "Move Down" "Cmd+Down"
             ]
         , viewCursor model
-
-        --        , viewTree model
         ]
 
 
