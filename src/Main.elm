@@ -424,9 +424,6 @@ viewTreeItem selected tree =
 
                 notSelectedClasses =
                     []
-
-                hasVisibleChildrenClasses =
-                    [ bb, bw2, b__black_30 ]
             in
             if tree == selected then
                 defaultClasses ++ selectedClasses
