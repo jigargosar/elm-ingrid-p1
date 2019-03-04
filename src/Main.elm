@@ -212,8 +212,9 @@ keyIs key keyEvent =
     keyEvent.key == key && noModifiers keyEvent
 
 
+keyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 keyMap =
-    [ keyIs ]
+    [ ( keyIs "Enter", appendNewAndStartEditing ) ]
 
 
 appendNewAndStartEditing model =
