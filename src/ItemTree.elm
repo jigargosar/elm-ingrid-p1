@@ -68,32 +68,18 @@ selectedTree =
     Zipper.tree
 
 
-prependChild : ItemTree -> ItemTreeCursor -> ItemTreeCursor
-prependChild newTree cursor =
-    let
-        updatedTreeNode =
-            selectedTree cursor
-                |> Tree.prependChild newTree
-
-        newZipper =
-            Zipper.replaceTree updatedTreeNode cursor
-    in
-    newZipper
-
-
 appendNew : String -> ItemTreeCursor -> ItemTreeCursor
-appendNew id cursor =
+appendNew id zipper =
     let
         newTree =
             createEmptyNode id
 
         newZipper =
-            if cursor == Zipper.root cursor then
-                {- prependChild newTree cursor -}
-                cursor
+            if zipper == Zipper.root zipper then
+                Zipper.mapTree (Tree.prependChild newTree) zipper
 
             else
-                Zipper.append newTree cursor
+                Zipper.append newTree zipper
     in
     Zipper.findNext (eqs (Tree.label newTree)) newZipper
         |> Maybe.withDefault newZipper
