@@ -168,28 +168,37 @@ metaShiftModifier keyEvent =
     keyEvent.meta && keyEvent.shift && not (keyEvent.ctrl || keyEvent.alt)
 
 
-keyIs key keyEvent =
+metaModifier : KeyEvent -> Bool
+metaModifier keyEvent =
+    keyEvent.meta && not (keyEvent.ctrl || keyEvent.alt || keyEvent.shift)
+
+
+isKey key keyEvent =
     keyEvent.key == key && noModifiers keyEvent
 
 
-keyIsShift key keyEvent =
+isKeyShift key keyEvent =
     keyEvent.key == key && shiftModifier keyEvent
 
 
-keyIsMetaShift key keyEvent =
+isKeyMetaShift key keyEvent =
     keyEvent.key == key && metaShiftModifier keyEvent
+
+
+isKeyMeta key keyEvent =
+    keyEvent.key == key && metaModifier keyEvent
 
 
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
-    [ ( keyIs "Enter", appendNewAndStartEditing )
-    , ( keyIsShift "Enter", prependNewAndStartEditing )
-    , ( keyIs "ArrowUp", selectBackward )
-    , ( keyIs "ArrowDown", selectForward )
-    , ( keyIs "Tab", indent )
-    , ( keyIsShift "Tab", outdent )
-    , ( keyIsMetaShift "ArrowUp", moveUp )
-    , ( keyIsMetaShift "ArrowDown", moveDown )
+    [ ( isKey "Enter", appendNewAndStartEditing )
+    , ( isKeyShift "Enter", prependNewAndStartEditing )
+    , ( isKey "ArrowUp", selectBackward )
+    , ( isKey "ArrowDown", selectForward )
+    , ( isKey "Tab", indent )
+    , ( isKeyShift "Tab", outdent )
+    , ( isKeyMeta "ArrowUp", moveUp )
+    , ( isKeyMeta "ArrowDown", moveDown )
     ]
 
 
@@ -276,8 +285,8 @@ view model =
             , viewShortcutHint "Line Above" "Shift+Enter"
             , viewShortcutHint "Indent" "Tab"
             , viewShortcutHint "Outdent" "Shift+Tab"
-            , viewShortcutHint "Move Up" "Cmd+Shift+Up"
-            , viewShortcutHint "Move Down" "Cmd+Shift+Down"
+            , viewShortcutHint "Move Up" "Cmd+Up"
+            , viewShortcutHint "Move Down" "Cmd+Down"
             ]
         , viewCursor model
 
