@@ -198,12 +198,6 @@ update message model =
 
                             ( id, newSeed ) =
                                 Random.step idGen model.seed
-
-                            _ =
-                                ItemTree.appendNew id model.cursor
-                                    |> Tree.Zipper.root
-                                    |> Tree.Zipper.tree
-                                    |> Debug.log "root"
                         in
                         ( { model
                             | cursor = ItemTree.appendNew id model.cursor
