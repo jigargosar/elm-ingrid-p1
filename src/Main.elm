@@ -395,25 +395,8 @@ viewItemLabel selected tree =
 
 getEditInputDomId : ItemTree -> String
 getEditInputDomId tree =
+    {- ++ ItemTree.treeId tree -}
     "item-edit-input-dom-id-"
-
-
-
-{- ++ ItemTree.treeId tree -}
-
-
-viewEditItemLabel tree =
-    let
-        content =
-            ItemTree.treeFragment tree
-    in
-    textarea
-        [ Html.Attributes.id (getEditInputDomId tree)
-        , classes []
-        , onInput ContentChanged
-        , value content
-        ]
-        [ t content ]
 
 
 
@@ -422,30 +405,44 @@ viewEditItemLabel tree =
 --        content =
 --            ItemTree.treeFragment tree
 --    in
---    div [ classes [ dib, mv1, pa2, br1, bg_white ] ]
---        [ div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
---            [ textarea
---                [ Html.Attributes.id (getEditInputDomId tree)
---                , classes
---                    [ pa0
---                    , bn
---                    , absolute
---                    , "resize-none"
---
---                    --                    , o_50
---                    , w_100
---                    , h_100
---                    , outline_0
---                    , "pre-wrap"
---                    , "break-word"
---                    ]
---                , value <| String.trim <| content
---                , onInput ContentChanged
---                ]
---                []
---            , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
---            ]
+--    textarea
+--        [ Html.Attributes.id (getEditInputDomId tree)
+--        , classes []
+--        , onInput ContentChanged
+--        , value content
 --        ]
+--        [ t content ]
+
+
+viewEditItemLabel tree =
+    let
+        content =
+            ItemTree.treeFragment tree
+    in
+    div [ classes [ dib, mv1, pa2, br1, bg_white ] ]
+        [ div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
+            [ textarea
+                [ Html.Attributes.id (getEditInputDomId tree)
+                , classes
+                    [ pa0
+                    , bn
+                    , absolute
+                    , "resize-none"
+
+                    --                    , o_50
+                    , w_100
+                    , h_100
+                    , outline_0
+                    , "pre-wrap"
+                    , "break-word"
+                    ]
+                , value <| String.trim <| content
+                , onInput ContentChanged
+                ]
+                []
+            , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
+            ]
+        ]
 
 
 viewItemTree isEditing selected tree =
