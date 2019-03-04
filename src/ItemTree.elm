@@ -146,13 +146,7 @@ outdent zipper =
         selectedT =
             Zipper.tree zipper
     in
-    Zipper.previousSibling zipper
-        |> Maybe.map (Zipper.tree >> Tree.label)
-        |> Maybe.andThen
-            (\prevSibLabel ->
-                Zipper.removeTree zipper
-                    |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
-                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
-                    |> Maybe.andThen Zipper.lastChild
-            )
+    Zipper.removeTree zipper
+        |> Maybe.map (Zipper.append selectedT)
+        |> Maybe.andThen Zipper.nextSibling
         |> Maybe.withDefault zipper
