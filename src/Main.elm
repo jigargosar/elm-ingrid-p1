@@ -175,6 +175,7 @@ editKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 editKeyMap =
     [ ( HotKey.is "Enter", appendNewAndStartEditing )
     , ( HotKey.isMeta "Enter", stopEditing )
+    , ( HotKey.is "Escape", stopEditing )
     ]
 
 
