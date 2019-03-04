@@ -148,6 +148,7 @@ applyTo =
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
     [ ( HotKey.is "Enter", appendNewAndStartEditing )
+    , ( HotKey.is "Space", edit )
     , ( HotKey.isShift "Enter", prependNewAndStartEditing )
     , ( HotKey.is "ArrowUp", selectBackward )
     , ( HotKey.is "ArrowDown", selectForward )
@@ -156,6 +157,18 @@ globalKeyMap =
     , ( HotKey.isMeta "ArrowUp", moveUp )
     , ( HotKey.isMeta "ArrowDown", moveDown )
     ]
+
+
+edit model =
+    if model.viewMode == EditingSelected then
+        ( model
+        , Cmd.batch []
+        )
+
+    else
+        ( model
+        , Cmd.batch []
+        )
 
 
 moveUp model =
