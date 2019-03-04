@@ -5,6 +5,7 @@ import Browser.Events exposing (onKeyDown)
 import Html exposing (Html, button, div)
 import Html.Attributes exposing (attribute, tabindex)
 import ItemLookup exposing (Item, ItemLookup)
+import ItemTree exposing (ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
 import Tachyons exposing (classes)
@@ -36,6 +37,7 @@ main =
 type alias Model =
     { itemLookup : ItemLookup
     , maybeFocusedItemId : Maybe String
+    , cursor : ItemTreeCursor
     }
 
 
@@ -48,6 +50,7 @@ init flags =
     update InitReceived
         { itemLookup = ItemLookup.fromList flags.items
         , maybeFocusedItemId = flags.maybeFocusedItemId
+        , cursor = ItemTree.initialCursor
         }
 
 
