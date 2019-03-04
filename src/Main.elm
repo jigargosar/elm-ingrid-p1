@@ -385,6 +385,10 @@ viewItemLabel selected tree =
         ]
 
 
+getEditInputDomId tree =
+    "item-edit-input-dom-id-" ++ ItemTree.treeId tree
+
+
 viewEditItemLabel tree =
     let
         content =
@@ -393,7 +397,7 @@ viewEditItemLabel tree =
     div [ classes [ dib, mv1, pa2, br1, bg_white ] ]
         [ div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
             [ textarea
-                [ Html.Attributes.id "master-input"
+                [ Html.Attributes.id (getEditInputDomId tree)
                 , classes
                     [ pa0
                     , bn
