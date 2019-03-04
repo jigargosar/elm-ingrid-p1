@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Browser
+import Browser.Dom
 import Browser.Events exposing (onKeyDown)
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div)
@@ -11,6 +12,7 @@ import List.Extra
 import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
+import Task
 import V exposing (co, t)
 
 
@@ -159,6 +161,11 @@ globalKeyMap =
     ]
 
 
+focusInputCmd =
+    Browser.Dom.focus "master-input"
+        |> Task.attempt (Debug.log "focusing master input" >> (\_ -> NOP))
+
+
 edit model =
     if model.viewMode == EditingSelected then
         ( model
@@ -167,7 +174,7 @@ edit model =
 
     else
         ( { model | viewMode = EditingSelected }
-        , Cmd.batch []
+        , Cmd.batch [ focusInputCmd ]
         )
 
 
