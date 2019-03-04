@@ -331,16 +331,16 @@ viewCursor model =
 
 
 viewItemForest selected children =
-    let
-        viewTreeItem tree =
-            div [] [ t <| ItemTree.treeLabel tree ]
-    in
-    div [] (children |> List.map viewTreeItem)
+    div [] (children |> List.map (viewTreeItem selected))
+
+
+viewTreeItem selected tree =
+    div [] [ t <| ItemTree.treeLabel tree ]
 
 
 viewRootTreeItem root selected =
     let
-        fragmentClasses =
+        labelClasses =
             let
                 defaultClasses =
                     [ pa1, f3, bb, bw2, b__black_30, fw4 ]
@@ -355,7 +355,7 @@ viewRootTreeItem root selected =
                 defaultClasses
     in
     div [ classes [ pa3 ] ]
-        [ span [ classes fragmentClasses ]
+        [ span [ classes labelClasses ]
             [ t <| ItemTree.treeLabel root ]
         ]
 
