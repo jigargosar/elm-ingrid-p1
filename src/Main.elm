@@ -353,14 +353,14 @@ viewEditItemLabel tree =
                 , b__black_50
                 , absolute
                 , o_50
+                , w_100
+                , h_100
 
                 --                , "pre-wrap"
                 --                , "break-word"
                 ]
             , value content
             , onInput ContentChanged
-            , style "width" "100%"
-            , style "height" "100%"
             ]
             []
         , div [ classes [ dib, "pre-wrap", "break-word" ] ] [ t content ]
