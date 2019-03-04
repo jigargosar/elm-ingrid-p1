@@ -5,7 +5,8 @@ module ItemTree exposing
     , rootTree
     , selectedTree
     , treeChildren
-    , treeLabel
+    , treeFragment
+    , treeId
     )
 
 import Tree
@@ -46,9 +47,14 @@ rootTree =
     Tree.Zipper.root >> Tree.Zipper.tree
 
 
-treeLabel : ItemTree -> Fragment
-treeLabel =
+treeFragment : ItemTree -> Fragment
+treeFragment =
     Tree.label >> .fragment
+
+
+treeId : ItemTree -> Fragment
+treeId =
+    Tree.label >> .id
 
 
 selectedTree : ItemTreeCursor -> ItemTree

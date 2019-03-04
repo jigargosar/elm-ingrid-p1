@@ -365,7 +365,7 @@ viewTreeItem selected tree =
     in
     div [ classes [ pa3 ] ]
         [ span [ classes labelClasses ]
-            [ t <| ItemTree.treeLabel tree ]
+            [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
         ]
 
 
@@ -387,7 +387,7 @@ viewRootTreeItem selected root =
     in
     div [ classes [ pa3 ] ]
         [ span [ classes labelClasses ]
-            [ t <| ItemTree.treeLabel root ]
+            [ t <| ItemTree.treeFragment root ]
         ]
 
 
