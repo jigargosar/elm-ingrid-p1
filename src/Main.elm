@@ -330,8 +330,22 @@ viewCursor model =
 
         isEditing =
             model.viewMode == EditingSelected
+
+        containerClasses =
+            let
+                baseClasses =
+                    [ flex_grow_1, pl3 ]
+
+                editingModeClasses =
+                    [ bg_black_20, black_50 ]
+            in
+            if isEditing then
+                baseClasses ++ editingModeClasses
+
+            else
+                baseClasses
     in
-    div [ classes [ flex_grow_1, pl3, bg_black_20, black_50 ] ]
+    div [ classes containerClasses ]
         [ viewRootTreeItem isEditing selected root
         , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
