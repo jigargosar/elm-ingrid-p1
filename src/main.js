@@ -1,6 +1,6 @@
 // noinspection JSUnresolvedVariable
 import { getCached } from './cache-helpers'
-import { compose, defaultTo, mergeDeepRight } from 'ramda'
+import { compose, default as R, defaultTo, mergeDeepRight } from 'ramda'
 import './main.scss'
 import { Elm } from './Main.elm'
 
@@ -27,30 +27,30 @@ import { Elm } from './Main.elm'
 
 /* PRE ELM APP INIT */
 
-// function focusOffset(event, offset) {
-//   const focusable = Array.from(
-//     document.querySelectorAll('[data-is-focusable=true]'),
-//   )
-//   const idx = focusable.indexOf(event.target)
-//   R.compose(
-//     R.unless(R.isNil)(R.invoker(0, 'focus')),
-//     R.defaultTo(focusable[0]),
-//     R.nth(idx + offset),
-//   )(focusable)
-// }
-//
-// window.addEventListener('keydown', function(event) {
-//   const isFocusable = !!event.target.dataset.isFocusable
-//   console.log('isFocusable', isFocusable)
-//   if (isFocusable) {
-//     // console.debug(idx, focusable)
-//     if (isHotKey('up')(event)) {
-//       focusOffset(event, -1)
-//     } else if (isHotKey('down')(event)) {
-//       focusOffset(event, 1)
-//     }
-//   }
-// })
+function focusOffset(event, offset) {
+  const focusable = Array.from(
+    document.querySelectorAll('[data-is-focusable=true]'),
+  )
+  const idx = focusable.indexOf(event.target)
+  R.compose(
+    R.unless(R.isNil)(R.invoker(0, 'focus')),
+    R.defaultTo(focusable[0]),
+    R.nth(idx + offset),
+  )(focusable)
+}
+
+window.addEventListener('keydown', function(event) {
+  const isFocusable = !!event.target.dataset.isFocusable
+  console.log('isFocusable', isFocusable)
+  if (isFocusable) {
+    // console.debug(idx, focusable)
+    if (isHotKey('up')(event)) {
+      focusOffset(event, -1)
+    } else if (isHotKey('down')(event)) {
+      focusOffset(event, 1)
+    }
+  }
+})
 
 /* ELM APP */
 
