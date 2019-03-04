@@ -267,7 +267,7 @@ prependNewAndStartEditing =
 
 view : Model -> Html Msg
 view model =
-    co [ sans_serif, "us-none", ma0 ]
+    co [ sans_serif, "us-none", ma0, min_vh_100, flex, flex_column ]
         [ div [ classes [ flex, bg_black, white ] ]
             [ viewShortcutHint "Line Below" "Enter"
             , viewShortcutHint "Line Above" "Shift+Enter"
@@ -298,7 +298,7 @@ viewCursor model =
         isEditing =
             model.viewMode == EditingSelected
     in
-    div [ classes [ pl3 ] ]
+    div [ classes [ flex_grow_1, pl3, bg_black_20 ] ]
         [ viewRootTreeItem isEditing selected root
         , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
@@ -339,7 +339,7 @@ viewEditItemLabel tree =
         content =
             ItemTree.treeFragment tree
     in
-    input [ classes [ pa3, ba, b__black_50 ], value content ] [ t <| content ]
+    input [ Html.Attributes.id "master-input", classes [ pa3, ba, b__black_50 ], value content ] [ t <| content ]
 
 
 viewItemTree isEditing selected tree =

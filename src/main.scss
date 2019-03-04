@@ -1,17 +1,11 @@
 @import '~tachyons';
 
-.min-w-3 {
-  min-width: 3rem;
-}
-
-.min-w-4 {
-  min-width: 4rem;
-}
-
-.move {
-  cursor: move;
-}
-
 .us-none {
   user-select: none;
+}
+
+body,
+#main,
+body > div[data-elm-hot=true] {
+  height: 100%;
 }
