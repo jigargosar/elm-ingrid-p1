@@ -166,6 +166,12 @@ focusInputCmd =
         |> Task.attempt (Debug.log "focusing master input" >> (\_ -> NOP))
 
 
+initEditingMode model =
+    ( { model | viewMode = EditingSelected }
+    , Cmd.batch [ focusInputCmd ]
+    )
+
+
 edit model =
     if model.viewMode == EditingSelected then
         ( model
@@ -173,9 +179,7 @@ edit model =
         )
 
     else
-        ( { model | viewMode = EditingSelected }
-        , Cmd.batch [ focusInputCmd ]
-        )
+        initEditingMode model
 
 
 moveUp model =
@@ -229,7 +233,6 @@ appendNewAndStartEditing model =
     ( { model
         | cursor = ItemTree.appendNew id model.cursor
         , seed = newSeed
-        , viewMode = EditingSelected
       }
     , Cmd.none
     )
@@ -243,7 +246,6 @@ prependNewAndStartEditing model =
     ( { model
         | cursor = ItemTree.prependNew id model.cursor
         , seed = newSeed
-        , viewMode = EditingSelected
       }
     , Cmd.none
     )
