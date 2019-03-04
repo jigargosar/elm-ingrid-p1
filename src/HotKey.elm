@@ -1,4 +1,8 @@
-module HotKey exposing (KeyEvent, is, isKeyMetaShift, isMeta, isShift, metaModifier, metaShiftModifier, noModifiers, shiftModifier)
+module HotKey exposing (KeyEvent, is, isKeyMetaShift, isMeta, isShift, keyEventDecoder, metaModifier, metaShiftModifier, noModifiers, preventDefaultOnKeyDownEvent, shiftModifier)
+
+import Html
+import Html.Events
+import Json.Decode exposing (Decoder)
 
 
 type alias KeyEvent =
@@ -44,3 +48,25 @@ isKeyMetaShift key keyEvent =
 
 isMeta key keyEvent =
     keyEvent.key == key && metaModifier keyEvent
+
+
+preventDefaultOnKeyDownEvent : (KeyEvent -> Maybe ( msg, Bool )) -> Html.Attribute msg
+preventDefaultOnKeyDownEvent keyEventToMaybePreventDefault =
+    Html.Events.preventDefaultOn "keydown"
+        (Json.Decode.andThen
+            (keyEventToMaybePreventDefault
+                >> Maybe.map Json.Decode.succeed
+                >> Maybe.withDefault (Json.Decode.fail "Not Interested")
+            )
+            keyEventDecoder
+        )
+
+
+keyEventDecoder : Decoder KeyEvent
+keyEventDecoder =
+    Json.Decode.map5 KeyEvent
+        (Json.Decode.at [ "key" ] Json.Decode.string)
+        (Json.Decode.at [ "ctrlKey" ] Json.Decode.bool)
+        (Json.Decode.at [ "metaKey" ] Json.Decode.bool)
+        (Json.Decode.at [ "shiftKey" ] Json.Decode.bool)
+        (Json.Decode.at [ "altKey" ] Json.Decode.bool)

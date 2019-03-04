@@ -68,20 +68,10 @@ getItems model =
 -- SUBSCRIPTIONS
 
 
-keyEventDecoder : Decoder KeyEvent
-keyEventDecoder =
-    Json.Decode.map5 KeyEvent
-        (Json.Decode.at [ "key" ] Json.Decode.string)
-        (Json.Decode.at [ "ctrlKey" ] Json.Decode.bool)
-        (Json.Decode.at [ "metaKey" ] Json.Decode.bool)
-        (Json.Decode.at [ "shiftKey" ] Json.Decode.bool)
-        (Json.Decode.at [ "altKey" ] Json.Decode.bool)
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Browser.Events.onKeyDown <| Json.Decode.map KeyDownReceived keyEventDecoder
+        [ Browser.Events.onKeyDown <| Json.Decode.map KeyDownReceived HotKey.keyEventDecoder
         ]
 
 
@@ -418,17 +408,6 @@ inputKEPD ke =
         |> Maybe.map Tuple.second
 
 
-preventDefaultOnKeyDownEvent keyEventToMaybePreventDefault =
-    Html.Events.preventDefaultOn "keydown"
-        (Json.Decode.andThen
-            (keyEventToMaybePreventDefault
-                >> Maybe.map Json.Decode.succeed
-                >> Maybe.withDefault (Json.Decode.fail "Not Interested")
-            )
-            keyEventDecoder
-        )
-
-
 viewEditItemLabel tree =
     let
         content =
@@ -453,7 +432,7 @@ viewEditItemLabel tree =
                     ]
                 , value content
                 , onInput ContentChanged
-                , preventDefaultOnKeyDownEvent inputKEPD
+                , HotKey.preventDefaultOnKeyDownEvent inputKEPD
                 ]
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
