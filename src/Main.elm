@@ -404,7 +404,7 @@ getEditInputDomId tree =
     "item-edit-input-dom-id-"
 
 
-inputKEPD ke =
+inputKeyEventDecoder =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
@@ -412,11 +412,14 @@ inputKEPD ke =
             , ( HotKey.isMeta "Enter", ( SaveLine, True ) )
             , ( HotKey.is "Escape", ( SaveLine, True ) )
             ]
+
+        msgDecoder keyEvent =
+            inputKeyMap
+                |> List.Extra.find (Tuple.first >> applyTo keyEvent)
+                |> Maybe.map (Tuple.second >> Json.Decode.succeed)
+                |> Maybe.withDefault (Json.Decode.fail "Not Interested")
     in
-    inputKeyMap
-        |> List.Extra.find (Tuple.first >> applyTo ke)
-        |> Maybe.map (Tuple.second >> Json.Decode.succeed)
-        |> Maybe.withDefault (Json.Decode.fail "Not Interested")
+    Json.Decode.andThen msgDecoder keyEventDecoder
 
 
 viewEditItemLabel tree =
@@ -444,7 +447,7 @@ viewEditItemLabel tree =
                 , value content
                 , onInput ContentChanged
                 , Html.Events.preventDefaultOn "keydown"
-                    (Json.Decode.andThen inputKEPD keyEventDecoder)
+                    inputKeyEventDecoder
                 ]
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
