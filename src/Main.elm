@@ -195,8 +195,9 @@ update message model =
                                     |> Debug.log "root"
                         in
                         ( { model
-                            | viewMode = EditingSelected
-                            , cursor = ItemTree.append model.cursor
+                            | cursor = ItemTree.append model.cursor
+
+                            --                            , viewMode = EditingSelected
                           }
                         , Cmd.none
                         )

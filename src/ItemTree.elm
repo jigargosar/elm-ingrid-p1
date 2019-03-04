@@ -76,8 +76,9 @@ prependChild cursor =
         |> Maybe.withDefault newZipper
 
 
+appendSibling : ItemTreeCursor -> ItemTreeCursor
 appendSibling cursor =
-    cursor
+    Tree.Zipper.append createEmptyNode cursor
 
 
 append : ItemTreeCursor -> ItemTreeCursor
