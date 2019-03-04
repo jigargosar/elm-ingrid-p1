@@ -409,7 +409,7 @@ viewEditItemLabel tree =
         , onInput ContentChanged
         , value content
         ]
-        []
+        [ t content ]
 
 
 
