@@ -2,8 +2,7 @@ port module Main exposing (main)
 
 import Browser
 import Browser.Events exposing (onKeyDown)
-import Html exposing (Html, button, div, span, table)
-import Html.Attributes exposing (attribute, tabindex)
+import Html exposing (Html, div)
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -11,8 +10,7 @@ import List.Extra
 import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
-import Tree.Zipper
-import V exposing (co, noHtml, t)
+import V exposing (co, t)
 
 
 port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
@@ -224,9 +222,21 @@ globalKeyMap =
     , ( keyIsShift "Enter", prependNewAndStartEditing )
     , ( keyIs "ArrowUp", selectBackward )
     , ( keyIs "ArrowDown", selectForward )
-    , ( keyIs "Tab", selectForward )
-    , ( keyIsShift "Tab", selectBackward )
+    , ( keyIs "Tab", indent )
+    , ( keyIsShift "Tab", outdent )
     ]
+
+
+indent model =
+    ( overCursor ItemTree.indent model
+    , Cmd.batch []
+    )
+
+
+outdent model =
+    ( overCursor ItemTree.outdent model
+    , Cmd.batch []
+    )
 
 
 overCursor : (ItemTreeCursor -> ItemTreeCursor) -> Model -> Model

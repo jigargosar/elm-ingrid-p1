@@ -3,7 +3,9 @@ module ItemTree exposing
     , appendNew
     , backward
     , forward
+    , indent
     , initialCursor
+    , outdent
     , prependNew
     , rootTree
     , selectedTree
@@ -128,5 +130,15 @@ backward cursor =
 
 
 forward cursor =
+    Tree.Zipper.forward cursor
+        |> Maybe.withDefault cursor
+
+
+indent cursor =
+    Tree.Zipper.forward cursor
+        |> Maybe.withDefault cursor
+
+
+outdent cursor =
     Tree.Zipper.forward cursor
         |> Maybe.withDefault cursor
