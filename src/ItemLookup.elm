@@ -14,7 +14,6 @@ module ItemLookup exposing
     , toList
     )
 
-import Array exposing (Array)
 import Dict exposing (Dict)
 import List.Extra
 
