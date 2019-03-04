@@ -210,10 +210,10 @@ initEditingMode model =
 
 ensureEditInputFocusCmd model =
     if model.viewMode == EditingSelected then
-        Cmd.batch []
+        Cmd.batch [ focusInputCmd model ]
 
     else
-        Cmd.batch [ focusInputCmd model ]
+        Cmd.batch []
 
 
 edit model =
