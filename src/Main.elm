@@ -150,7 +150,7 @@ applyTo =
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
     [ ( HotKey.is "Enter", appendNewAndStartEditing )
-    , ( HotKey.is "Space", edit )
+    , ( HotKey.is " ", edit )
     , ( HotKey.isShift "Enter", prependNewAndStartEditing )
     , ( HotKey.is "ArrowUp", selectBackward )
     , ( HotKey.is "ArrowDown", selectForward )
