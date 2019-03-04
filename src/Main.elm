@@ -237,30 +237,26 @@ withNewId fn model =
     fn id newModel
 
 
-appendNewAndStartEditing model =
-    let
-        ( id, newSeed ) =
-            Random.step idGen model.seed
-    in
-    Update.pure
-        { model
-            | cursor = ItemTree.appendNew id model.cursor
-            , seed = newSeed
-        }
-        |> Update.andThen initEditingMode
+appendNewAndStartEditing =
+    withNewId
+        (\id model ->
+            Update.pure
+                { model
+                    | cursor = ItemTree.appendNew id model.cursor
+                }
+                |> Update.andThen initEditingMode
+        )
 
 
-prependNewAndStartEditing model =
-    let
-        ( id, newSeed ) =
-            Random.step idGen model.seed
-    in
-    Update.pure
-        { model
-            | cursor = ItemTree.prependNew id model.cursor
-            , seed = newSeed
-        }
-        |> Update.andThen initEditingMode
+prependNewAndStartEditing =
+    withNewId
+        (\id model ->
+            Update.pure
+                { model
+                    | cursor = ItemTree.prependNew id model.cursor
+                }
+                |> Update.andThen initEditingMode
+        )
 
 
 
