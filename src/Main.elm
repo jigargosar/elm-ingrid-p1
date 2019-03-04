@@ -99,15 +99,19 @@ type alias KeyEvent =
     { key : String
     , ctrl : Bool
     , meta : Bool
+    , shift : Bool
+    , alt : Bool
     }
 
 
 keyEventDecoder : Decoder KeyEvent
 keyEventDecoder =
-    Json.Decode.map3 KeyEvent
+    Json.Decode.map5 KeyEvent
         (Json.Decode.at [ "key" ] Json.Decode.string)
         (Json.Decode.at [ "ctrlKey" ] Json.Decode.bool)
         (Json.Decode.at [ "metaKey" ] Json.Decode.bool)
+        (Json.Decode.at [ "shiftKey" ] Json.Decode.bool)
+        (Json.Decode.at [ "altKey" ] Json.Decode.bool)
 
 
 subscriptions : Model -> Sub Msg
@@ -197,6 +201,19 @@ update message model =
 
                 _ ->
                     ( model, Cmd.none )
+
+
+noModifiers : KeyEvent -> Bool
+noModifiers keyEvent =
+    keyEvent.ctrl || keyEvent.meta || keyEvent.shift || keyEvent.alt
+
+
+keyIs key keyEvent =
+    keyEvent.key == key && noModifiers keyEvent
+
+
+keyMap =
+    [ keyIs ]
 
 
 appendNewAndStartEditing model =
