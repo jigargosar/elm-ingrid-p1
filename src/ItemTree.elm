@@ -111,7 +111,7 @@ prependNew id cursor =
             else
                 Zipper.prepend newTree cursor
     in
-    Zipper.forward newZipper
+    Zipper.backward newZipper
         |> Maybe.withDefault newZipper
 
 
