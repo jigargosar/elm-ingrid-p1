@@ -13,6 +13,7 @@ import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
+import Update
 import V exposing (co, t)
 
 
@@ -236,6 +237,7 @@ appendNewAndStartEditing model =
       }
     , Cmd.none
     )
+        |> Update.andThen initEditingMode
 
 
 prependNewAndStartEditing model =
@@ -249,6 +251,7 @@ prependNewAndStartEditing model =
       }
     , Cmd.none
     )
+        |> Update.andThen initEditingMode
 
 
 
