@@ -292,6 +292,12 @@ viewCursor model =
 
         rootFragment =
             ItemTree.nodeFragment root
+
+        selectedNode =
+            ItemTree.selectedNode model.cursor
+
+        isRootSelected =
+            selectedNode == root
     in
     div [ classes [ pa3 ] ]
         [ span [ classes [ f3, bb, bw2, b__black_30, fw4 ] ]

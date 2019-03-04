@@ -4,6 +4,7 @@ module ItemTree exposing
     , initialCursor
     , isSelected
     , nodeFragment
+    , selectedNode
     )
 
 import Array exposing (Array)
@@ -52,6 +53,11 @@ currentRoot cursor =
 nodeFragment : ItemTreeNode -> Fragment
 nodeFragment (Node { fragment }) =
     fragment
+
+
+selectedNode : ItemTreeCursor -> ItemTreeNode
+selectedNode cursor =
+    cursor.root
 
 
 isSelected : ItemTreeNode -> ItemTreeCursor -> Bool
