@@ -186,7 +186,7 @@ update message model =
             case keyEvent.key of
                 "Enter" ->
                     if model.viewMode == Navigating then
-                        ( { model | viewMode = EditingSelected, cursor = ItemTree.appendEmptyFragment model.cursor }, Cmd.none )
+                        ( { model | viewMode = EditingSelected, cursor = ItemTree.append model.cursor }, Cmd.none )
 
                     else
                         ( model, Cmd.none )

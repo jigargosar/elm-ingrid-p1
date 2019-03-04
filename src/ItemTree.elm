@@ -1,6 +1,6 @@
 module ItemTree exposing
     ( ItemTreeCursor
-    , appendEmptyFragment
+    , append
     , currentRoot
     , initialCursor
     , isSelected
@@ -61,23 +61,26 @@ isSelected node cursor =
     True
 
 
+prependChild : ItemTreeCursor -> ItemTreeCursor
 prependChild cursor =
     let
-        parent =
+        updatedTreeNode =
             selectedNode cursor
+                |> Tree.prependChild createEmptyNode
 
-        newParent =
-            parent
+        newZipper =
+            Tree.Zipper.replaceTree updatedTreeNode cursor
     in
-    cursor
+    Tree.Zipper.forward newZipper
+        |> Maybe.withDefault newZipper
 
 
 appendSibling cursor =
     cursor
 
 
-appendEmptyFragment : ItemTreeCursor -> ItemTreeCursor
-appendEmptyFragment cursor =
+append : ItemTreeCursor -> ItemTreeCursor
+append cursor =
     if selectedNode cursor == currentRoot cursor then
         prependChild cursor
 
