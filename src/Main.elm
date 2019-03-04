@@ -190,29 +190,33 @@ update message model =
             case keyEvent.key of
                 "Enter" ->
                     if model.viewMode == Navigating then
-                        let
-                            idGen : Generator String
-                            idGen =
-                                Random.int 999999999 Random.maxInt
-                                    |> Random.map String.fromInt
-
-                            ( id, newSeed ) =
-                                Random.step idGen model.seed
-                        in
-                        ( { model
-                            | cursor = ItemTree.appendNew id model.cursor
-                            , seed = newSeed
-
-                            --                            , viewMode = EditingSelected
-                          }
-                        , Cmd.none
-                        )
+                        appendNew model
 
                     else
                         ( model, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
+
+
+appendNew model =
+    let
+        idGen : Generator String
+        idGen =
+            Random.int 999999999 Random.maxInt
+                |> Random.map String.fromInt
+
+        ( id, newSeed ) =
+            Random.step idGen model.seed
+    in
+    ( { model
+        | cursor = ItemTree.appendNew id model.cursor
+        , seed = newSeed
+
+        --                            , viewMode = EditingSelected
+      }
+    , Cmd.none
+    )
 
 
 moveFocusedBy offset model =
