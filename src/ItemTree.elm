@@ -2,7 +2,6 @@ module ItemTree exposing
     ( ItemTreeCursor
     , append
     , initialCursor
-    , isSelected
     , rootTree
     , selectedTree
     , treeChildren
@@ -55,11 +54,6 @@ treeLabel =
 selectedTree : ItemTreeCursor -> ItemTree
 selectedTree =
     Tree.Zipper.tree
-
-
-isSelected : ItemTree -> ItemTreeCursor -> Bool
-isSelected node cursor =
-    True
 
 
 prependChild : ItemTreeCursor -> ItemTreeCursor
