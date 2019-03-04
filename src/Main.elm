@@ -298,7 +298,7 @@ viewCursor model =
         isEditing =
             model.viewMode == EditingSelected
     in
-    div [ classes [ flex_grow_1, pl3, bg_black_20 ] ]
+    div [ classes [ flex_grow_1, pl3, bg_black_20, black_50 ] ]
         [ viewRootTreeItem isEditing selected root
         , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
