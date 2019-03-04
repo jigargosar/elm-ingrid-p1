@@ -164,8 +164,12 @@ navKeyMap =
     , ( HotKey.isShift "Enter", prependNewAndStartEditing )
     , ( HotKey.is "ArrowUp", selectBackward )
     , ( HotKey.is "ArrowDown", selectForward )
-    , ( HotKey.isMeta "ArrowLeft", outdent )
-    , ( HotKey.isMeta "ArrowRight", indent )
+
+    {- , ( HotKey.isMeta "ArrowLeft", outdent )
+       , ( HotKey.isMeta "ArrowRight", indent )
+    -}
+    , ( HotKey.isShift "Tab", outdent )
+    , ( HotKey.is "Tab", indent )
     , ( HotKey.isMeta "ArrowUp", moveUp )
     , ( HotKey.isMeta "ArrowDown", moveDown )
     ]
