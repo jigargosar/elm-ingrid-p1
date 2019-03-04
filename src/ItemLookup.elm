@@ -7,7 +7,6 @@ module ItemLookup exposing
     , getParentAndGrandParentOf
     , getParentAndPrevPrevSibOf
     , getParentOfId
-    , getPrevSiblingOfId
     , getRoot
     , getRootItems
     , insertAll
@@ -20,7 +19,6 @@ import List.Extra
 
 type alias Item =
     { id : String
-    , rev : Maybe String
     , title : String
     , pid : Maybe String
     , childIds : List String
@@ -79,32 +77,6 @@ getParentOfId id itemLookup =
             )
 
 
-
---getAncestorIds : String -> ItemLookup -> Maybe (List String)
---getAncestorIds id itemLookup =
---    getById id itemLookup
---        |> Maybe.map (\_ -> getAncestorIdsHelp [] id itemLookup)
---
---
---getAncestorIdsHelp : List String -> String -> ItemLookup -> List String
---getAncestorIdsHelp ancestorIds id itemLookup =
---    let
---        maybeParent : Maybe Item
---        maybeParent =
---            getParentOfId id itemLookup
---
---        newAncestorIds : List String
---        newAncestorIds =
---            id :: ancestorIds
---    in
---    case maybeParent of
---        Just parent ->
---            getAncestorIdsHelp newAncestorIds parent.id itemLookup
---
---        Nothing ->
---            newAncestorIds
-
-
 rootItemId =
     "i_root_item_id"
 
@@ -114,33 +86,9 @@ getRootItems itemLookup =
     getChildrenOfId rootItemId itemLookup
 
 
-
---getRootItemsOrEmpty : ItemLookup -> (List Item)
---getRootItemsOrEmpty itemLookup =
---    getRootItems itemLookup |> Maybe.withDefault []
-
-
 getChildrenOfId : String -> ItemLookup -> Maybe (List Item)
 getChildrenOfId parentId itemLookup =
     getById parentId itemLookup |> Maybe.map (\parent -> List.filterMap (\cid -> getById cid itemLookup) parent.childIds)
-
-
-getSiblingsOfId : String -> ItemLookup -> Maybe (List Item)
-getSiblingsOfId id itemLookup =
-    getParentOfId id itemLookup
-        |> Maybe.andThen (\parent -> getChildrenOfId parent.id itemLookup)
-
-
-getPrevSiblingOfId : String -> ItemLookup -> Maybe Item
-getPrevSiblingOfId id itemLookup =
-    getParentOfId id itemLookup
-        |> Maybe.andThen
-            (\parent ->
-                parent.childIds
-                    |> List.Extra.findIndex ((==) id)
-                    |> Maybe.andThen (\idx -> parent.childIds |> List.Extra.getAt (idx - 1))
-                    |> Maybe.andThen (\cid -> getById cid itemLookup)
-            )
 
 
 getParentAndPrevPrevSibOf : String -> ItemLookup -> Maybe ( String, Item, Item )
@@ -165,14 +113,3 @@ getParentAndGrandParentOf id itemLookup =
                 getParentOfId parent.id itemLookup
                     |> Maybe.map (\grandParent -> ( id, parent, grandParent ))
             )
-
-
-
---        |> Maybe.andThen
---            (\( parent, grandParent ) ->
---                grandParent.childIds
---                    |> List.Extra.findIndex ((==) parent.id)
---                    |> Maybe.map (\parentIdx -> ( id, ( parent, parentIdx ), grandParent ))
---            )
---
---        |> Array.
