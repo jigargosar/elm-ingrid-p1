@@ -56,6 +56,11 @@ import * as R from 'ramda'
 window.addEventListener('keydown', function(event) {
   if (isHotKey('tab')(event) || isHotKey('shift+tab')(event)) {
     event.preventDefault()
+  } else if (isHotKey('enter')(event)) {
+    const itemInputDomId = 'item-edit-input-dom-id-'
+    if (event.target.id === itemInputDomId) {
+      event.preventDefault()
+    }
   }
 })
 

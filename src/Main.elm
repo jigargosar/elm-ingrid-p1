@@ -395,7 +395,11 @@ viewItemLabel selected tree =
 
 getEditInputDomId : ItemTree -> String
 getEditInputDomId tree =
-    "item-edit-input-dom-id-" ++ ItemTree.treeId tree
+    "item-edit-input-dom-id-"
+
+
+
+{- ++ ItemTree.treeId tree -}
 
 
 viewEditItemLabel tree =
