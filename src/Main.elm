@@ -308,7 +308,7 @@ viewItemForest isEditing selected children =
     div [ classes [ pl3 ] ] (children |> List.map (viewItemTree isEditing selected))
 
 
-viewItemTree isEditing selected tree =
+viewItemLabel selected tree =
     let
         labelClasses =
             let
@@ -327,11 +327,15 @@ viewItemTree isEditing selected tree =
             else
                 defaultClasses ++ notSelectedClasses
     in
+    div [ classes [ h2, flex, items_center ] ]
+        [ div [ classes labelClasses ]
+            [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
+        ]
+
+
+viewItemTree isEditing selected tree =
     div []
-        [ div [ classes [ h2, flex, items_center ] ]
-            [ div [ classes labelClasses ]
-                [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
-            ]
+        [ viewItemLabel selected tree
         , viewItemForest isEditing selected (ItemTree.treeChildren tree)
         ]
 
