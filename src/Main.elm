@@ -190,8 +190,6 @@ editKeyMap =
     [ ( HotKey.is "Enter", appendNewAndStartEditing )
     , ( HotKey.isMeta "Enter", stopEditing )
     , ( HotKey.is "Escape", stopEditing )
-    , ( HotKey.isShift "Tab", outdent )
-    , ( HotKey.is "Tab", indent )
     ]
 
 
