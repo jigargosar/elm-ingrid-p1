@@ -333,10 +333,14 @@ viewItemLabel selected tree =
         ]
 
 
+viewEditItemLabel tree =
+    div [] [ t <| ItemTree.treeFragment tree ]
+
+
 viewItemTree isEditing selected tree =
     div []
         [ if isEditing && selected == tree then
-            div [] []
+            viewEditItemLabel tree
 
           else
             viewItemLabel selected tree
