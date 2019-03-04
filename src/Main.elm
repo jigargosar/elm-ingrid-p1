@@ -7,6 +7,7 @@ import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input, textarea)
 import Html.Attributes exposing (style, value)
 import Html.Events exposing (onInput)
+import Html.Keyed
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -352,8 +353,12 @@ viewCursor model =
 
 
 viewItemForest : Bool -> ItemTree -> List ItemTree -> Html Msg
-viewItemForest isEditing selected children =
-    div [ classes [ pl3 ] ] (children |> List.map (viewItemTree isEditing selected))
+viewItemForest isEditing selected itemForest =
+    Html.Keyed.node "div"
+        [ classes [ pl3 ] ]
+        (itemForest
+            |> List.map (\tree -> ( ItemTree.treeId tree, viewItemTree isEditing selected tree ))
+        )
 
 
 viewItemLabel selected tree =
