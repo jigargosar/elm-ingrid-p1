@@ -321,9 +321,6 @@ viewCursor model =
         root =
             ItemTree.currentRoot model.cursor
 
-        rootFragment =
-            ItemTree.nodeFragment root
-
         selectedNode =
             ItemTree.selectedNode model.cursor
     in
