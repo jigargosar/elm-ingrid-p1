@@ -417,7 +417,7 @@ viewTreeItem selected tree =
         labelClasses =
             let
                 defaultClasses =
-                    [ pa1, dib ]
+                    [ pa1, dib, br1 ]
 
                 selectedClasses =
                     [ bg_light_red, white ]
@@ -445,7 +445,7 @@ viewRootTreeItem selected root =
         labelClasses =
             let
                 defaultClasses =
-                    [ pa1, dib, f3 ]
+                    [ pa1, dib, f3, br1 ]
 
                 selectedClasses =
                     [ bg_light_red, white ]
