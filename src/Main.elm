@@ -326,10 +326,12 @@ viewCursor model =
 
         selectedNode =
             ItemTree.selectedNode model.cursor
+    in
+    viewRootItem root selectedNode
 
-        isRootSelected =
-            selectedNode == root
 
+viewRootItem root selected =
+    let
         fragmentClasses =
             let
                 defaultClasses =
@@ -338,7 +340,7 @@ viewCursor model =
                 selectedClasses =
                     [ bg_light_red, white, br ]
             in
-            if isRootSelected then
+            if root == selected then
                 defaultClasses ++ selectedClasses
 
             else
@@ -346,7 +348,7 @@ viewCursor model =
     in
     div [ classes [ pa3 ] ]
         [ span [ classes fragmentClasses ]
-            [ t rootFragment ]
+            [ t <| ItemTree.nodeFragment root ]
         ]
 
 
