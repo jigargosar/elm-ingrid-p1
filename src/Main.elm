@@ -388,6 +388,8 @@ view model =
         [ div [ classes [ flex, bg_black, white ] ]
             [ viewShortcutHint "Line Below" "Enter"
             , viewShortcutHint "Line Above" "Shift+Enter"
+            , viewShortcutHint "Indent" "Tab"
+            , viewShortcutHint "Outdent" "Shift+Tab"
             ]
         , viewCursor model
 
