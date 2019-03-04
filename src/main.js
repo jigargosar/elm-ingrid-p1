@@ -1,8 +1,9 @@
 // noinspection JSUnresolvedVariable
 import { getCached } from './cache-helpers'
-import { compose, default as R, defaultTo, mergeDeepRight } from 'ramda'
 import './main.scss'
 import { Elm } from './Main.elm'
+import isHotKey from 'is-hotkey'
+import * as R from 'ramda'
 
 /* ITEM */
 
@@ -46,9 +47,17 @@ window.addEventListener('keydown', function(event) {
     // console.debug(idx, focusable)
     if (isHotKey('up')(event)) {
       focusOffset(event, -1)
-    } else if (isHotKey('down')(event)) {
+    } else if (isHotkey('down')(event)) {
       focusOffset(event, 1)
     }
+  }
+})
+
+window.addEventListener('keydown', function(event) {
+  if (isHotKey('up')(event)) {
+    focusOffset(event, -1)
+  } else if (isHotKey('down')(event)) {
+    focusOffset(event, 1)
   }
 })
 
@@ -138,9 +147,9 @@ const app = Elm.Main.init({
 // }
 
 function getMainCache() {
-  return compose(
-    mergeDeepRight({ items: [], maybeFocusedItemId: null }),
-    defaultTo({}),
+  return R.compose(
+    R.mergeDeepRight({ items: [], maybeFocusedItemId: null }),
+    R.defaultTo({}),
     // always(null),
     getCached,
   )('elm-main')
