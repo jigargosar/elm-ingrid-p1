@@ -1,6 +1,6 @@
 module ItemTree exposing
     ( ItemTreeCursor
-    , append
+    , appendNew
     , initialCursor
     , rootTree
     , selectedTree
@@ -75,8 +75,8 @@ appendSibling cursor =
     Tree.Zipper.append createEmptyNode cursor
 
 
-append : ItemTreeCursor -> ItemTreeCursor
-append cursor =
+appendNew : ItemTreeCursor -> ItemTreeCursor
+appendNew cursor =
     if selectedTree cursor == rootTree cursor then
         prependChild cursor
 

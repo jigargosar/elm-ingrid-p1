@@ -189,13 +189,13 @@ update message model =
                     if model.viewMode == Navigating then
                         let
                             _ =
-                                ItemTree.append model.cursor
+                                ItemTree.appendNew model.cursor
                                     |> Tree.Zipper.root
                                     |> Tree.Zipper.tree
                                     |> Debug.log "root"
                         in
                         ( { model
-                            | cursor = ItemTree.append model.cursor
+                            | cursor = ItemTree.appendNew model.cursor
 
                             --                            , viewMode = EditingSelected
                           }
