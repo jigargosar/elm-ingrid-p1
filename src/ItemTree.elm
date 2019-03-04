@@ -1,5 +1,6 @@
 module ItemTree exposing
-    ( ItemTreeCursor
+    ( ItemTree
+    , ItemTreeCursor
     , appendNew
     , backward
     , forward
@@ -16,7 +17,6 @@ module ItemTree exposing
     , treeId
     )
 
-import List.Extra
 import Tree
 import Tree.Zipper as Zipper exposing (Zipper)
 

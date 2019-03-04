@@ -6,7 +6,7 @@ import Browser.Events exposing (onKeyDown)
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div)
 import ItemLookup exposing (Item, ItemLookup)
-import ItemTree exposing (ItemTreeCursor)
+import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
 import Random exposing (Generator)
@@ -299,15 +299,16 @@ viewCursor model =
     in
     div [ classes [ pl3 ] ]
         [ viewRootTreeItem selected root
-        , viewItemForest selected (ItemTree.treeChildren root)
+        , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
 
 
-viewItemForest selected children =
-    div [ classes [ pl3 ] ] (children |> List.map (viewItemTree selected))
+viewItemForest : Bool -> ItemTree -> List ItemTree -> Html Msg
+viewItemForest isEditing selected children =
+    div [ classes [ pl3 ] ] (children |> List.map (viewItemTree isEditing selected))
 
 
-viewItemTree selected tree =
+viewItemTree isEditing selected tree =
     let
         labelClasses =
             let
@@ -331,7 +332,7 @@ viewItemTree selected tree =
             [ div [ classes labelClasses ]
                 [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
             ]
-        , viewItemForest selected (ItemTree.treeChildren tree)
+        , viewItemForest isEditing selected (ItemTree.treeChildren tree)
         ]
 
 
