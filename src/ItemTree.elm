@@ -141,6 +141,18 @@ indent zipper =
         |> Maybe.withDefault zipper
 
 
-outdent cursor =
-    Zipper.forward cursor
-        |> Maybe.withDefault cursor
+outdent zipper =
+    let
+        selectedT =
+            Zipper.tree zipper
+    in
+    Zipper.previousSibling zipper
+        |> Maybe.map (Zipper.tree >> Tree.label)
+        |> Maybe.andThen
+            (\prevSibLabel ->
+                Zipper.removeTree zipper
+                    |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
+                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
+                    |> Maybe.andThen Zipper.lastChild
+            )
+        |> Maybe.withDefault zipper
