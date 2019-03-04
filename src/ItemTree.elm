@@ -135,7 +135,20 @@ forward cursor =
 
 
 indent cursor =
-    Tree.Zipper.forward cursor
+    let
+        selected =
+            selectedTree cursor
+    in
+    Tree.Zipper.siblingsBeforeFocus cursor
+        |> List.head
+        |> Maybe.andThen
+            (\prevSibTree ->
+                Tree.Zipper.removeTree cursor
+                    |> Maybe.andThen (Tree.Zipper.findNext ((==) (Tree.label prevSibTree)))
+                    |> Maybe.withDefault cursor
+                    |> Tree.Zipper.mapTree (Tree.prependChild selected)
+                    |> Tree.Zipper.forward
+            )
         |> Maybe.withDefault cursor
 
 
