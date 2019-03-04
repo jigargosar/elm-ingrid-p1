@@ -234,7 +234,7 @@ globalKeyMap =
     , ( keyIs "Tab", indent )
     , ( keyIsShift "Tab", outdent )
     , ( keyIsMetaShift "ArrowUp", outdent )
-    , ( keyIsMetaShift "ArrowDown", outdent )
+    , ( keyIsMetaShift "ArrowDown", indent )
     ]
 
 
