@@ -1,6 +1,9 @@
 module ItemTree exposing
     ( ItemTreeCursor
+    , currentRoot
     , initialCursor
+    , isSelected
+    , nodeFragment
     )
 
 import Array exposing (Array)
@@ -10,11 +13,11 @@ type alias Fragment =
     String
 
 
-type Node
+type ItemTreeNode
     = Node
         { fragment : Fragment
         , collapsed : Bool
-        , children : Array Node
+        , children : Array ItemTreeNode
         }
 
 
@@ -23,10 +26,10 @@ type alias Path =
 
 
 type alias ItemTreeCursor =
-    { root : Node, path : Path }
+    { root : ItemTreeNode, path : Path }
 
 
-initialRoot : Node
+initialRoot : ItemTreeNode
 initialRoot =
     Node { fragment = "Root", collapsed = False, children = Array.empty }
 
@@ -41,6 +44,21 @@ initialCursor =
     { root = initialRoot, path = rootPath }
 
 
-createEmptyNode : Node
+currentRoot : ItemTreeCursor -> ItemTreeNode
+currentRoot cursor =
+    cursor.root
+
+
+nodeFragment : ItemTreeNode -> Fragment
+nodeFragment (Node { fragment }) =
+    fragment
+
+
+isSelected : ItemTreeNode -> ItemTreeCursor -> Bool
+isSelected node cursor =
+    True
+
+
+createEmptyNode : ItemTreeNode
 createEmptyNode =
     Node { fragment = "Empty", collapsed = False, children = Array.empty }

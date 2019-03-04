@@ -286,7 +286,17 @@ view model =
 
 
 viewCursor model =
-    div [ classes [ pa3 ] ] [ span [ classes [ f4, bb, bw1, b__black_50 ] ] [ t "Root" ] ]
+    let
+        root =
+            ItemTree.currentRoot model.cursor
+
+        rootFragment =
+            ItemTree.nodeFragment root
+    in
+    div [ classes [ pa3 ] ]
+        [ span [ classes [ f3, bb, bw2, b__black_30, fw4 ] ]
+            [ t rootFragment ]
+        ]
 
 
 viewTree model =
