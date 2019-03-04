@@ -191,16 +191,14 @@ update message model =
                else
                    ( model, Cmd.none )
             -}
-            case keyEvent.key of
-                "Enter" ->
-                    if model.viewMode == Navigating then
-                        appendNewAndStartEditing model
+            navigationKeyMap
+                |> List.Extra.find (Tuple.first >> applyTo keyEvent)
+                |> Maybe.map (\( _, mFn ) -> mFn model)
+                |> Maybe.withDefault ( model, Cmd.none )
 
-                    else
-                        ( model, Cmd.none )
 
-                _ ->
-                    ( model, Cmd.none )
+applyTo =
+    (|>)
 
 
 noModifiers : KeyEvent -> Bool
@@ -212,8 +210,13 @@ keyIs key keyEvent =
     keyEvent.key == key && noModifiers keyEvent
 
 
-keyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-keyMap =
+navigationKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
+navigationKeyMap =
+    [ ( keyIs "Enter", appendNewAndStartEditing ) ]
+
+
+editKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
+editKeyMap =
     [ ( keyIs "Enter", appendNewAndStartEditing ) ]
 
 
