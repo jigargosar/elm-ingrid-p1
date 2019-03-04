@@ -94,6 +94,12 @@ getItemDomId item =
     "item-id-" ++ item.id
 
 
+getItemInputDomId : ItemTree -> String
+getItemInputDomId tree =
+    {- ++ ItemTree.treeId tree -}
+    "item-input-dom-id-"
+
+
 cacheNewModel model =
     toJsCache { items = getItems model, maybeFocusedItemId = model.maybeFocusedItemId }
 
@@ -193,7 +199,7 @@ saveEditingLine model =
 
 
 focusInputCmd model =
-    Browser.Dom.focus (getEditInputDomId <| ItemTree.getSelectedTree model.cursor)
+    Browser.Dom.focus (getItemInputDomId <| ItemTree.getSelectedTree model.cursor)
         |> Task.attempt (Debug.log "focusing master input" >> Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
@@ -388,12 +394,6 @@ viewItemLabel selected tree =
         ]
 
 
-getEditInputDomId : ItemTree -> String
-getEditInputDomId tree =
-    {- ++ ItemTree.treeId tree -}
-    "item-edit-input-dom-id-"
-
-
 itemEditorHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
 itemEditorHotKeyDispatcher ke =
     let
@@ -419,7 +419,7 @@ viewEditItemLabel tree =
     div [ classes [ dib, mv1, pa2, br1, bg_white ] ]
         [ div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
             [ textarea
-                [ Html.Attributes.id (getEditInputDomId tree)
+                [ Html.Attributes.id (getItemInputDomId tree)
                 , classes
                     [ pa0
                     , bn
