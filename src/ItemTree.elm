@@ -9,6 +9,8 @@ module ItemTree exposing
     )
 
 import Array exposing (Array)
+import Tree
+import Tree.Zipper
 
 
 type alias Fragment =
@@ -18,71 +20,45 @@ type alias Fragment =
 type alias NodeModel =
     { fragment : Fragment
     , collapsed : Bool
-    , children : Array ItemTreeNode
     }
 
 
-type ItemTreeNode
-    = Node NodeModel
-
-
-type alias Path =
-    Array Int
+type alias ItemTree =
+    Tree.Tree NodeModel
 
 
 type alias ItemTreeCursor =
-    { root : ItemTreeNode, path : Path }
+    Tree.Zipper.Zipper NodeModel
 
 
-initialRoot : ItemTreeNode
+initialRoot : ItemTree
 initialRoot =
-    Node { fragment = "Root", collapsed = False, children = Array.empty }
-
-
-rootPath : Path
-rootPath =
-    Array.empty
+    Tree.singleton { fragment = "Root", collapsed = False }
 
 
 initialCursor : ItemTreeCursor
 initialCursor =
-    { root = initialRoot, path = rootPath }
+    Tree.Zipper.fromTree initialRoot
 
 
-currentRoot : ItemTreeCursor -> ItemTreeNode
-currentRoot cursor =
-    cursor.root
+currentRoot : ItemTreeCursor -> ItemTree
+currentRoot =
+    Tree.Zipper.root >> Tree.Zipper.tree
 
 
-nodeFragment : ItemTreeNode -> Fragment
-nodeFragment (Node { fragment }) =
-    fragment
+nodeFragment : ItemTree -> Fragment
+nodeFragment =
+    Tree.label >> .fragment
 
 
-selectedNode : ItemTreeCursor -> ItemTreeNode
-selectedNode cursor =
-    cursor.root
+selectedNode : ItemTreeCursor -> ItemTree
+selectedNode =
+    Tree.Zipper.tree
 
 
-isSelected : ItemTreeNode -> ItemTreeCursor -> Bool
+isSelected : ItemTree -> ItemTreeCursor -> Bool
 isSelected node cursor =
     True
-
-
-updateNode : (NodeModel -> NodeModel) -> ItemTreeNode -> ItemTreeNode
-updateNode fn (Node nodeModel) =
-    fn nodeModel |> Node
-
-
-updateSelectedNode fn cursor =
-    let
-        oldNode =
-            selectedNode cursor
-
-        newNode =
-            updateNode fn oldNode
-    in
-    cursor
 
 
 prependChild cursor =
@@ -100,11 +76,8 @@ appendSibling cursor =
     cursor
 
 
+appendEmptyFragment : ItemTreeCursor -> ItemTreeCursor
 appendEmptyFragment cursor =
-    let
-        root =
-            cursor.root
-    in
     if selectedNode cursor == currentRoot cursor then
         prependChild cursor
 
@@ -112,6 +85,6 @@ appendEmptyFragment cursor =
         appendSibling cursor
 
 
-createEmptyNode : ItemTreeNode
+createEmptyNode : ItemTree
 createEmptyNode =
-    Node { fragment = "Empty", collapsed = False, children = Array.empty }
+    Tree.singleton { fragment = "Empty", collapsed = False }
