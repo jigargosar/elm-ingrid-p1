@@ -402,6 +402,7 @@ itemEditorHotKeyDispatcher ke =
             [ ( HotKey.is "Enter", ( NewLine, True ) )
             , ( HotKey.isMeta "Enter", ( SaveLine, True ) )
             , ( HotKey.is "Escape", ( SaveLine, True ) )
+            , ( HotKey.isShift "Enter", ( NOP, True ) )
             ]
     in
     inputKeyMap
