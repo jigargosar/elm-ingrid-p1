@@ -1,8 +1,6 @@
 module ItemTree exposing
-    ( Fragment
-    , Node(..)
-    , Path
-    , root
+    ( ItemTreeCursor
+    , initialCursor
     )
 
 import Array exposing (Array)
@@ -24,14 +22,23 @@ type alias Path =
     Array Int
 
 
-root : Node
-root =
+type alias ItemTreeCursor =
+    { root : Node, path : Path }
+
+
+initialRoot : Node
+initialRoot =
     Node { fragment = "Root", collapsed = False, children = Array.empty }
 
 
 rootPath : Path
 rootPath =
     Array.empty
+
+
+initialCursor : ItemTreeCursor
+initialCursor =
+    { root = initialRoot, path = rootPath }
 
 
 createEmptyNode : Node
