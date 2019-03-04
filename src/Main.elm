@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Browser
 import Browser.Events exposing (onKeyDown)
-import Html exposing (Html, button, div, span)
+import Html exposing (Html, button, div, span, table)
 import Html.Attributes exposing (attribute, tabindex)
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTreeCursor)
@@ -361,14 +361,16 @@ onUnnestFocused model =
 
 view : Model -> Html Msg
 view model =
-    co [ sans_serif, pt3, "us-none" ]
-        [ div []
-            [ button [ classes [ br1, ba, b__black_20, ttu, mh1, f6 ] ] [ t "add new : press enter" ]
-            ]
+    co [ sans_serif, "us-none" ]
+        [ div [ classes [ flex ] ] [ viewShortcutHint "New Line : Enter" ]
         , viewCursor model
 
         --        , viewTree model
         ]
+
+
+viewShortcutHint txt =
+    div [ classes [ pa2, lh_copy, br1, ba, b__black_20, mh1 ] ] [ t txt ]
 
 
 viewCursor model =
