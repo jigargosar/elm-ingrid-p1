@@ -353,10 +353,10 @@ viewCursor model =
 
 
 viewItemForest : Bool -> ItemTree -> List ItemTree -> Html Msg
-viewItemForest isEditing selected itemForest =
+viewItemForest isEditing selected forest =
     Html.Keyed.node "div"
         [ classes [ pl3 ] ]
-        (itemForest
+        (forest
             |> List.map (\tree -> ( ItemTree.treeId tree, viewItemTree isEditing selected tree ))
         )
 
