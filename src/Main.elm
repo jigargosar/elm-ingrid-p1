@@ -402,10 +402,13 @@ viewTreeItem selected tree =
         labelClasses =
             let
                 defaultClasses =
-                    [ pa1, bb, bw1, b__black_30, fw4 ]
+                    [ pa1 ]
 
                 selectedClasses =
                     [ bg_light_red, white, br ]
+
+                hasVisibleChildrenClasses =
+                    [ bb, bw2, b__black_30 ]
             in
             if tree == selected then
                 defaultClasses ++ selectedClasses
