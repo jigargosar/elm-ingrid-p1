@@ -12,6 +12,7 @@ import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
+import Maybe.Extra
 import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
@@ -132,9 +133,13 @@ update message model =
 
                         EditingSelected ->
                             editKeyMap
+
+                findMapping =
+                    List.Extra.find (Tuple.first >> applyTo keyEvent)
             in
             keyMap
-                |> List.Extra.find (Tuple.first >> applyTo keyEvent)
+                |> findMapping
+                |> Maybe.Extra.orElseLazy (\_ -> findMapping globalKeyMap)
                 |> Maybe.map (\( _, mFn ) -> mFn model)
                 |> Maybe.withDefault ( model, Cmd.none )
 
@@ -145,15 +150,19 @@ applyTo =
 
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
-    [ ( HotKey.is "Enter", appendNewAndStartEditing )
-    , ( HotKey.is " ", edit )
-    , ( HotKey.isShift "Enter", prependNewAndStartEditing )
-    , ( HotKey.is "ArrowUp", selectBackward )
-    , ( HotKey.is "ArrowDown", selectForward )
-    , ( HotKey.isMeta "ArrowLeft", outdent )
-    , ( HotKey.isMeta "ArrowRight", indent )
-    , ( HotKey.isMeta "ArrowUp", moveUp )
-    , ( HotKey.isMeta "ArrowDown", moveDown )
+    [ {- ( HotKey.is "Enter", appendNewAndStartEditing )
+         , ( HotKey.is " ", edit )
+         , ( HotKey.isShift "Enter", prependNewAndStartEditing )
+         , ( HotKey.is "ArrowUp", selectBackward )
+         , ( HotKey.is "ArrowDown", selectForward )
+         , ( HotKey.isMeta "ArrowLeft", outdent )
+         , ( HotKey.isMeta "ArrowRight", indent )
+         , ( HotKey.isMeta "ArrowUp", moveUp )
+         , ( HotKey.isMeta "ArrowDown", moveDown )
+         ,
+      -}
+      ( HotKey.isShift "Tab", outdent )
+    , ( HotKey.is "Tab", indent )
     ]
 
 
