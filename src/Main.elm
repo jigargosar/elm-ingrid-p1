@@ -394,7 +394,7 @@ getEditInputDomId tree =
     "item-edit-input-dom-id-"
 
 
-inputKEPD ke =
+itemEditorHotKeyDecoder ke =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
@@ -432,7 +432,7 @@ viewEditItemLabel tree =
                     ]
                 , value content
                 , onInput ContentChanged
-                , HotKey.preventDefaultOnKeyDownEvent inputKEPD
+                , HotKey.preventDefaultOnKeyDownEvent itemEditorHotKeyDecoder
                 ]
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
