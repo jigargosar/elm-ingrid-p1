@@ -344,25 +344,29 @@ viewEditItemLabel tree =
         content =
             ItemTree.treeFragment tree
     in
-    div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
-        [ textarea
-            [ Html.Attributes.id "master-input"
-            , classes
-                [ pa0
-                , bn
-                , absolute
-                , o_50
-                , w_100
-                , h_100
+    div [ classes [ dib, mv1, pa2, br1, bg_white ] ]
+        [ div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
+            [ textarea
+                [ Html.Attributes.id "master-input"
+                , classes
+                    [ pa0
+                    , bn
+                    , absolute
 
-                --                , "pre-wrap"
-                --                , "break-word"
+                    --                    , o_50
+                    , w_100
+                    , h_100
+                    , outline_0
+
+                    --                , "pre-wrap"
+                    --                , "break-word"
+                    ]
+                , value content
+                , onInput ContentChanged
                 ]
-            , value content
-            , onInput ContentChanged
+                []
+            , div [ classes [ dib ] ] [ t content ]
             ]
-            []
-        , div [ classes [ dib ] ] [ t content ]
         ]
 
 
