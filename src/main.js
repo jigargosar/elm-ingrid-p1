@@ -62,6 +62,10 @@ window.addEventListener('keydown', function(event) {
       event.preventDefault()
     }
   }
+  const inputEl = document.getElementById('item-edit-input-dom-id-')
+  if (inputEl && !inputEl.hasFocus) {
+    inputEl.focus()
+  }
 })
 
 /* ELM APP */
