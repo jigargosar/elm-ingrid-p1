@@ -195,8 +195,8 @@ globalKeyMap =
     , ( isKeyShift "Enter", prependNewAndStartEditing )
     , ( isKey "ArrowUp", selectBackward )
     , ( isKey "ArrowDown", selectForward )
-    , ( isKeyMeta "ArrowLeft", indent )
-    , ( isKeyMeta "ArrowRight", outdent )
+    , ( isKeyMeta "ArrowLeft", outdent )
+    , ( isKeyMeta "ArrowRight", indent )
     , ( isKeyMeta "ArrowUp", moveUp )
     , ( isKeyMeta "ArrowDown", moveDown )
     ]
