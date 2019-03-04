@@ -208,6 +208,14 @@ initEditingMode model =
     )
 
 
+ensureEditInputFocusCmd model =
+    if model.viewMode == EditingSelected then
+        Cmd.batch []
+
+    else
+        Cmd.batch [ focusInputCmd model ]
+
+
 edit model =
     if model.viewMode == EditingSelected then
         ( model
@@ -220,25 +228,25 @@ edit model =
 
 moveUp model =
     ( overCursor ItemTree.moveUp model
-    , Cmd.batch []
+    , ensureEditInputFocusCmd model
     )
 
 
 moveDown model =
     ( overCursor ItemTree.moveDown model
-    , Cmd.batch []
+    , ensureEditInputFocusCmd model
     )
 
 
 indent model =
     ( overCursor ItemTree.indent model
-    , Cmd.batch []
+    , ensureEditInputFocusCmd model
     )
 
 
 outdent model =
     ( overCursor ItemTree.outdent model
-    , Cmd.batch []
+    , ensureEditInputFocusCmd model
     )
 
 
