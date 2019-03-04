@@ -222,7 +222,22 @@ globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
     [ ( keyIs "Enter", appendNewAndStartEditing )
     , ( keyIsShift "Enter", prependNewAndStartEditing )
+    , ( keyIs "ArrowUp", selectBackward )
+    , ( keyIs "ArrowDown", selectForward )
     ]
+
+
+overCursor : (ItemTreeCursor -> ItemTreeCursor) -> Model -> Model
+overCursor fn model =
+    { model | cursor = fn model.cursor }
+
+
+selectBackward model =
+    ( overCursor ItemTree.backward model, Cmd.none )
+
+
+selectForward model =
+    ( overCursor ItemTree.forward model, Cmd.none )
 
 
 appendNewAndStartEditing model =

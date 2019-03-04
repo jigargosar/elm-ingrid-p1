@@ -1,6 +1,8 @@
 module ItemTree exposing
     ( ItemTreeCursor
     , appendNew
+    , backward
+    , forward
     , initialCursor
     , prependNew
     , rootTree
@@ -118,3 +120,13 @@ createEmptyNode id =
 treeChildren : ItemTree -> List ItemTree
 treeChildren tree =
     Tree.children tree
+
+
+backward cursor =
+    Tree.Zipper.backward cursor
+        |> Maybe.withDefault cursor
+
+
+forward cursor =
+    Tree.Zipper.forward cursor
+        |> Maybe.withDefault cursor
