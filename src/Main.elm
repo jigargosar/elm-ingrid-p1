@@ -335,7 +335,11 @@ viewItemLabel selected tree =
 
 viewItemTree isEditing selected tree =
     div []
-        [ viewItemLabel selected tree
+        [ if isEditing && selected == tree then
+            div [] []
+
+          else
+            viewItemLabel selected tree
         , viewItemForest isEditing selected (ItemTree.treeChildren tree)
         ]
 
