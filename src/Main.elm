@@ -425,7 +425,7 @@ viewEditItemLabel tree =
                 , onInput ContentChanged
                 ]
                 []
-            , div [ classes [ dib ] ] [ t content ]
+            , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
             ]
         ]
 
