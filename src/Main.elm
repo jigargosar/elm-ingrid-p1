@@ -276,6 +276,8 @@ view model =
             , viewShortcutHint "Line Above" "Shift+Enter"
             , viewShortcutHint "Indent" "Tab"
             , viewShortcutHint "Outdent" "Shift+Tab"
+            , viewShortcutHint "Move Up" "Cmd+Shift+Up"
+            , viewShortcutHint "Move Down" "Cmd+Shift+Down"
             ]
         , viewCursor model
 
