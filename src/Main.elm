@@ -208,12 +208,21 @@ shiftModifier keyEvent =
     keyEvent.shift && not (keyEvent.ctrl || keyEvent.meta || keyEvent.alt)
 
 
+metaShiftModifier : KeyEvent -> Bool
+metaShiftModifier keyEvent =
+    keyEvent.meta && keyEvent.shift && not (keyEvent.ctrl || keyEvent.alt)
+
+
 keyIs key keyEvent =
     keyEvent.key == key && noModifiers keyEvent
 
 
 keyIsShift key keyEvent =
     keyEvent.key == key && shiftModifier keyEvent
+
+
+keyIsMetaShift key keyEvent =
+    keyEvent.key == key && metaShiftModifier keyEvent
 
 
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
@@ -224,6 +233,8 @@ globalKeyMap =
     , ( keyIs "ArrowDown", selectForward )
     , ( keyIs "Tab", indent )
     , ( keyIsShift "Tab", outdent )
+    , ( keyIsMetaShift "ArrowUp", outdent )
+    , ( keyIsMetaShift "ArrowDown", outdent )
     ]
 
 
