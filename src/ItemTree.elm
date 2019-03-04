@@ -1,4 +1,9 @@
-module ItemTree exposing (Fragment, Node)
+module ItemTree exposing
+    ( Fragment
+    , Node(..)
+    , Path
+    , root
+    )
 
 import Array exposing (Array)
 
