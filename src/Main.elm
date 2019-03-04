@@ -4,7 +4,6 @@ import Browser
 import Browser.Events exposing (onKeyDown)
 import Html exposing (Html, button, div)
 import Html.Attributes exposing (attribute, tabindex)
-
 import ItemLookup exposing (Item, ItemLookup)
 import Json.Decode exposing (Decoder)
 import List.Extra
@@ -105,8 +104,6 @@ subscriptions model =
 
 
 
-
-
 -- UPDATE
 
 
@@ -122,11 +119,8 @@ getItemDomId item =
     "item-id-" ++ item.id
 
 
-
-
 cacheNewModel model =
     toJsCache { items = getItems model, maybeFocusedItemId = model.maybeFocusedItemId }
-
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -134,7 +128,6 @@ update message model =
     case message of
         NOP ->
             ( model, Cmd.none )
-
 
         AddItemClicked ->
             getRootItem model
@@ -148,14 +141,11 @@ update message model =
                     )
                 |> Maybe.withDefault ( model, Cmd.none )
 
-
         InitReceived ->
             ( model
             , Cmd.batch
-                [
-                ]
+                []
             )
-
 
         KeyDownReceived keyEvent ->
             {- let
@@ -329,5 +319,3 @@ viewTree model =
     mRoot
         |> Maybe.map (viewChildren >> div [])
         |> Maybe.withDefault noHtml
-
-
