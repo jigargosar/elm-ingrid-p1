@@ -6,6 +6,8 @@ module ItemTree exposing
     , getSelectedTree
     , indent
     , initialCursor
+    , moveDown
+    , moveUp
     , outdent
     , prependNew
     , rootTree
@@ -154,3 +156,37 @@ outdent zipper =
             |> Maybe.map (Zipper.append selectedT)
             |> Maybe.andThen Zipper.nextSibling
             |> Maybe.withDefault zipper
+
+
+moveUp zipper =
+    let
+        selectedT =
+            Zipper.tree zipper
+    in
+    Zipper.previousSibling zipper
+        |> Maybe.map (Zipper.tree >> Tree.label)
+        |> Maybe.andThen
+            (\prevSibLabel ->
+                Zipper.removeTree zipper
+                    |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
+                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
+                    |> Maybe.andThen Zipper.lastChild
+            )
+        |> Maybe.withDefault zipper
+
+
+moveDown zipper =
+    let
+        selectedT =
+            Zipper.tree zipper
+    in
+    Zipper.previousSibling zipper
+        |> Maybe.map (Zipper.tree >> Tree.label)
+        |> Maybe.andThen
+            (\prevSibLabel ->
+                Zipper.removeTree zipper
+                    |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
+                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
+                    |> Maybe.andThen Zipper.lastChild
+            )
+        |> Maybe.withDefault zipper

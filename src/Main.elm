@@ -233,9 +233,21 @@ globalKeyMap =
     , ( keyIs "ArrowDown", selectForward )
     , ( keyIs "Tab", indent )
     , ( keyIsShift "Tab", outdent )
-    , ( keyIsMetaShift "ArrowUp", outdent )
-    , ( keyIsMetaShift "ArrowDown", indent )
+    , ( keyIsMetaShift "ArrowUp", moveUp )
+    , ( keyIsMetaShift "ArrowDown", moveDown )
     ]
+
+
+moveUp model =
+    ( overCursor ItemTree.moveUp model
+    , Cmd.batch []
+    )
+
+
+moveDown model =
+    ( overCursor ItemTree.moveDown model
+    , Cmd.batch []
+    )
 
 
 indent model =
