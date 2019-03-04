@@ -436,7 +436,7 @@ viewEditItemLabel tree =
                     , "pre-wrap"
                     , "break-word"
                     ]
-                , value <| String.trim <| content
+                , value content
                 , onInput ContentChanged
                 ]
                 []
