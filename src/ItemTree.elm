@@ -124,21 +124,21 @@ eqs =
     (==)
 
 
-indent cursor =
+indent zipper =
     let
         selectedT =
-            getSelectedTree cursor
+            Zipper.tree zipper
     in
-    Zipper.previousSibling cursor
+    Zipper.previousSibling zipper
         |> Maybe.map (Zipper.tree >> Tree.label)
         |> Maybe.andThen
             (\prevSibLabel ->
-                Zipper.removeTree cursor
+                Zipper.removeTree zipper
                     |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
                     |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
                     |> Maybe.andThen Zipper.lastChild
             )
-        |> Maybe.withDefault cursor
+        |> Maybe.withDefault zipper
 
 
 outdent cursor =
