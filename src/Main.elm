@@ -325,16 +325,20 @@ viewCursor model =
             ItemTree.selectedTree model.cursor
     in
     div []
-        [ viewRootItem root selected
+        [ viewRootTreeItem root selected
         , viewItemForest selected (ItemTree.treeChildren root)
         ]
 
 
 viewItemForest selected children =
-    div [] []
+    let
+        viewTreeItem tree =
+            div [] [ t <| ItemTree.treeLabel tree ]
+    in
+    div [] (children |> List.map viewTreeItem)
 
 
-viewRootItem root selected =
+viewRootTreeItem root selected =
     let
         fragmentClasses =
             let
@@ -352,7 +356,7 @@ viewRootItem root selected =
     in
     div [ classes [ pa3 ] ]
         [ span [ classes fragmentClasses ]
-            [ t <| ItemTree.nodeFragment root ]
+            [ t <| ItemTree.treeLabel root ]
         ]
 
 

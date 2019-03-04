@@ -3,10 +3,10 @@ module ItemTree exposing
     , append
     , initialCursor
     , isSelected
-    , nodeFragment
     , rootTree
     , selectedTree
     , treeChildren
+    , treeLabel
     )
 
 import Array exposing (Array)
@@ -47,8 +47,8 @@ rootTree =
     Tree.Zipper.root >> Tree.Zipper.tree
 
 
-nodeFragment : ItemTree -> Fragment
-nodeFragment =
+treeLabel : ItemTree -> Fragment
+treeLabel =
     Tree.label >> .fragment
 
 
