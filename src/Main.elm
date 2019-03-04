@@ -16,16 +16,6 @@ import V exposing (co, t)
 port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
 
 
-port bulkItemDocs : List Item -> Cmd msg
-
-
-port newItemDoc : ( Item, Int ) -> Cmd msg
-
-
-
---port debouncedBulkItemDocs : List Item -> Cmd msg
-
-
 main =
     Browser.element { init = init, update = update, view = view, subscriptions = subscriptions }
 
@@ -67,28 +57,6 @@ getItems model =
     model.itemLookup |> ItemLookup.toList
 
 
-getRootItemsOrEmpty model =
-    model.itemLookup |> ItemLookup.getRootItems |> Maybe.withDefault []
-
-
-getDisplayRootItems model =
-    case model.maybeDndItems of
-        Just items ->
-            items
-
-        Nothing ->
-            getRootItemsOrEmpty model
-
-
-getItemById id model =
-    ItemLookup.getById id model.itemLookup
-
-
-getRootItem : Model -> Maybe Item
-getRootItem model =
-    ItemLookup.getRoot model.itemLookup
-
-
 
 -- SUBSCRIPTIONS
 
@@ -125,7 +93,6 @@ subscriptions model =
 
 type Msg
     = NOP
-    | AddItemClicked
     | KeyDownReceived KeyEvent
     | InitReceived
 
@@ -144,18 +111,6 @@ update message model =
     case message of
         NOP ->
             ( model, Cmd.none )
-
-        AddItemClicked ->
-            getRootItem model
-                |> Maybe.map
-                    (\rootItem ->
-                        ( model
-                        , Cmd.batch
-                            [ newItemDoc ( rootItem, List.length rootItem.childIds )
-                            ]
-                        )
-                    )
-                |> Maybe.withDefault ( model, Cmd.none )
 
         InitReceived ->
             ( model
@@ -307,98 +262,6 @@ prependNewAndStartEditing model =
       }
     , Cmd.none
     )
-
-
-moveFocusedBy offset model =
-    let
-        updateIdx parent focusedItemIdx =
-            let
-                offsetIdx =
-                    focusedItemIdx + offset
-
-                maybeNewIdx =
-                    if offsetIdx >= List.length parent.childIds || offsetIdx < 0 then
-                        Nothing
-
-                    else
-                        Just offsetIdx
-            in
-            maybeNewIdx
-                |> Maybe.map
-                    (\finalIdx ->
-                        List.Extra.swapAt focusedItemIdx finalIdx parent.childIds
-                            |> (\newChildIds -> { parent | childIds = newChildIds })
-                    )
-    in
-    model.maybeFocusedItemId
-        |> Maybe.andThen
-            (\id ->
-                ItemLookup.getParentOfId id model.itemLookup
-                    |> Maybe.andThen
-                        (\parent ->
-                            parent.childIds
-                                |> List.Extra.findIndex ((==) id)
-                                |> Maybe.andThen (updateIdx parent)
-                        )
-            )
-        |> Maybe.map (\updatedItem -> ( model, bulkItemDocs [ updatedItem ] ))
-        |> Maybe.withDefault ( model, Cmd.none )
-
-
-onNestFocused model =
-    let
-        updateParents : String -> Item -> Item -> List Item
-        updateParents id oldParent newParent =
-            [ { oldParent | childIds = List.filter ((/=) id) oldParent.childIds }
-            , { newParent | childIds = newParent.childIds ++ [ id ] }
-            ]
-    in
-    model.maybeFocusedItemId
-        |> Maybe.andThen
-            (\id ->
-                ItemLookup.getParentAndPrevPrevSibOf id model.itemLookup
-            )
-        |> Maybe.map
-            (\( id, oldParent, newParent ) ->
-                updateParents id oldParent newParent
-                    |> (\updatedItems ->
-                            ( model, bulkItemDocs updatedItems )
-                       )
-            )
-        |> Maybe.withDefault ( model, Cmd.none )
-
-
-onUnnestFocused model =
-    let
-        updateParents : String -> Item -> Item -> List Item
-        updateParents id parent grandParent =
-            grandParent.childIds
-                |> List.Extra.findIndex ((==) parent.id)
-                |> Maybe.map
-                    (\parentIdx ->
-                        [ { parent | childIds = List.filter ((/=) id) parent.childIds }
-                        , { grandParent
-                            | childIds =
-                                List.Extra.splitAt (parentIdx + 1) grandParent.childIds
-                                    |> (\( pre, post ) -> pre ++ [ id ] ++ post)
-                          }
-                        ]
-                    )
-                |> Maybe.withDefault []
-    in
-    model.maybeFocusedItemId
-        |> Maybe.andThen
-            (\id ->
-                ItemLookup.getParentAndGrandParentOf id model.itemLookup
-            )
-        |> Maybe.map
-            (\( id, parent, grandParent ) ->
-                updateParents id parent grandParent
-                    |> (\updatedItems ->
-                            ( model, bulkItemDocs updatedItems )
-                       )
-            )
-        |> Maybe.withDefault ( model, Cmd.none )
 
 
 
