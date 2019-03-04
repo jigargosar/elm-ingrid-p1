@@ -417,10 +417,13 @@ viewTreeItem selected tree =
         labelClasses =
             let
                 defaultClasses =
-                    [ pa1, dib ]
+                    [ pa1, dib, br, bb, bw1 ]
 
                 selectedClasses =
-                    [ bg_light_red, white, br, bb, bw1, b__black_30 ]
+                    [ bg_light_red, white, b__black_30 ]
+
+                notSelectedClasses =
+                    [ b__transparent ]
 
                 hasVisibleChildrenClasses =
                     [ bb, bw2, b__black_30 ]
@@ -429,7 +432,7 @@ viewTreeItem selected tree =
                 defaultClasses ++ selectedClasses
 
             else
-                defaultClasses
+                defaultClasses ++ notSelectedClasses
     in
     div [ classes [] ]
         [ div [ classes labelClasses ]
