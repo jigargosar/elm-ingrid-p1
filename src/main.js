@@ -63,7 +63,8 @@ window.addEventListener('keydown', function(event) {
     }
   }
   const inputEl = document.getElementById('item-edit-input-dom-id-')
-  if (inputEl && !inputEl.hasFocus) {
+  if (inputEl /*&& !inputEl.hasFocus*/) {
+    // debugger
     inputEl.focus()
   }
 })
