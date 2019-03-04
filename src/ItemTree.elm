@@ -1,5 +1,6 @@
 module ItemTree exposing
     ( ItemTreeCursor
+    , appendEmptyFragment
     , currentRoot
     , initialCursor
     , isSelected
@@ -14,12 +15,15 @@ type alias Fragment =
     String
 
 
+type alias NodeModel =
+    { fragment : Fragment
+    , collapsed : Bool
+    , children : Array ItemTreeNode
+    }
+
+
 type ItemTreeNode
-    = Node
-        { fragment : Fragment
-        , collapsed : Bool
-        , children : Array ItemTreeNode
-        }
+    = Node NodeModel
 
 
 type alias Path =
@@ -63,6 +67,49 @@ selectedNode cursor =
 isSelected : ItemTreeNode -> ItemTreeCursor -> Bool
 isSelected node cursor =
     True
+
+
+updateNode : (NodeModel -> NodeModel) -> ItemTreeNode -> ItemTreeNode
+updateNode fn (Node nodeModel) =
+    fn nodeModel |> Node
+
+
+updateSelectedNode fn cursor =
+    let
+        oldNode =
+            selectedNode cursor
+
+        newNode =
+            updateNode fn oldNode
+    in
+    cursor
+
+
+prependChild cursor =
+    let
+        parent =
+            selectedNode cursor
+
+        newParent =
+            parent
+    in
+    cursor
+
+
+appendSibling cursor =
+    cursor
+
+
+appendEmptyFragment cursor =
+    let
+        root =
+            cursor.root
+    in
+    if selectedNode cursor == currentRoot cursor then
+        prependChild cursor
+
+    else
+        appendSibling cursor
 
 
 createEmptyNode : ItemTreeNode

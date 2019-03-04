@@ -35,7 +35,7 @@ main =
 
 
 type ViewMode
-    = Navigation
+    = Navigating
     | EditingSelected
 
 
@@ -57,7 +57,7 @@ init flags =
         { itemLookup = ItemLookup.fromList flags.items
         , maybeFocusedItemId = flags.maybeFocusedItemId
         , cursor = ItemTree.initialCursor
-        , viewMode = Navigation
+        , viewMode = Navigating
         }
 
 
@@ -163,25 +163,36 @@ update message model =
                        Debug.log "KeyDownReceived" keyEvent
                in
             -}
-            if keyEvent.meta then
-                case keyEvent.key of
-                    "ArrowLeft" ->
-                        onUnnestFocused model
+            {- if keyEvent.meta then
+                   case keyEvent.key of
+                       "ArrowLeft" ->
+                           onUnnestFocused model
 
-                    "ArrowRight" ->
-                        onNestFocused model
+                       "ArrowRight" ->
+                           onNestFocused model
 
-                    "ArrowUp" ->
-                        moveFocusedBy -1 model
+                       "ArrowUp" ->
+                           moveFocusedBy -1 model
 
-                    "ArrowDown" ->
-                        moveFocusedBy 1 model
+                       "ArrowDown" ->
+                           moveFocusedBy 1 model
 
-                    _ ->
+                       _ ->
+                           ( model, Cmd.none )
+
+               else
+                   ( model, Cmd.none )
+            -}
+            case keyEvent.key of
+                "Enter" ->
+                    if model.viewMode == Navigating then
+                        ( { model | viewMode = EditingSelected, cursor = ItemTree.appendEmptyFragment model.cursor }, Cmd.none )
+
+                    else
                         ( model, Cmd.none )
 
-            else
-                ( model, Cmd.none )
+                _ ->
+                    ( model, Cmd.none )
 
 
 moveFocusedBy offset model =
