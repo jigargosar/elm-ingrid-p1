@@ -2,12 +2,11 @@ port module Main exposing (main)
 
 import Browser
 import Browser.Dom
-import Browser.Events exposing (onKeyDown)
+import Browser.Events
 import HotKey exposing (KeyEvent)
-import Html exposing (Html, div, input, textarea)
+import Html exposing (Html, div, textarea)
 import Html.Attributes exposing (style, value)
 import Html.Events exposing (onInput)
-import Html.Keyed
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -82,7 +81,7 @@ keyEventDecoder =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ onKeyDown <| Json.Decode.map KeyDownReceived keyEventDecoder
+        [ Browser.Events.onKeyDown <| Json.Decode.map KeyDownReceived keyEventDecoder
         ]
 
 
@@ -95,6 +94,7 @@ type Msg
     | KeyDownReceived KeyEvent
     | InitReceived
     | ContentChanged String
+    | InputKeyEventReceived KeyEvent
 
 
 getItemDomId : Item -> String
@@ -121,11 +121,21 @@ update message model =
                 []
             )
 
-        KeyDownReceived keyEvent ->
+        InputKeyEventReceived keyEvent ->
             let
                 _ =
-                    Debug.log "KeyDownReceived" keyEvent
+                    Debug.log "InputKeyEventReceived" keyEvent
+            in
+            ( model
+            , Cmd.batch
+                []
+            )
 
+        KeyDownReceived keyEvent ->
+            let
+                {- _ =
+                   Debug.log "KeyDownReceived" keyEvent
+                -}
                 keyMap =
                     case model.viewMode of
                         Navigating ->
@@ -418,6 +428,7 @@ viewEditItemLabel tree =
                     ]
                 , value content
                 , onInput ContentChanged
+                , Html.Events.on "keydown" (Json.Decode.map InputKeyEventReceived keyEventDecoder)
                 ]
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
