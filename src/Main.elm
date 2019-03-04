@@ -226,6 +226,17 @@ idGen =
         |> Random.map String.fromInt
 
 
+withNewId fn model =
+    let
+        ( id, newSeed ) =
+            Random.step idGen model.seed
+
+        newModel =
+            { model | seed = newSeed }
+    in
+    fn id newModel
+
+
 appendNewAndStartEditing model =
     let
         ( id, newSeed ) =
