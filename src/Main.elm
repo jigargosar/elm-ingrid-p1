@@ -2,6 +2,7 @@ port module Main exposing (main)
 
 import Browser
 import Browser.Events exposing (onKeyDown)
+import HotKey exposing (KeyEvent)
 import Html exposing (Html, div)
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTreeCursor)
@@ -59,15 +60,6 @@ getItems model =
 
 
 -- SUBSCRIPTIONS
-
-
-type alias KeyEvent =
-    { key : String
-    , ctrl : Bool
-    , meta : Bool
-    , shift : Bool
-    , alt : Bool
-    }
 
 
 keyEventDecoder : Decoder KeyEvent
@@ -153,52 +145,16 @@ applyTo =
     (|>)
 
 
-noModifiers : KeyEvent -> Bool
-noModifiers keyEvent =
-    not (keyEvent.ctrl || keyEvent.meta || keyEvent.shift || keyEvent.alt)
-
-
-shiftModifier : KeyEvent -> Bool
-shiftModifier keyEvent =
-    keyEvent.shift && not (keyEvent.ctrl || keyEvent.meta || keyEvent.alt)
-
-
-metaShiftModifier : KeyEvent -> Bool
-metaShiftModifier keyEvent =
-    keyEvent.meta && keyEvent.shift && not (keyEvent.ctrl || keyEvent.alt)
-
-
-metaModifier : KeyEvent -> Bool
-metaModifier keyEvent =
-    keyEvent.meta && not (keyEvent.ctrl || keyEvent.alt || keyEvent.shift)
-
-
-isKey key keyEvent =
-    keyEvent.key == key && noModifiers keyEvent
-
-
-isKeyShift key keyEvent =
-    keyEvent.key == key && shiftModifier keyEvent
-
-
-isKeyMetaShift key keyEvent =
-    keyEvent.key == key && metaShiftModifier keyEvent
-
-
-isKeyMeta key keyEvent =
-    keyEvent.key == key && metaModifier keyEvent
-
-
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
-    [ ( isKey "Enter", appendNewAndStartEditing )
-    , ( isKeyShift "Enter", prependNewAndStartEditing )
-    , ( isKey "ArrowUp", selectBackward )
-    , ( isKey "ArrowDown", selectForward )
-    , ( isKeyMeta "ArrowLeft", outdent )
-    , ( isKeyMeta "ArrowRight", indent )
-    , ( isKeyMeta "ArrowUp", moveUp )
-    , ( isKeyMeta "ArrowDown", moveDown )
+    [ ( HotKey.is "Enter", appendNewAndStartEditing )
+    , ( HotKey.isShift "Enter", prependNewAndStartEditing )
+    , ( HotKey.is "ArrowUp", selectBackward )
+    , ( HotKey.is "ArrowDown", selectForward )
+    , ( HotKey.isMeta "ArrowLeft", outdent )
+    , ( HotKey.isMeta "ArrowRight", indent )
+    , ( HotKey.isMeta "ArrowUp", moveUp )
+    , ( HotKey.isMeta "ArrowDown", moveDown )
     ]
 
 
