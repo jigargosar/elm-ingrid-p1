@@ -434,7 +434,7 @@ viewTreeItem selected tree =
             else
                 defaultClasses ++ notSelectedClasses
     in
-    div [ classes [] ]
+    div [ classes [ h2, flex, items_center ] ]
         [ div [ classes labelClasses ]
             [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
         ]
