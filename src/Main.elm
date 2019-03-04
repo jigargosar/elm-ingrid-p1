@@ -4,7 +4,8 @@ import Browser
 import Browser.Dom
 import Browser.Events exposing (onKeyDown)
 import HotKey exposing (KeyEvent)
-import Html exposing (Html, div)
+import Html exposing (Html, div, input)
+import Html.Attributes exposing (value)
 import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -338,7 +339,7 @@ viewEditItemLabel tree =
         content =
             ItemTree.treeFragment tree
     in
-    div [] [ t <| content ]
+    input [ classes [ pa3, ba, b__black_50 ], value content ] [ t <| content ]
 
 
 viewItemTree isEditing selected tree =
