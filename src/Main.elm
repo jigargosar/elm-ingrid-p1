@@ -190,7 +190,7 @@ update message model =
             case keyEvent.key of
                 "Enter" ->
                     if model.viewMode == Navigating then
-                        appendNew model
+                        appendNewAndStartEditing model
 
                     else
                         ( model, Cmd.none )
@@ -199,7 +199,7 @@ update message model =
                     ( model, Cmd.none )
 
 
-appendNew model =
+appendNewAndStartEditing model =
     let
         idGen : Generator String
         idGen =
