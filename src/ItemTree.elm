@@ -169,8 +169,8 @@ moveUp zipper =
             (\prevSibLabel ->
                 Zipper.removeTree zipper
                     |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
-                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
-                    |> Maybe.andThen Zipper.lastChild
+                    |> Maybe.map (Zipper.prepend selectedT)
+                    |> Maybe.andThen Zipper.previousSibling
             )
         |> Maybe.withDefault zipper
 
