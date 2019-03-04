@@ -334,7 +334,11 @@ viewItemLabel selected tree =
 
 
 viewEditItemLabel tree =
-    div [] [ t <| ItemTree.treeFragment tree ]
+    let
+        content =
+            ItemTree.treeFragment tree
+    in
+    div [] [ t <| content ]
 
 
 viewItemTree isEditing selected tree =
