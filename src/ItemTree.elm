@@ -3,12 +3,12 @@ module ItemTree exposing
     , appendNew
     , backward
     , forward
+    , getSelectedTree
     , indent
     , initialCursor
     , outdent
     , prependNew
     , rootTree
-    , selectedTree
     , treeChildren
     , treeFragment
     , treeId
@@ -63,8 +63,8 @@ treeId =
     Tree.label >> .id
 
 
-selectedTree : ItemTreeCursor -> ItemTree
-selectedTree =
+getSelectedTree : ItemTreeCursor -> ItemTree
+getSelectedTree =
     Zipper.tree
 
 
@@ -126,8 +126,8 @@ eqs =
 
 indent cursor =
     let
-        selected =
-            selectedTree cursor
+        selectedT =
+            getSelectedTree cursor
     in
     Zipper.previousSibling cursor
         |> Maybe.map (Zipper.tree >> Tree.label)
@@ -135,7 +135,7 @@ indent cursor =
             (\prevSibLabel ->
                 Zipper.removeTree cursor
                     |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
-                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selected))
+                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
                     |> Maybe.andThen Zipper.lastChild
             )
         |> Maybe.withDefault cursor

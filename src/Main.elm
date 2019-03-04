@@ -408,7 +408,7 @@ viewCursor model =
             ItemTree.rootTree model.cursor
 
         selected =
-            ItemTree.selectedTree model.cursor
+            ItemTree.getSelectedTree model.cursor
     in
     div [ classes [ pl3 ] ]
         [ viewRootTreeItem selected root
