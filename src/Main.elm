@@ -95,6 +95,8 @@ type Msg
     | InitReceived
     | ContentChanged String
     | InputKeyEventReceived KeyEvent
+    | NewLine
+    | SaveLine
 
 
 getItemDomId : Item -> String
@@ -110,6 +112,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         NOP ->
+            ( model, Cmd.none )
+
+        NewLine ->
+            ( model, Cmd.none )
+
+        SaveLine ->
             ( model, Cmd.none )
 
         ContentChanged newContent ->
@@ -142,7 +150,7 @@ update message model =
                             navKeyMap
 
                         EditingSelected ->
-                            inputKeyMap
+                            []
 
                 findMapping =
                     List.Extra.find (Tuple.first >> applyTo keyEvent)
@@ -185,14 +193,6 @@ navKeyMap =
     , ( HotKey.is "ArrowDown", selectForward )
     , ( HotKey.isMeta "ArrowUp", moveUp )
     , ( HotKey.isMeta "ArrowDown", moveDown )
-    ]
-
-
-inputKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-inputKeyMap =
-    [ ( HotKey.is "Enter", newLine )
-    , ( HotKey.isMeta "Enter", saveEditingLine )
-    , ( HotKey.is "Escape", saveEditingLine )
     ]
 
 
@@ -405,9 +405,17 @@ getEditInputDomId tree =
 
 
 inputKEPD ke =
+    let
+        inputKeyMap : List ( KeyEvent -> Bool, Msg )
+        inputKeyMap =
+            [ ( HotKey.is "Enter", NewLine )
+            , ( HotKey.isMeta "Enter", SaveLine )
+            , ( HotKey.is "Escape", SaveLine )
+            ]
+    in
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
-        |> Maybe.map (\_ -> Json.Decode.succeed ( InputKeyEventReceived ke, True ))
+        |> Maybe.map (Tuple.second >> (\msg -> Json.Decode.succeed ( msg, True )))
         |> Maybe.withDefault (Json.Decode.fail "Not Interested")
 
 
