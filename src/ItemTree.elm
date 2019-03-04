@@ -66,8 +66,7 @@ prependChild newTree cursor =
         newZipper =
             Tree.Zipper.replaceTree updatedTreeNode cursor
     in
-    Tree.Zipper.forward newZipper
-        |> Maybe.withDefault newZipper
+    newZipper
 
 
 appendNew : String -> ItemTreeCursor -> ItemTreeCursor
@@ -75,12 +74,16 @@ appendNew id cursor =
     let
         newTree =
             createEmptyNode id
-    in
-    if selectedTree cursor == rootTree cursor then
-        prependChild newTree cursor
 
-    else
-        Tree.Zipper.append newTree cursor
+        newZipper =
+            if selectedTree cursor == rootTree cursor then
+                prependChild newTree cursor
+
+            else
+                Tree.Zipper.append newTree cursor
+    in
+    Tree.Zipper.forward newZipper
+        |> Maybe.withDefault newZipper
 
 
 createEmptyNode : String -> ItemTree
