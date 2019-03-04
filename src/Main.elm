@@ -178,7 +178,7 @@ globalKeyMap =
 
 navKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 navKeyMap =
-    [ ( HotKey.is "Enter", appendNewAndStartEditing )
+    [ ( HotKey.is "Enter", newLine )
     , ( HotKey.is " ", edit )
     , ( HotKey.isShift "Enter", prependNewAndStartEditing )
     , ( HotKey.is "ArrowUp", selectBackward )
@@ -190,7 +190,7 @@ navKeyMap =
 
 inputKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 inputKeyMap =
-    [ ( HotKey.is "Enter", appendNewAndStartEditing )
+    [ ( HotKey.is "Enter", newLine )
     , ( HotKey.isMeta "Enter", saveEditing )
     , ( HotKey.is "Escape", saveEditing )
     ]
@@ -284,8 +284,8 @@ withNewId fn model =
     fn id newModel
 
 
-appendNewAndStartEditing : Model -> ( Model, Cmd Msg )
-appendNewAndStartEditing =
+newLine : Model -> ( Model, Cmd Msg )
+newLine =
     withNewId
         (\id model ->
             Update.pure
