@@ -227,14 +227,13 @@ edit model =
 
 
 moveUp model =
-    Update.pure ( overCursor ItemTree.moveUp model
-     |> Update.effect ensureEditInputFocusCmd
+    Update.pure (overCursor ItemTree.moveUp model)
+        |> Update.effect ensureEditInputFocusCmd
 
 
 moveDown model =
-    ( overCursor ItemTree.moveDown model
-    , ensureEditInputFocusCmd model
-    )
+    Update.pure (overCursor ItemTree.moveDown model)
+        |> Update.effect ensureEditInputFocusCmd
 
 
 indent model =
@@ -255,11 +254,13 @@ overCursor fn model =
 
 
 selectBackward model =
-    ( overCursor ItemTree.backward model, Cmd.none )
+    Update.pure (overCursor ItemTree.backward model)
+        |> Update.effect ensureEditInputFocusCmd
 
 
 selectForward model =
-    ( overCursor ItemTree.forward model, Cmd.none )
+    Update.pure (overCursor ItemTree.forward model)
+        |> Update.effect ensureEditInputFocusCmd
 
 
 withNewId fn model =
