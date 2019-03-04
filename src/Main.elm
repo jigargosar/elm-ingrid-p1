@@ -236,6 +236,7 @@ withNewId fn model =
     fn id newModel
 
 
+appendNewAndStartEditing : Model -> ( Model, Cmd Msg )
 appendNewAndStartEditing =
     withNewId
         (\id model ->
@@ -247,6 +248,7 @@ appendNewAndStartEditing =
         )
 
 
+prependNewAndStartEditing : Model -> ( Model, Cmd Msg )
 prependNewAndStartEditing =
     withNewId
         (\id model ->
