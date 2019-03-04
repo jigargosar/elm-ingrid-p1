@@ -177,8 +177,9 @@ navKeyMap =
     {- , ( HotKey.isMeta "ArrowLeft", outdent )
        , ( HotKey.isMeta "ArrowRight", indent )
     -}
-    , ( HotKey.isShift "Tab", outdent )
-    , ( HotKey.is "Tab", indent )
+    {- , ( HotKey.isShift "Tab", outdent )
+       , ( HotKey.is "Tab", indent )
+    -}
     , ( HotKey.isMeta "ArrowUp", moveUp )
     , ( HotKey.isMeta "ArrowDown", moveDown )
     ]
