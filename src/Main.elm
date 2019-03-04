@@ -403,6 +403,7 @@ viewEditItemLabel tree =
                     [ pa0
                     , bn
                     , absolute
+                    , "resize-none"
 
                     --                    , o_50
                     , w_100
