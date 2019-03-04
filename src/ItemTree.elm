@@ -180,13 +180,13 @@ moveDown zipper =
         selectedT =
             Zipper.tree zipper
     in
-    Zipper.previousSibling zipper
+    Zipper.nextSibling zipper
         |> Maybe.map (Zipper.tree >> Tree.label)
         |> Maybe.andThen
-            (\prevSibLabel ->
+            (\nextSibLabel ->
                 Zipper.removeTree zipper
-                    |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
-                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
-                    |> Maybe.andThen Zipper.lastChild
+                    |> Maybe.andThen (Zipper.findNext (eqs nextSibLabel))
+                    |> Maybe.map (Zipper.append selectedT)
+                    |> Maybe.andThen Zipper.nextSibling
             )
         |> Maybe.withDefault zipper
