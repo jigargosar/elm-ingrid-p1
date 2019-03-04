@@ -146,7 +146,11 @@ outdent zipper =
         selectedT =
             Zipper.tree zipper
     in
-    Zipper.removeTree zipper
-        |> Maybe.map (Zipper.append selectedT)
-        |> Maybe.andThen Zipper.nextSibling
-        |> Maybe.withDefault zipper
+    if Zipper.parent zipper == (Just <| Zipper.root zipper) then
+        zipper
+
+    else
+        Zipper.removeTree zipper
+            |> Maybe.map (Zipper.append selectedT)
+            |> Maybe.andThen Zipper.nextSibling
+            |> Maybe.withDefault zipper
