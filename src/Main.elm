@@ -293,6 +293,9 @@ viewCursor model =
 
         selected =
             ItemTree.getSelectedTree model.cursor
+
+        isEditing =
+            model.viewMode == EditingSelected
     in
     div [ classes [ pl3 ] ]
         [ viewRootTreeItem selected root
