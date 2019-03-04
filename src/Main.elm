@@ -166,11 +166,10 @@ update message model =
             )
 
         KeyDownReceived keyEvent ->
-            {- let
-                   _ =
-                       Debug.log "KeyDownReceived" keyEvent
-               in
-            -}
+            let
+                _ =
+                    Debug.log "KeyDownReceived" keyEvent
+            in
             {- if keyEvent.meta then
                    case keyEvent.key of
                        "ArrowLeft" ->
@@ -203,7 +202,7 @@ applyTo =
 
 noModifiers : KeyEvent -> Bool
 noModifiers keyEvent =
-    keyEvent.ctrl || keyEvent.meta || keyEvent.shift || keyEvent.alt
+    not (keyEvent.ctrl || keyEvent.meta || keyEvent.shift || keyEvent.alt)
 
 
 keyIs key keyEvent =
