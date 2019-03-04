@@ -325,7 +325,7 @@ viewCursor model =
             ItemTree.selectedTree model.cursor
     in
     div []
-        [ viewRootTreeItem root selected
+        [ viewRootTreeItem selected root
         , viewItemForest selected (ItemTree.treeChildren root)
         ]
 
@@ -338,7 +338,7 @@ viewTreeItem selected tree =
     div [] [ t <| ItemTree.treeLabel tree ]
 
 
-viewRootTreeItem root selected =
+viewRootTreeItem selected root =
     let
         labelClasses =
             let
