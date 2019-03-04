@@ -197,14 +197,14 @@ editKeyMap =
     ]
 
 
-focusInputCmd =
-    Browser.Dom.focus "master-input"
+focusInputCmd model =
+    Browser.Dom.focus (getEditInputDomId <| ItemTree.getSelectedTree model.cursor)
         |> Task.attempt (Debug.log "focusing master input" >> (\_ -> NOP))
 
 
 initEditingMode model =
     ( { model | viewMode = EditingSelected }
-    , Cmd.batch [ focusInputCmd ]
+    , Cmd.batch [ focusInputCmd model ]
     )
 
 
@@ -385,6 +385,7 @@ viewItemLabel selected tree =
         ]
 
 
+getEditInputDomId : ItemTree -> String
 getEditInputDomId tree =
     "item-edit-input-dom-id-" ++ ItemTree.treeId tree
 
