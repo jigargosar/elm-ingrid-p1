@@ -13,6 +13,10 @@ type Node
         }
 
 
+type alias Path =
+    List Int
+
+
 root : Node
 root =
     Node { fragment = "Root", collapsed = False, children = [] }
