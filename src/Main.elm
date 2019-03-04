@@ -198,7 +198,7 @@ inputKeyMap =
 
 saveEditing model =
     ( { model | viewMode = Navigating }
-    , Cmd.batch [ focusInputCmd model ]
+    , Cmd.batch []
     )
 
 
@@ -404,6 +404,13 @@ getEditInputDomId tree =
     "item-edit-input-dom-id-"
 
 
+inputKEPD ke =
+    inputKeyMap
+        |> List.Extra.find (Tuple.first >> applyTo ke)
+        |> Maybe.map (\_ -> Json.Decode.succeed ( InputKeyEventReceived ke, True ))
+        |> Maybe.withDefault (Json.Decode.fail "Not Interested")
+
+
 viewEditItemLabel tree =
     let
         content =
@@ -429,7 +436,7 @@ viewEditItemLabel tree =
                 , value content
                 , onInput ContentChanged
                 , Html.Events.preventDefaultOn "keydown"
-                    (Json.Decode.map (\ke -> ( InputKeyEventReceived ke, True )) keyEventDecoder)
+                    (Json.Decode.andThen inputKEPD keyEventDecoder)
                 ]
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
