@@ -362,7 +362,7 @@ onUnnestFocused model =
 view : Model -> Html Msg
 view model =
     co [ sans_serif, "us-none", ma0 ]
-        [ div [ classes [ flex ] ]
+        [ div [ classes [ flex, bg_black, white ] ]
             [ viewShortcutHint "New Line" "Enter"
             ]
         , viewCursor model
@@ -372,9 +372,9 @@ view model =
 
 
 viewShortcutHint label shortcut =
-    div [ classes [ lh_copy, br1, ba, b__black_20 ] ]
+    div [ classes [ ph2, lh_title, br1, ba, b__black_20 ] ]
         [ div [] [ t label ]
-        , div [] [ t shortcut ]
+        , div [ classes [ light_red ] ] [ t shortcut ]
         ]
 
 
