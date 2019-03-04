@@ -105,10 +105,10 @@ update message model =
             ( model, Cmd.none )
 
         NewLine ->
-            ( model, Cmd.none )
+            newLine model
 
         SaveLine ->
-            ( model, Cmd.none )
+            saveEditingLine model
 
         ContentChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
