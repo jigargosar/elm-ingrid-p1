@@ -363,7 +363,8 @@ view : Model -> Html Msg
 view model =
     co [ sans_serif, "us-none", ma0 ]
         [ div [ classes [ flex, bg_black, white ] ]
-            [ viewShortcutHint "New Line" "Enter"
+            [ viewShortcutHint "Line Below" "Enter"
+            , viewShortcutHint "Line Above" "Shift+Enter"
             ]
         , viewCursor model
 
@@ -372,8 +373,8 @@ view model =
 
 
 viewShortcutHint label shortcut =
-    div [ classes [ ph2, lh_title, br1, ba, b__black_20 ] ]
-        [ div [] [ t label ]
+    div [ classes [ avenir, ph2, f6, lh_title, br1, ba, b__black_20 ] ]
+        [ div [ classes [] ] [ t label ]
         , div [ classes [ light_red ] ] [ t shortcut ]
         ]
 
