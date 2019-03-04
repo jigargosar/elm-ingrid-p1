@@ -34,10 +34,16 @@ main =
 -- MODEL
 
 
+type ViewMode
+    = Navigation
+    | EditingSelected
+
+
 type alias Model =
     { itemLookup : ItemLookup
     , maybeFocusedItemId : Maybe String
     , cursor : ItemTreeCursor
+    , viewMode : ViewMode
     }
 
 
@@ -51,6 +57,7 @@ init flags =
         { itemLookup = ItemLookup.fromList flags.items
         , maybeFocusedItemId = flags.maybeFocusedItemId
         , cursor = ItemTree.initialCursor
+        , viewMode = Navigation
         }
 
 
