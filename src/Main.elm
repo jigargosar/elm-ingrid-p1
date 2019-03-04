@@ -224,6 +224,8 @@ globalKeyMap =
     , ( keyIsShift "Enter", prependNewAndStartEditing )
     , ( keyIs "ArrowUp", selectBackward )
     , ( keyIs "ArrowDown", selectForward )
+    , ( keyIs "Tab", selectForward )
+    , ( keyIsShift "Tab", selectBackward )
     ]
 
 
