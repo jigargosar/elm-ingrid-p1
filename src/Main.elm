@@ -394,6 +394,7 @@ getEditInputDomId tree =
     "item-edit-input-dom-id-"
 
 
+itemEditorHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
 itemEditorHotKeyDispatcher ke =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
