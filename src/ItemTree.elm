@@ -16,7 +16,7 @@ module ItemTree exposing
 
 import List.Extra
 import Tree
-import Tree.Zipper
+import Tree.Zipper as Zipper exposing (Zipper)
 
 
 type alias Fragment =
@@ -35,7 +35,7 @@ type alias ItemTree =
 
 
 type alias ItemTreeCursor =
-    Tree.Zipper.Zipper Item
+    Zipper Item
 
 
 initialRoot : ItemTree
@@ -45,12 +45,12 @@ initialRoot =
 
 initialCursor : ItemTreeCursor
 initialCursor =
-    Tree.Zipper.fromTree initialRoot
+    Zipper.fromTree initialRoot
 
 
 rootTree : ItemTreeCursor -> ItemTree
 rootTree =
-    Tree.Zipper.root >> Tree.Zipper.tree
+    Zipper.root >> Zipper.tree
 
 
 treeFragment : ItemTree -> Fragment
@@ -65,7 +65,7 @@ treeId =
 
 selectedTree : ItemTreeCursor -> ItemTree
 selectedTree =
-    Tree.Zipper.tree
+    Zipper.tree
 
 
 prependChild : ItemTree -> ItemTreeCursor -> ItemTreeCursor
@@ -76,7 +76,7 @@ prependChild newTree cursor =
                 |> Tree.prependChild newTree
 
         newZipper =
-            Tree.Zipper.replaceTree updatedTreeNode cursor
+            Zipper.replaceTree updatedTreeNode cursor
     in
     newZipper
 
@@ -92,9 +92,9 @@ appendNew id cursor =
                 prependChild newTree cursor
 
             else
-                Tree.Zipper.append newTree cursor
+                Zipper.append newTree cursor
     in
-    Tree.Zipper.forward newZipper
+    Zipper.forward newZipper
         |> Maybe.withDefault newZipper
 
 
@@ -109,9 +109,9 @@ prependNew id cursor =
                 prependChild newTree cursor
 
             else
-                Tree.Zipper.prepend newTree cursor
+                Zipper.prepend newTree cursor
     in
-    Tree.Zipper.forward newZipper
+    Zipper.forward newZipper
         |> Maybe.withDefault newZipper
 
 
@@ -126,13 +126,17 @@ treeChildren tree =
 
 
 backward cursor =
-    Tree.Zipper.backward cursor
+    Zipper.backward cursor
         |> Maybe.withDefault cursor
 
 
 forward cursor =
-    Tree.Zipper.forward cursor
+    Zipper.forward cursor
         |> Maybe.withDefault cursor
+
+
+eqs =
+    (==)
 
 
 indent cursor =
@@ -140,18 +144,18 @@ indent cursor =
         selected =
             selectedTree cursor
     in
-    Tree.Zipper.siblingsBeforeFocus cursor
-        |> List.Extra.last
+    Zipper.previousSibling cursor
+        |> Maybe.map (Zipper.tree >> Tree.label)
         |> Maybe.andThen
-            (\prevSibTree ->
-                Tree.Zipper.removeTree cursor
-                    |> Maybe.andThen (Tree.Zipper.findNext ((==) (Tree.label prevSibTree)))
-                    |> Maybe.map (Tree.Zipper.mapTree (Tree.appendChild selected))
-                    |> Maybe.andThen Tree.Zipper.lastChild
+            (\prevSibLabel ->
+                Zipper.removeTree cursor
+                    |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
+                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selected))
+                    |> Maybe.andThen Zipper.lastChild
             )
         |> Maybe.withDefault cursor
 
 
 outdent cursor =
-    Tree.Zipper.forward cursor
+    Zipper.forward cursor
         |> Maybe.withDefault cursor
