@@ -8,6 +8,7 @@ import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
+import Random
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Tree.Zipper
@@ -45,11 +46,12 @@ type alias Model =
     , maybeFocusedItemId : Maybe String
     , cursor : ItemTreeCursor
     , viewMode : ViewMode
+    , seed : Random.Seed
     }
 
 
 type alias Flags =
-    { items : List Item, maybeFocusedItemId : Maybe String }
+    { items : List Item, maybeFocusedItemId : Maybe String, now : Int }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -59,6 +61,7 @@ init flags =
         , maybeFocusedItemId = flags.maybeFocusedItemId
         , cursor = ItemTree.initialCursor
         , viewMode = Navigating
+        , seed = Random.initialSeed flags.now
         }
 
 

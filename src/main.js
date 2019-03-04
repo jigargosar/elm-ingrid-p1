@@ -57,7 +57,7 @@ import { Elm } from './Main.elm'
 const app = Elm.Main.init({
   node:
     document.querySelector('#main') || document.querySelector('body > *'),
-  flags: getMainCache(),
+  flags: { now: Date.now(), ...getMainCache() },
 })
 
 // const db = new PouchDb('items')
