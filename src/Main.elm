@@ -10,6 +10,7 @@ import Json.Decode exposing (Decoder)
 import List.Extra
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
+import Tree.Zipper
 import V exposing (co, noHtml, t)
 
 
@@ -186,7 +187,19 @@ update message model =
             case keyEvent.key of
                 "Enter" ->
                     if model.viewMode == Navigating then
-                        ( { model | viewMode = EditingSelected, cursor = ItemTree.append model.cursor }, Cmd.none )
+                        let
+                            _ =
+                                ItemTree.append model.cursor
+                                    |> Tree.Zipper.root
+                                    |> Tree.Zipper.tree
+                                    |> Debug.log "root"
+                        in
+                        ( { model
+                            | viewMode = EditingSelected
+                            , cursor = ItemTree.append model.cursor
+                          }
+                        , Cmd.none
+                        )
 
                     else
                         ( model, Cmd.none )
