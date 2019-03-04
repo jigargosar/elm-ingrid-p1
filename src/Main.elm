@@ -319,12 +319,19 @@ view model =
 viewCursor model =
     let
         root =
-            ItemTree.currentRoot model.cursor
+            ItemTree.rootTree model.cursor
 
-        selectedNode =
-            ItemTree.selectedNode model.cursor
+        selected =
+            ItemTree.selectedTree model.cursor
     in
-    viewRootItem root selectedNode
+    div []
+        [ viewRootItem root selected
+        , viewItemForest selected (ItemTree.treeChildren root)
+        ]
+
+
+viewItemForest selected children =
+    div [] []
 
 
 viewRootItem root selected =

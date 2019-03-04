@@ -1,11 +1,12 @@
 module ItemTree exposing
     ( ItemTreeCursor
     , append
-    , currentRoot
     , initialCursor
     , isSelected
     , nodeFragment
-    , selectedNode
+    , rootTree
+    , selectedTree
+    , treeChildren
     )
 
 import Array exposing (Array)
@@ -41,8 +42,8 @@ initialCursor =
     Tree.Zipper.fromTree initialRoot
 
 
-currentRoot : ItemTreeCursor -> ItemTree
-currentRoot =
+rootTree : ItemTreeCursor -> ItemTree
+rootTree =
     Tree.Zipper.root >> Tree.Zipper.tree
 
 
@@ -51,8 +52,8 @@ nodeFragment =
     Tree.label >> .fragment
 
 
-selectedNode : ItemTreeCursor -> ItemTree
-selectedNode =
+selectedTree : ItemTreeCursor -> ItemTree
+selectedTree =
     Tree.Zipper.tree
 
 
@@ -65,7 +66,7 @@ prependChild : ItemTreeCursor -> ItemTreeCursor
 prependChild cursor =
     let
         updatedTreeNode =
-            selectedNode cursor
+            selectedTree cursor
                 |> Tree.prependChild createEmptyNode
 
         newZipper =
@@ -81,7 +82,7 @@ appendSibling cursor =
 
 append : ItemTreeCursor -> ItemTreeCursor
 append cursor =
-    if selectedNode cursor == currentRoot cursor then
+    if selectedTree cursor == rootTree cursor then
         prependChild cursor
 
     else
@@ -91,3 +92,8 @@ append cursor =
 createEmptyNode : ItemTree
 createEmptyNode =
     Tree.singleton { fragment = "Empty", collapsed = False }
+
+
+treeChildren : ItemTree -> List ItemTree
+treeChildren tree =
+    Tree.children tree
