@@ -406,16 +406,16 @@ getEditInputDomId tree =
 
 inputKEPD ke =
     let
-        inputKeyMap : List ( KeyEvent -> Bool, Msg )
+        inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
-            [ ( HotKey.is "Enter", NewLine )
-            , ( HotKey.isMeta "Enter", SaveLine )
-            , ( HotKey.is "Escape", SaveLine )
+            [ ( HotKey.is "Enter", ( NewLine, True ) )
+            , ( HotKey.isMeta "Enter", ( SaveLine, True ) )
+            , ( HotKey.is "Escape", ( SaveLine, True ) )
             ]
     in
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
-        |> Maybe.map (Tuple.second >> (\msg -> Json.Decode.succeed ( msg, True )))
+        |> Maybe.map (Tuple.second >> Json.Decode.succeed)
         |> Maybe.withDefault (Json.Decode.fail "Not Interested")
 
 
