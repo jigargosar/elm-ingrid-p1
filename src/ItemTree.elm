@@ -2,6 +2,7 @@ module ItemTree exposing
     ( ItemTreeCursor
     , appendNew
     , initialCursor
+    , prependNew
     , rootTree
     , selectedTree
     , treeChildren
@@ -87,6 +88,23 @@ appendNew id cursor =
 
             else
                 Tree.Zipper.append newTree cursor
+    in
+    Tree.Zipper.forward newZipper
+        |> Maybe.withDefault newZipper
+
+
+prependNew : String -> ItemTreeCursor -> ItemTreeCursor
+prependNew id cursor =
+    let
+        newTree =
+            createEmptyNode id
+
+        newZipper =
+            if selectedTree cursor == rootTree cursor then
+                prependChild newTree cursor
+
+            else
+                Tree.Zipper.prepend newTree cursor
     in
     Tree.Zipper.forward newZipper
         |> Maybe.withDefault newZipper

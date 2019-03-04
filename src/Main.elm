@@ -190,7 +190,7 @@ update message model =
                else
                    ( model, Cmd.none )
             -}
-            navigationKeyMap
+            globalKeyMap
                 |> List.Extra.find (Tuple.first >> applyTo keyEvent)
                 |> Maybe.map (\( _, mFn ) -> mFn model)
                 |> Maybe.withDefault ( model, Cmd.none )
@@ -205,18 +205,24 @@ noModifiers keyEvent =
     not (keyEvent.ctrl || keyEvent.meta || keyEvent.shift || keyEvent.alt)
 
 
+shiftModifier : KeyEvent -> Bool
+shiftModifier keyEvent =
+    keyEvent.shift && not (keyEvent.ctrl || keyEvent.meta || keyEvent.alt)
+
+
 keyIs key keyEvent =
     keyEvent.key == key && noModifiers keyEvent
 
 
-navigationKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-navigationKeyMap =
-    [ ( keyIs "Enter", appendNewAndStartEditing ) ]
+keyIsShift key keyEvent =
+    keyEvent.key == key && shiftModifier keyEvent
 
 
-editKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-editKeyMap =
-    [ ( keyIs "Enter", appendNewAndStartEditing ) ]
+globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
+globalKeyMap =
+    [ ( keyIs "Enter", appendNewAndStartEditing )
+    , ( keyIsShift "Enter", prependNewAndStartEditing )
+    ]
 
 
 appendNewAndStartEditing model =
@@ -232,8 +238,26 @@ appendNewAndStartEditing model =
     ( { model
         | cursor = ItemTree.appendNew id model.cursor
         , seed = newSeed
+        , viewMode = EditingSelected
+      }
+    , Cmd.none
+    )
 
-        --                            , viewMode = EditingSelected
+
+prependNewAndStartEditing model =
+    let
+        idGen : Generator String
+        idGen =
+            Random.int 999999999 Random.maxInt
+                |> Random.map String.fromInt
+
+        ( id, newSeed ) =
+            Random.step idGen model.seed
+    in
+    ( { model
+        | cursor = ItemTree.prependNew id model.cursor
+        , seed = newSeed
+        , viewMode = EditingSelected
       }
     , Cmd.none
     )
