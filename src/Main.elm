@@ -174,15 +174,14 @@ navKeyMap =
 editKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 editKeyMap =
     [ ( HotKey.is "Enter", appendNewAndStartEditing )
-    , ( HotKey.is " ", edit )
-    , ( HotKey.isShift "Enter", prependNewAndStartEditing )
-    , ( HotKey.is "ArrowUp", selectBackward )
-    , ( HotKey.is "ArrowDown", selectForward )
-    , ( HotKey.isMeta "ArrowLeft", outdent )
-    , ( HotKey.isMeta "ArrowRight", indent )
-    , ( HotKey.isMeta "ArrowUp", moveUp )
-    , ( HotKey.isMeta "ArrowDown", moveDown )
+    , ( HotKey.isMeta "Enter", stopEditing )
     ]
+
+
+stopEditing model =
+    ( { model | viewMode = Navigating }
+    , Cmd.batch [ focusInputCmd model ]
+    )
 
 
 focusInputCmd model =
