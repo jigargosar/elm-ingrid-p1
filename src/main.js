@@ -58,8 +58,8 @@ window.addEventListener('keydown', function(event) {
     event.preventDefault()
   }
   const inputEl = document.getElementById('item-input-dom-id-')
-  if (inputEl /*&& !inputEl.hasFocus*/) {
-    // debugger
+  if (inputEl && !inputEl.hasFocus) {
+    event.preventDefault()
     inputEl.focus()
   }
 })
