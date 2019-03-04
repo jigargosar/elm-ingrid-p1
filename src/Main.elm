@@ -124,28 +124,16 @@ update message model =
             let
                 _ =
                     Debug.log "KeyDownReceived" keyEvent
+
+                keyMap =
+                    case model.viewMode of
+                        Navigating ->
+                            navKeyMap
+
+                        EditingSelected ->
+                            editKeyMap
             in
-            {- if keyEvent.meta then
-                   case keyEvent.key of
-                       "ArrowLeft" ->
-                           onUnnestFocused model
-
-                       "ArrowRight" ->
-                           onNestFocused model
-
-                       "ArrowUp" ->
-                           moveFocusedBy -1 model
-
-                       "ArrowDown" ->
-                           moveFocusedBy 1 model
-
-                       _ ->
-                           ( model, Cmd.none )
-
-               else
-                   ( model, Cmd.none )
-            -}
-            globalKeyMap
+            keyMap
                 |> List.Extra.find (Tuple.first >> applyTo keyEvent)
                 |> Maybe.map (\( _, mFn ) -> mFn model)
                 |> Maybe.withDefault ( model, Cmd.none )
