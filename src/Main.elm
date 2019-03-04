@@ -8,7 +8,7 @@ import ItemLookup exposing (Item, ItemLookup)
 import ItemTree exposing (ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
-import Random
+import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Tree.Zipper
@@ -191,14 +191,23 @@ update message model =
                 "Enter" ->
                     if model.viewMode == Navigating then
                         let
+                            idGen : Generator String
+                            idGen =
+                                Random.int 999999999 Random.maxInt
+                                    |> Random.map String.fromInt
+
+                            ( id, newSeed ) =
+                                Random.step idGen model.seed
+
                             _ =
-                                ItemTree.appendNew model.cursor
+                                ItemTree.appendNew id model.cursor
                                     |> Tree.Zipper.root
                                     |> Tree.Zipper.tree
                                     |> Debug.log "root"
                         in
                         ( { model
-                            | cursor = ItemTree.appendNew model.cursor
+                            | cursor = ItemTree.appendNew id model.cursor
+                            , seed = newSeed
 
                             --                            , viewMode = EditingSelected
                           }

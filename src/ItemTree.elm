@@ -8,7 +8,6 @@ module ItemTree exposing
     , treeLabel
     )
 
-import Array exposing (Array)
 import Tree
 import Tree.Zipper
 
@@ -17,23 +16,24 @@ type alias Fragment =
     String
 
 
-type alias NodeModel =
-    { fragment : Fragment
+type alias Item =
+    { id : String
+    , fragment : Fragment
     , collapsed : Bool
     }
 
 
 type alias ItemTree =
-    Tree.Tree NodeModel
+    Tree.Tree Item
 
 
 type alias ItemTreeCursor =
-    Tree.Zipper.Zipper NodeModel
+    Tree.Zipper.Zipper Item
 
 
 initialRoot : ItemTree
 initialRoot =
-    Tree.singleton { fragment = "Root", collapsed = False }
+    Tree.singleton { id = "ROOT_ITEM_ID", fragment = "Root", collapsed = False }
 
 
 initialCursor : ItemTreeCursor
@@ -56,12 +56,12 @@ selectedTree =
     Tree.Zipper.tree
 
 
-prependChild : ItemTreeCursor -> ItemTreeCursor
-prependChild cursor =
+prependChild : ItemTree -> ItemTreeCursor -> ItemTreeCursor
+prependChild newTree cursor =
     let
         updatedTreeNode =
             selectedTree cursor
-                |> Tree.prependChild createEmptyNode
+                |> Tree.prependChild newTree
 
         newZipper =
             Tree.Zipper.replaceTree updatedTreeNode cursor
@@ -70,23 +70,22 @@ prependChild cursor =
         |> Maybe.withDefault newZipper
 
 
-appendSibling : ItemTreeCursor -> ItemTreeCursor
-appendSibling cursor =
-    Tree.Zipper.append createEmptyNode cursor
-
-
-appendNew : ItemTreeCursor -> ItemTreeCursor
-appendNew cursor =
+appendNew : String -> ItemTreeCursor -> ItemTreeCursor
+appendNew id cursor =
+    let
+        newTree =
+            createEmptyNode id
+    in
     if selectedTree cursor == rootTree cursor then
-        prependChild cursor
+        prependChild newTree cursor
 
     else
-        appendSibling cursor
+        Tree.Zipper.append newTree cursor
 
 
-createEmptyNode : ItemTree
-createEmptyNode =
-    Tree.singleton { fragment = "Empty", collapsed = False }
+createEmptyNode : String -> ItemTree
+createEmptyNode id =
+    Tree.singleton { id = id, fragment = "Empty", collapsed = False }
 
 
 treeChildren : ItemTree -> List ItemTree
