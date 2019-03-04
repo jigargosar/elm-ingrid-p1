@@ -387,14 +387,14 @@ viewCursor model =
         selected =
             ItemTree.selectedTree model.cursor
     in
-    div []
+    div [ classes [ pl3 ] ]
         [ viewRootTreeItem selected root
         , viewItemForest selected (ItemTree.treeChildren root)
         ]
 
 
 viewItemForest selected children =
-    div [ classes [ ml3 ] ] (children |> List.map (viewTreeItem selected))
+    div [ classes [ pl3 ] ] (children |> List.map (viewTreeItem selected))
 
 
 viewTreeItem selected tree =
@@ -427,7 +427,7 @@ viewRootTreeItem selected root =
         labelClasses =
             let
                 defaultClasses =
-                    [ pa1, f3, bb, bw2, b__black_30, fw4 ]
+                    [ pa1, dib, f3, bb, bw2, b__black_30, fw4 ]
 
                 selectedClasses =
                     [ bg_light_red, white, br ]
@@ -438,7 +438,7 @@ viewRootTreeItem selected root =
             else
                 defaultClasses
     in
-    div [ classes [ pa3 ] ]
-        [ span [ classes labelClasses ]
+    div [ classes [ pv2 ] ]
+        [ div [ classes labelClasses ]
             [ t <| ItemTree.treeFragment root ]
         ]
