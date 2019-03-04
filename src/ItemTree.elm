@@ -14,6 +14,7 @@ module ItemTree exposing
     , treeId
     )
 
+import List.Extra
 import Tree
 import Tree.Zipper
 
@@ -140,13 +141,13 @@ indent cursor =
             selectedTree cursor
     in
     Tree.Zipper.siblingsBeforeFocus cursor
-        |> List.head
+        |> List.Extra.last
         |> Maybe.andThen
             (\prevSibTree ->
                 Tree.Zipper.removeTree cursor
                     |> Maybe.andThen (Tree.Zipper.findNext ((==) (Tree.label prevSibTree)))
-                    |> Maybe.map (Tree.Zipper.mapTree (Tree.prependChild selected))
-                    |> Maybe.andThen Tree.Zipper.forward
+                    |> Maybe.map (Tree.Zipper.mapTree (Tree.appendChild selected))
+                    |> Maybe.andThen Tree.Zipper.lastChild
             )
         |> Maybe.withDefault cursor
 
