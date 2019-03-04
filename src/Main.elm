@@ -407,8 +407,9 @@ viewEditItemLabel tree =
         [ Html.Attributes.id (getEditInputDomId tree)
         , classes []
         , onInput ContentChanged
+        , value content
         ]
-        [ t content ]
+        []
 
 
 
