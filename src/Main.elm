@@ -407,6 +407,7 @@ itemEditorHotKeyDispatcher ke =
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
+        |> Debug.log "itemEditorHotKeyDispatcher"
 
 
 viewEditItemLabel tree =
