@@ -402,7 +402,7 @@ viewTreeItem selected tree =
         labelClasses =
             let
                 defaultClasses =
-                    [ pa1 ]
+                    [ pa1, dib ]
 
                 selectedClasses =
                     [ bg_light_red, white, br ]
@@ -416,8 +416,8 @@ viewTreeItem selected tree =
             else
                 defaultClasses
     in
-    div [ classes [ pa3 ] ]
-        [ span [ classes labelClasses ]
+    div [ classes [] ]
+        [ div [ classes labelClasses ]
             [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
         ]
 
