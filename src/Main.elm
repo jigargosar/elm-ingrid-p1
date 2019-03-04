@@ -394,21 +394,6 @@ getEditInputDomId tree =
     "item-edit-input-dom-id-"
 
 
-
---viewEditItemLabel tree =
---    let
---        content =
---            ItemTree.treeFragment tree
---    in
---    textarea
---        [ Html.Attributes.id (getEditInputDomId tree)
---        , classes []
---        , onInput ContentChanged
---        , value content
---        ]
---        [ t content ]
-
-
 viewEditItemLabel tree =
     let
         content =
