@@ -158,7 +158,7 @@ update message model =
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
 
         InitReceived ->
-            ( model, Cmd.none )
+            ( model, ensureFocusCmd model )
 
         InputKeyEventReceived keyEvent ->
             let
