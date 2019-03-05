@@ -67,7 +67,7 @@ type alias ItemLabelProps =
 viewItemLabel props =
     let
         defaultC =
-            [ pa3, ma3, f4, bg_white ]
+            [ pa3, f4, bg_white ]
 
         selectedC =
             [ bg_light_red, white ]

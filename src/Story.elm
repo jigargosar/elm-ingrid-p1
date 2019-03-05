@@ -42,14 +42,17 @@ storyContainer =
     div
         [ cx
             [ flex_grow_1
-            , pa3
+
+            --            , pa3
             , ma3
             , flex
-            , items_center
-            , justify_center
+
+            --            , items_center
+            --            , justify_center
             , bg_light_gray
             , ba
             , b__black_50
+            , b__dashed
             , br1
             ]
         ]
