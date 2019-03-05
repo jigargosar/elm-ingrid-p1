@@ -85,7 +85,8 @@ viewItemLabel props =
 view : Model -> Html Msg
 view model =
     Story.viewBook
-        [ itemLabelStories
+        [ rootItemLabelStories
+        , itemLabelStories
         ]
 
 
@@ -98,6 +99,24 @@ itemLabelStories =
             { defaultP | isSelected = True }
     in
     Story.of_ "ItemLabel"
+        [ Story.add "with defaultProps" <|
+            viewItemLabel defaultP
+        , Story.add "with selected" <|
+            viewItemLabel { selectedP | text = "I should be Selected" }
+        , Story.add "with another defaultProps example" <|
+            viewItemLabel { defaultP | text = "I am another plain label" }
+        ]
+
+
+rootItemLabelStories =
+    let
+        defaultP =
+            { text = "I am default vanilla Item Label", isSelected = False, isRoot = False }
+
+        selectedP =
+            { defaultP | isSelected = True }
+    in
+    Story.of_ "ItemLabel root"
         [ Story.add "with defaultProps" <|
             viewItemLabel defaultP
         , Story.add "with selected" <|
