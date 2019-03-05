@@ -365,8 +365,8 @@ viewAnyTree vm tree =
         ]
 
 
-itemEditorHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
-itemEditorHotKeyDispatcher ke =
+fragmentEditorHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
+fragmentEditorHotKeyDecoder ke =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
@@ -417,7 +417,7 @@ viewFragmentEditor _ tree =
         , cx []
         , value <| ItemTree.treeFragment tree
         , onInput LineChanged
-        , HotKey.preventDefaultOnKeyDownEvent itemEditorHotKeyDispatcher
+        , HotKey.preventDefaultOnKeyDownEvent fragmentEditorHotKeyDecoder
         ]
         []
 
