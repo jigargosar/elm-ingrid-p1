@@ -348,6 +348,17 @@ viewItemForest isEditing selected forest =
         )
 
 
+viewItemTree isEditing selected tree =
+    div []
+        [ if isEditing && selected == tree then
+            viewEditItemLabel tree
+
+          else
+            viewItemLabel selected tree
+        , viewItemForest isEditing selected (ItemTree.treeChildren tree)
+        ]
+
+
 viewItemLabel selected tree =
     let
         labelClasses =
@@ -370,6 +381,28 @@ viewItemLabel selected tree =
     div [ classes [ h2, flex, items_center ] ]
         [ div [ classes labelClasses ]
             [ t <| ItemTree.treeFragment tree, t " ", t <| ItemTree.treeId tree ]
+        ]
+
+
+viewRootTreeItem isEditing selected rootTree =
+    let
+        labelClasses =
+            let
+                defaultClasses =
+                    [ pa1, dib, f3, br1 ]
+
+                selectedClasses =
+                    [ bg_light_red, white ]
+            in
+            if rootTree == selected then
+                defaultClasses ++ selectedClasses
+
+            else
+                defaultClasses
+    in
+    div [ classes [ pv2 ] ]
+        [ div [ classes labelClasses ]
+            [ t <| ItemTree.treeFragment rootTree ]
         ]
 
 
@@ -419,37 +452,4 @@ viewEditItemLabel tree =
                 []
             , div [ classes [ dib ], style "min-width" "10rem" ] [ t content ]
             ]
-        ]
-
-
-viewItemTree isEditing selected tree =
-    div []
-        [ if isEditing && selected == tree then
-            viewEditItemLabel tree
-
-          else
-            viewItemLabel selected tree
-        , viewItemForest isEditing selected (ItemTree.treeChildren tree)
-        ]
-
-
-viewRootTreeItem isEditing selected root =
-    let
-        labelClasses =
-            let
-                defaultClasses =
-                    [ pa1, dib, f3, br1 ]
-
-                selectedClasses =
-                    [ bg_light_red, white ]
-            in
-            if root == selected then
-                defaultClasses ++ selectedClasses
-
-            else
-                defaultClasses
-    in
-    div [ classes [ pv2 ] ]
-        [ div [ classes labelClasses ]
-            [ t <| ItemTree.treeFragment root ]
         ]
