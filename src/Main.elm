@@ -92,6 +92,8 @@ type Msg
     | Next
     | MoveUp
     | MoveDown
+    | Outdent
+    | Indent
 
 
 getItemTreeLabelDomId : ItemTree -> String
@@ -119,7 +121,9 @@ update message model =
             newLine model
 
         SaveLine ->
-            saveEditingLine model
+            ( { model | viewMode = Navigating }
+            , Cmd.batch []
+            )
 
         Edit ->
             edit model
@@ -135,6 +139,12 @@ update message model =
 
         MoveDown ->
             moveDown model
+
+        Outdent ->
+            outdent model
+
+        Indent ->
+            indent model
 
         LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
@@ -157,52 +167,10 @@ update message model =
                 {- _ =
                    Debug.log "KeyDownReceived" keyEvent
                 -}
-                keyMap =
-                    case model.viewMode of
-                        Navigating ->
-                            navKeyMap
-
-                        EditingSelected ->
-                            []
-
-                findMapping =
-                    List.Extra.find (Tuple.first >> applyTo keyEvent)
-
                 _ =
-                    keyMap
-                        |> findMapping
-                        |> Maybe.Extra.orElseLazy (\_ -> findMapping globalKeyMap)
-                        |> Maybe.map (\( _, mFn ) -> mFn model)
-                        |> Maybe.withDefault ( model, Cmd.none )
+                    1
             in
             ( model, ensureFocusCmd model )
-
-
-globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-globalKeyMap =
-    [ ( HotKey.isShift "Tab", outdent )
-    , ( HotKey.is "Tab", indent )
-    ]
-
-
-navKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
-navKeyMap =
-    [ {- ( HotKey.is "Enter", newLine )
-         , ( HotKey.is " ", edit )
-         ,
-      -}
-      ( HotKey.isShift "Enter", prependNewAndStartEditing )
-    , ( HotKey.is "ArrowUp", selectPrev )
-    , ( HotKey.is "ArrowDown", selectNext )
-    , ( HotKey.isMeta "ArrowUp", moveUp )
-    , ( HotKey.isMeta "ArrowDown", moveDown )
-    ]
-
-
-saveEditingLine model =
-    ( { model | viewMode = Navigating }
-    , Cmd.batch []
-    )
 
 
 focusInputCmd model =
@@ -395,6 +363,8 @@ itemLabelHotKeyDispatcher ke =
             , ( HotKey.is "ArrowDown", ( Next, True ) )
             , ( HotKey.isMeta "ArrowUp", ( MoveUp, True ) )
             , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
+            , ( HotKey.isShift "Tab", ( Outdent, True ) )
+            , ( HotKey.is "Tab", ( Indent, True ) )
             ]
     in
     labelKeyMap
