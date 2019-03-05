@@ -2,7 +2,6 @@
 import { getCached } from './cache-helpers'
 import './main.scss'
 import { Elm } from './Main.elm'
-import isHotKey from 'is-hotkey'
 import * as R from 'ramda'
 
 /* ITEM */
@@ -54,9 +53,9 @@ import * as R from 'ramda'
 // })
 
 window.addEventListener('keydown', function(event) {
-  if (isHotKey('tab')(event) || isHotKey('shift+tab')(event)) {
-    event.preventDefault()
-  }
+  // if (isHotKey('tab')(event) || isHotKey('shift+tab')(event)) {
+  //   event.preventDefault()
+  // }
   // const inputEl = document.getElementById('item-input-dom-id-')
   // if (inputEl && !inputEl.hasFocus) {
   //   console.log(`'preventingDefault'`, 'preventingDefault')
