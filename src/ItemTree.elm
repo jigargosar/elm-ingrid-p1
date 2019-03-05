@@ -1,5 +1,6 @@
 module ItemTree exposing
-    ( ItemTree
+    ( Item
+    , ItemTree
     , ItemTreeCursor
     , appendNew
     , backward

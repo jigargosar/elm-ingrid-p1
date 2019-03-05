@@ -7,8 +7,7 @@ import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, textarea)
 import Html.Attributes exposing (style, value)
 import Html.Events exposing (onInput)
-import Item exposing (Item)
-import ItemTree exposing (ItemTree, ItemTreeCursor)
+import ItemTree exposing (Item, ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
 import Maybe.Extra
