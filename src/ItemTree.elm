@@ -85,9 +85,14 @@ backward cursor =
         |> Maybe.withDefault cursor
 
 
-forward cursor =
-    Zipper.forward cursor
-        |> Maybe.withDefault cursor
+isExpanded =
+    Zipper.tree >> isTreeExpanded
+
+
+forward zipper =
+    zipper
+        |> ifElse isExpanded Zipper.forward Zipper.nextSibling
+        |> Maybe.withDefault zipper
 
 
 appendNew : String -> ItemTreeCursor -> ItemTreeCursor
