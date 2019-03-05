@@ -4,7 +4,7 @@ module ItemTree exposing
     , ItemTreeCursor
     , appendNew
     , backward
-    , deleteIfEmpty
+    , deleteIfEmptyAndLeaf
     , forward
     , getSelectedTree
     , indent
@@ -208,22 +208,28 @@ isNotRoot =
     isRoot >> not
 
 
+getFragment : ItemTreeCursor -> String
 getFragment =
-    getSelectedTree >> treeFragment
+    Zipper.label >> .fragment
 
 
+isFragmentEmpty : ItemTreeCursor -> Bool
 isFragmentEmpty =
     getFragment >> String.trim >> String.isEmpty
 
 
-deleteIfEmpty zipper =
-    if isFragmentEmpty zipper then
+isLeaf =
+    Zipper.children >> List.length >> eqs 0
+
+
+deleteIfEmptyAndLeaf zipper =
+    if isLeaf zipper && isFragmentEmpty zipper then
         let
             maybeNext : Maybe Item
             maybeNext =
                 Zipper.nextSibling zipper
                     |> Maybe.Extra.orElseLazy (\_ -> Zipper.backward zipper)
-                    |> Maybe.map (Zipper.tree >> Tree.label)
+                    |> Maybe.map Zipper.label
         in
         maybeNext
             |> Debug.log "maybeNext"
