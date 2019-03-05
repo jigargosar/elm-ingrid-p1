@@ -298,7 +298,9 @@ view model =
             , viewShortcutHint "Move Up" "Cmd+Up"
             , viewShortcutHint "Move Down" "Cmd+Down"
             ]
-        , viewTreeContainer model
+
+        --        , viewTreeContainer model
+        , viewAnyTreeContainer model
         ]
 
 
@@ -309,7 +311,7 @@ viewShortcutHint label shortcut =
         ]
 
 
-viewTreeContainer model =
+viewAnyTreeContainer model =
     let
         root =
             ItemTree.rootTree model.cursor
@@ -335,8 +337,7 @@ viewTreeContainer model =
                 baseClasses
     in
     div [ classes containerClasses ]
-        [ viewRootItemTreeLabel isEditing selected root
-        , viewItemForest isEditing selected (ItemTree.treeChildren root)
+        [ viewAnyTree { isEditingMode = isEditing, cursor = model.cursor } root
         ]
 
 
@@ -374,6 +375,37 @@ viewAnyTreeEditLabel treeVM tree =
 
 viewAnyTreeDisplayLabel treeVM tree =
     div [ classes [] ] []
+
+
+viewTreeContainer model =
+    let
+        root =
+            ItemTree.rootTree model.cursor
+
+        selected =
+            ItemTree.getSelectedTree model.cursor
+
+        isEditing =
+            model.viewMode == EditingSelected
+
+        containerClasses =
+            let
+                baseClasses =
+                    [ flex_grow_1, pl3 ]
+
+                editingModeClasses =
+                    [ bg_black_20, black_50 ]
+            in
+            if isEditing then
+                baseClasses ++ editingModeClasses
+
+            else
+                baseClasses
+    in
+    div [ classes containerClasses ]
+        [ viewRootItemTreeLabel isEditing selected root
+        , viewItemForest isEditing selected (ItemTree.treeChildren root)
+        ]
 
 
 viewItemForest : Bool -> ItemTree -> List ItemTree -> Html Msg
