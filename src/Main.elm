@@ -84,8 +84,8 @@ type Msg
     | GlobalKeyDown KeyEvent
     | InitReceived
     | LineChanged String
-    | NewLine
-    | SaveLine
+    | New
+    | Save
     | Prev
     | Edit
     | Next
@@ -116,7 +116,7 @@ update message model =
         NOP ->
             ( model, Cmd.none )
 
-        NewLine ->
+        New ->
             generateId model
                 |> Update.map
                     (\( id, newModel ) ->
@@ -124,7 +124,7 @@ update message model =
                     )
                 |> Update.andThen ensureEditingSelected
 
-        SaveLine ->
+        Save ->
             ( { model | viewMode = Navigating }
             , Cmd.batch []
             )
@@ -296,7 +296,7 @@ itemLabelHotKeyDispatcher ke =
     let
         labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         labelKeyMap =
-            [ ( HotKey.is "Enter", ( NewLine, True ) )
+            [ ( HotKey.is "Enter", ( New, True ) )
             , ( HotKey.is " ", ( Edit, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
             , ( HotKey.is "ArrowUp", ( Prev, True ) )
@@ -455,9 +455,9 @@ itemEditorHotKeyDispatcher ke =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
-            [ ( HotKey.is "Enter", ( NewLine, True ) )
-            , ( HotKey.isMeta "Enter", ( SaveLine, True ) )
-            , ( HotKey.is "Escape", ( SaveLine, True ) )
+            [ ( HotKey.is "Enter", ( New, True ) )
+            , ( HotKey.isMeta "Enter", ( Save, True ) )
+            , ( HotKey.is "Escape", ( Save, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
             ]
     in
