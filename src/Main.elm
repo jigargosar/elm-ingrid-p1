@@ -357,7 +357,7 @@ viewAnyTree vm tree =
                 viewFragmentEditor vm tree
 
               else
-                viewFragment vm tree
+                viewLine vm tree
             ]
         , viewIf canCollapse <|
             div [ classes [ pl3 ] ]
@@ -383,6 +383,14 @@ fragmentEditorHotKeyDecoder ke =
         |> Maybe.map Tuple.second
         |> Maybe.Extra.orElse (Just ( NOP, False ))
         |> Debug.log "itemEditorHotKeyDispatcher"
+
+
+viewLine vm tree =
+    let
+        _ =
+            1
+    in
+    div [] [ viewFragment vm tree ]
 
 
 viewFragment vm tree =
