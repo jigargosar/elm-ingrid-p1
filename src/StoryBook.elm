@@ -56,17 +56,27 @@ update message model =
 -- VIEW
 
 
-viewItemLabel labelText root selected =
-    div [ cx [ pa3, ma3, f4, bg_white ] ] [ t labelText ]
+type alias ItemLabelProps =
+    { text : String
+    , isRoot : Bool
+    , isSelected : Bool
+    }
+
+
+viewItemLabel props =
+    div [ cx [ pa3, ma3, f4, bg_white ] ] [ t props.text ]
 
 
 view : Model -> Html Msg
 view model =
     let
         stories =
-            [ story "ItemLabel" <| viewItemLabel "I M L" True True
-            , story "ItemLabel1" <| viewItemLabel "I M L" True True
-            , story "ItemLabel2" <| viewItemLabel "I M L" True True
+            [ story "ItemLabel with defaultProps" <|
+                viewItemLabel { text = "I am default vanilla Item Label", isSelected = False, isRoot = False }
+            , story "ItemLabel with selected" <|
+                viewItemLabel { text = "I should be Selected", isSelected = True, isRoot = False }
+            , story "ItemLabel with another defaultProps example" <|
+                viewItemLabel { text = "I am another plain label", isSelected = False, isRoot = False }
             ]
     in
     viewStoryBook stories
