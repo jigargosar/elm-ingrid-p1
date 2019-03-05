@@ -80,11 +80,6 @@ getSelectedTree =
     Zipper.tree
 
 
-backward cursor =
-    Zipper.backward cursor
-        |> Maybe.withDefault cursor
-
-
 isExpanded =
     Zipper.tree >> isTreeExpanded
 
@@ -107,7 +102,39 @@ nextSiblingOfParent zipper =
     else
         zipper
             |> Zipper.parent
-            |> Maybe.andThen (\nz -> Zipper.nextSibling nz |> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent nz))
+            |> Maybe.andThen
+                (\nz ->
+                    Zipper.nextSibling nz
+                        |> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent nz)
+                )
+
+
+orl =
+    Maybe.Extra.orElseLazy
+
+
+backward zipper =
+    zipper
+        |> lastVisibleDescendentOfPrevSib
+        |> orl (\_ -> Zipper.parent zipper)
+        |> Maybe.withDefault zipper
+
+
+lastVisibleDescendentOfPrevSib zipper =
+    zipper
+        |> Zipper.previousSibling
+        |> Maybe.map lastVisibleDescendentOrSelf
+
+
+lastVisibleDescendentOrSelf z =
+    if isExpanded z then
+        z
+            |> Zipper.lastChild
+            |> Maybe.map lastVisibleDescendentOrSelf
+            |> Maybe.withDefault z
+
+    else
+        z
 
 
 appendNew : String -> ItemTreeCursor -> ItemTreeCursor
