@@ -335,7 +335,7 @@ viewTree model =
                 baseClasses
     in
     div [ classes containerClasses ]
-        [ viewRootTreeItem isEditing selected root
+        [ viewRootItemTreeLabel isEditing selected root
         , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
 
@@ -384,7 +384,7 @@ viewItemTreeLabel selected tree =
         ]
 
 
-viewRootTreeItem isEditing selected rootTree =
+viewRootItemTreeLabel isEditing selected rootTree =
     let
         labelClasses =
             let
