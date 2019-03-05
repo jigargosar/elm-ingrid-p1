@@ -164,9 +164,11 @@ globalKeyMap =
 
 navKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 navKeyMap =
-    [ ( HotKey.is "Enter", newLine )
-    , ( HotKey.is " ", edit )
-    , ( HotKey.isShift "Enter", prependNewAndStartEditing )
+    [ {- ( HotKey.is "Enter", newLine )
+         , ( HotKey.is " ", edit )
+         ,
+      -}
+      ( HotKey.isShift "Enter", prependNewAndStartEditing )
     , ( HotKey.is "ArrowUp", selectPrev )
     , ( HotKey.is "ArrowDown", selectNext )
     , ( HotKey.isMeta "ArrowUp", moveUp )
@@ -359,8 +361,7 @@ itemHotKeyDispatcher ke =
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
             [ ( HotKey.is "Enter", ( NewLine, True ) )
-            , ( HotKey.isMeta "Enter", ( SaveLine, True ) )
-            , ( HotKey.is "Escape", ( SaveLine, True ) )
+            , ( HotKey.is " ", ( NOP, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
             ]
     in

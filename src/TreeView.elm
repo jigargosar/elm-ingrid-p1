@@ -30,4 +30,4 @@ viewItemLabel props =
             ter props.isRoot rootC nonRootC
                 |> concatIf props.isSelected selectedC
     in
-    div [ cx finalC ] [ t props.text ]
+    div ([ cx finalC ] ++ props.attrs) [ t props.text ]
