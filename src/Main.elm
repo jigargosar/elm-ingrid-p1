@@ -341,10 +341,10 @@ viewTree model =
 
 
 viewItemForest : Bool -> ItemTree -> List ItemTree -> Html Msg
-viewItemForest isEditing selected forest =
+viewItemForest isEditingMode selected forest =
     div [ classes [ pl3 ] ]
         (forest
-            |> List.map (viewItemTree isEditing selected)
+            |> List.map (viewItemTree isEditingMode selected)
         )
 
 
