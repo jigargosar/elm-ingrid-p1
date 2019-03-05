@@ -219,19 +219,22 @@ isFragmentEmpty =
 deleteIfEmpty zipper =
     if isFragmentEmpty zipper then
         let
-            next : Item
-            next =
+            maybeNext : Maybe Item
+            maybeNext =
                 Zipper.forward zipper
                     |> Maybe.Extra.orElseLazy (\_ -> Zipper.backward zipper)
-                    |> Maybe.withDefault (Zipper.root zipper)
-                    |> (Zipper.tree >> Tree.label)
+                    |> Maybe.map (Zipper.tree >> Tree.label)
         in
-        Zipper.removeTree zipper
+        maybeNext
             |> Maybe.andThen
-                (\newZipper ->
-                    Zipper.findNext (eqs next) newZipper
-                        |> Maybe.Extra.orElseLazy (\_ -> Zipper.findPrevious (eqs next) newZipper)
-                        |> Maybe.Extra.orElseLazy (\_ -> Zipper.findFromRoot (eqs next) newZipper)
+                (\next ->
+                    Zipper.removeTree zipper
+                        |> Maybe.andThen
+                            (\newZipper ->
+                                Zipper.findNext (eqs next) newZipper
+                                    |> Maybe.Extra.orElseLazy (\_ -> Zipper.findPrevious (eqs next) newZipper)
+                                    |> Maybe.Extra.orElseLazy (\_ -> Zipper.findFromRoot (eqs next) newZipper)
+                            )
                 )
             |> Maybe.withDefault zipper
 
