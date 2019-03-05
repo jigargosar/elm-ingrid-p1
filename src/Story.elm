@@ -1,8 +1,36 @@
-module Story exposing (Story, add, storyContainer, viewStories, viewStory)
+module Story exposing (Story, add, of_, storyContainer, viewBook, viewStories, viewStory)
 
 import Html exposing (Html, div)
 import Tachyons.Classes exposing (..)
 import V exposing (co, cx, t)
+
+
+type alias Story msg =
+    { title : String
+    , view : Html msg
+    }
+
+
+type alias StoryGroup msg =
+    { title : String
+    , stories : List (Story msg)
+    }
+
+
+viewBook storyGroups =
+    co [ sans_serif, ma0, min_vh_100, flex, flex_column ]
+        [ t "Story Book"
+        , div [ cx [ flex, flex_column, flex_grow_1 ] ] <|
+            List.map viewStoryGroup storyGroups
+        ]
+
+
+viewStoryGroup sg =
+    div [ cx [] ]
+        [ div [ cx [ pa3 ] ] [ t sg.title ]
+        , div [ cx [ flex, flex_column, flex_grow_1 ] ] <|
+            List.map viewStory sg.stories
+        ]
 
 
 viewStories storyList =
@@ -11,12 +39,6 @@ viewStories storyList =
         , div [ cx [ flex, flex_column, flex_grow_1 ] ] <|
             List.map viewStory storyList
         ]
-
-
-type alias Story msg =
-    { title : String
-    , view : Html msg
-    }
 
 
 add : String -> Html msg -> Story msg
@@ -46,3 +68,7 @@ viewStory s =
         [ t s.title
         , storyContainer [ s.view ]
         ]
+
+
+of_ title stories =
+    { title = title, stories = stories }

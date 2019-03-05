@@ -71,13 +71,15 @@ viewItemLabel props =
 view : Model -> Html Msg
 view model =
     let
-        stories =
-            [ Story.add "ItemLabel with defaultProps" <|
-                viewItemLabel { text = "I am default vanilla Item Label", isSelected = False, isRoot = False }
-            , Story.add "ItemLabel with selected" <|
-                viewItemLabel { text = "I should be Selected", isSelected = True, isRoot = False }
-            , Story.add "ItemLabel with another defaultProps example" <|
-                viewItemLabel { text = "I am another plain label", isSelected = False, isRoot = False }
+        storybook =
+            [ Story.of_ "ItemLabel"
+                [ Story.add "with defaultProps" <|
+                    viewItemLabel { text = "I am default vanilla Item Label", isSelected = False, isRoot = False }
+                , Story.add "with selected" <|
+                    viewItemLabel { text = "I should be Selected", isSelected = True, isRoot = False }
+                , Story.add "with another defaultProps example" <|
+                    viewItemLabel { text = "I am another plain label", isSelected = False, isRoot = False }
+                ]
             ]
     in
-    Story.viewStories stories
+    Story.viewBook storybook
