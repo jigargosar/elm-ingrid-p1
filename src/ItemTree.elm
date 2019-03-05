@@ -4,16 +4,16 @@ module ItemTree exposing
     , ItemTreeCursor
     , appendNew
     , backward
-    , collapse
+    , canTreeCollapse
+    , collapseOrParent
     , delete
     , deleteIfEmptyAndLeaf
-    , expand
+    , expandOrNext
     , forward
     , getSelectedTree
     , indent
     , initialCursor
     , isFragmentBlank
-    , isTreeExpanded
     , isTreeLeaf
     , moveDown
     , moveUp
@@ -86,13 +86,9 @@ getSelectedTree =
     Zipper.tree
 
 
-isExpanded =
-    Zipper.tree >> isTreeExpanded
-
-
 forward zipper =
     zipper
-        |> ifElse (\nz -> isExpanded nz || isLeaf nz)
+        |> ifElse (\nz -> canCollapse nz || isLeaf nz)
             Zipper.forward
             (Zipper.nextSibling
                 >> orl (\_ -> nextSiblingOfParent zipper)
@@ -129,7 +125,7 @@ lastVisibleDescendentOfPrevSib zipper =
 
 
 lastVisibleDescendentOrSelf z =
-    if isExpanded z then
+    if canCollapse z then
         z
             |> Zipper.lastChild
             |> Maybe.map lastVisibleDescendentOrSelf
@@ -312,16 +308,36 @@ collapse zipper =
         Zipper.mapLabel (\item -> { item | collapsed = True }) zipper
 
 
+parentOrSelf z =
+    Zipper.parent z |> Maybe.withDefault z
+
+
+collapseOrParent =
+    ifElse canCollapse collapse parentOrSelf
+
+
 expand =
     Zipper.mapLabel (\item -> { item | collapsed = False })
 
 
-isTreeExpanded tree =
+expandOrNext =
+    ifElse canExpand expand forward
+
+
+canTreeCollapse tree =
     let
         item =
             Tree.label tree
     in
     treeHasChildren tree && not item.collapsed
+
+
+canTreeExpand tree =
+    let
+        item =
+            Tree.label tree
+    in
+    treeHasChildren tree && item.collapsed
 
 
 treeHasChildren =
@@ -330,3 +346,11 @@ treeHasChildren =
 
 isTreeLeaf =
     treeHasChildren >> not
+
+
+canCollapse =
+    Zipper.tree >> canTreeCollapse
+
+
+canExpand =
+    Zipper.tree >> canTreeExpand

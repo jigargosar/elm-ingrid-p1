@@ -99,8 +99,8 @@ type Msg
     | MoveDown
     | Outdent
     | Indent
-    | Collapse
-    | Expand
+    | CollapseOrPrev
+    | ExpandOrNext
     | Delete
 
 
@@ -160,11 +160,11 @@ update message model =
         Edit ->
             ensureEditingSelected model
 
-        Collapse ->
-            ( model |> overCursor ItemTree.collapse, Cmd.none )
+        CollapseOrPrev ->
+            ( model |> overCursor ItemTree.collapseOrParent, Cmd.none )
 
-        Expand ->
-            ( model |> overCursor ItemTree.expand, Cmd.none )
+        ExpandOrNext ->
+            ( model |> overCursor ItemTree.expandOrNext, Cmd.none )
 
         Prev ->
             Update.pure (overCursor ItemTree.backward model)
@@ -333,8 +333,8 @@ itemLabelHotKeyDispatcher ke =
             , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
             , ( HotKey.isShift "Tab", ( Outdent, True ) )
             , ( HotKey.is "Tab", ( Indent, True ) )
-            , ( HotKey.is "ArrowLeft", ( Collapse, True ) )
-            , ( HotKey.is "ArrowRight", ( Expand, True ) )
+            , ( HotKey.is "ArrowLeft", ( CollapseOrPrev, True ) )
+            , ( HotKey.is "ArrowRight", ( ExpandOrNext, True ) )
             , ( HotKey.is "Delete", ( Delete, True ) )
             ]
     in
@@ -349,14 +349,14 @@ viewAnyTree treeVM tree =
         sel =
             isSelectedTree tree treeVM
 
-        expanded =
-            ItemTree.isTreeExpanded tree
+        canCollapse =
+            ItemTree.canTreeCollapse tree
 
         isLeaf =
             ItemTree.isTreeLeaf tree
 
         prefix =
-            ter isLeaf "  " (ter expanded " - " " + ")
+            ter isLeaf "  " (ter canCollapse " - " " + ")
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
@@ -373,7 +373,7 @@ viewAnyTree treeVM tree =
                     , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
                     ]
                 }
-        , viewIf expanded <|
+        , viewIf canCollapse <|
             div [ classes [ pl3, pt2 ] ]
                 (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
