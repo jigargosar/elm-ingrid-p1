@@ -1,4 +1,8 @@
-module Update exposing (andThen, effect, pure)
+module Update exposing (andThen, effect, map, pure)
+
+
+pure model =
+    ( model, Cmd.none )
 
 
 andThen fn ( model, cmd ) =
@@ -9,8 +13,8 @@ andThen fn ( model, cmd ) =
     ( newModel, Cmd.batch [ cmd, newCmd ] )
 
 
-pure model =
-    ( model, Cmd.none )
+map fn ( model, cmd ) =
+    ( fn model, cmd )
 
 
 effect fn ( model, cmd ) =
