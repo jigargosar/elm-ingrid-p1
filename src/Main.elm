@@ -348,7 +348,7 @@ type alias TreeViewModel =
 
 isEditingTree : ItemTree -> TreeViewModel -> Bool
 isEditingTree tree treeVM =
-    ItemTree.getSelectedTree treeVM.cursor == tree
+    treeVM.isEditingMode && ItemTree.getSelectedTree treeVM.cursor == tree
 
 
 isRootTree : ItemTree -> TreeViewModel -> Bool
@@ -356,7 +356,22 @@ isRootTree tree treeVM =
     ItemTree.rootTree treeVM.cursor == tree
 
 
-viewAnyTree treeVM =
+viewAnyTree treeVM tree =
+    div [ classes [] ]
+        [ if isEditingTree tree treeVM then
+            viewAnyTreeEditLabel treeVM tree
+
+          else
+            viewAnyTreeDisplayLabel treeVM tree
+        , List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree)
+        ]
+
+
+viewAnyTreeEditLabel treeVM tree =
+    div [ classes [] ] []
+
+
+viewAnyTreeDisplayLabel treeVM tree =
     div [ classes [] ] []
 
 
