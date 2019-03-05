@@ -18,7 +18,7 @@ import Tachyons.Classes exposing (..)
 import Task
 import TreeView
 import Update
-import V exposing (co, cx, t)
+import V exposing (co, cx, t, viewIf)
 
 
 port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
@@ -348,6 +348,9 @@ viewAnyTree treeVM tree =
     let
         sel =
             isSelectedTree tree treeVM
+
+        expanded =
+            ItemTree.isTreeExpanded tree
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
@@ -355,7 +358,7 @@ viewAnyTree treeVM tree =
 
           else
             TreeView.viewFragment
-                { text = ItemTree.treeFragment tree |> (++) (ter (ItemTree.isTreeExpanded tree) "-" "+")
+                { text = ItemTree.treeFragment tree |> (++) (ter expanded "-" "+")
                 , isRoot = isRootTree tree treeVM
                 , isSelected = sel
                 , attrs =
@@ -364,8 +367,9 @@ viewAnyTree treeVM tree =
                     , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
                     ]
                 }
-        , div [ classes [ pl3, pt2 ] ]
-            (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
+        , viewIf expanded <|
+            div [ classes [ pl3, pt2 ] ]
+                (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
 
 
