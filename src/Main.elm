@@ -313,9 +313,6 @@ viewAnyTreeContainer model =
         root =
             ItemTree.rootTree model.cursor
 
-        selected =
-            ItemTree.getSelectedTree model.cursor
-
         isEditing =
             model.viewMode == EditingSelected
 
@@ -327,11 +324,7 @@ viewAnyTreeContainer model =
                 editingModeClasses =
                     [ bg_black_20, black_50 ]
             in
-            if isEditing then
-                baseClasses ++ editingModeClasses
-
-            else
-                baseClasses
+            baseClasses |> concatIf isEditing editingModeClasses
     in
     div [ classes containerClasses ]
         [ viewAnyTree { isEditingMode = isEditing, cursor = model.cursor } root
