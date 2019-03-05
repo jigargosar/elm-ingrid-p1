@@ -118,7 +118,12 @@ update message model =
             ( model, Cmd.none )
 
         NewLine ->
-            newLine model
+            generateId model
+                |> Update.map
+                    (\( id, newModel ) ->
+                        overCursor (ItemTree.appendNew id) newModel
+                    )
+                |> Update.andThen ensureEditingSelected
 
         SaveLine ->
             ( { model | viewMode = Navigating }
@@ -223,16 +228,6 @@ generateId model =
             { model | seed = newSeed }
     in
     Update.pure ( id, newModel )
-
-
-newLine : Model -> ( Model, Cmd Msg )
-newLine model =
-    generateId model
-        |> Update.map
-            (\( id, newModel ) ->
-                overCursor (ItemTree.appendNew id) newModel
-            )
-        |> Update.andThen ensureEditingSelected
 
 
 
