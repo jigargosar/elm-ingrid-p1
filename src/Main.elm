@@ -363,7 +363,8 @@ viewAnyTree treeVM tree =
 
           else
             viewAnyTreeDisplayLabel treeVM tree
-        , List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree)
+        , div [ classes [ pl3 ] ]
+            (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
 
 
