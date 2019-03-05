@@ -237,18 +237,6 @@ newLine =
         )
 
 
-prependNewAndStartEditing : Model -> ( Model, Cmd Msg )
-prependNewAndStartEditing =
-    withNewId
-        (\id model ->
-            Update.pure
-                { model
-                    | cursor = ItemTree.prependNew id model.cursor
-                }
-                |> Update.andThen ensureEditingSelected
-        )
-
-
 
 -- VIEW
 
