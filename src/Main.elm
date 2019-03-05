@@ -187,6 +187,11 @@ focusInputCmd model =
         |> Task.attempt (Debug.log "focusing master input" >> Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
+focusSelectedCmd model =
+    Browser.Dom.focus (getItemTreeLabelDomId <| ItemTree.getSelectedTree model.cursor)
+        |> Task.attempt (Debug.log "focusing selected label" >> Debug.log "focusSelectedCmd" >> (\_ -> NOP))
+
+
 initEditingMode model =
     ( { model | viewMode = EditingSelected }
     , Cmd.batch [ focusInputCmd model ]
@@ -199,6 +204,14 @@ ensureEditInputFocusCmd model =
 
     else
         Cmd.batch []
+
+
+ensureFocusCmd model =
+    if model.viewMode == EditingSelected then
+        Cmd.batch [ focusInputCmd model ]
+
+    else
+        Cmd.batch [ focusSelectedCmd model ]
 
 
 edit model =
