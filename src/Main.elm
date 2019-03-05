@@ -71,7 +71,7 @@ overCursor fn model =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
-        [ Browser.Events.onKeyDown <| Json.Decode.map KeyDownReceived HotKey.keyEventDecoder
+        [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
         ]
 
 
@@ -81,10 +81,9 @@ subscriptions _ =
 
 type Msg
     = NOP
-    | KeyDownReceived KeyEvent
+    | GlobalKeyDown KeyEvent
     | InitReceived
     | LineChanged String
-    | InputKeyEventReceived KeyEvent
     | NewLine
     | SaveLine
     | Prev
@@ -165,17 +164,7 @@ update message model =
         InitReceived ->
             ( model, ensureFocusCmd model )
 
-        InputKeyEventReceived keyEvent ->
-            let
-                _ =
-                    Debug.log "InputKeyEventReceived" keyEvent
-            in
-            ( model
-            , Cmd.batch
-                []
-            )
-
-        KeyDownReceived keyEvent ->
+        GlobalKeyDown keyEvent ->
             let
                 {- _ =
                    Debug.log "KeyDownReceived" keyEvent
