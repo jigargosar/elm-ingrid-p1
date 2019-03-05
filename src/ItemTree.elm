@@ -102,7 +102,7 @@ forward zipper =
 nextSiblingOfParent : ItemTreeCursor -> Maybe ItemTreeCursor
 nextSiblingOfParent zipper =
     if isRoot zipper then
-        Just zipper
+        Nothing
 
     else
         zipper
