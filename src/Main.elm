@@ -129,22 +129,30 @@ update message model =
             ensureEditingSelected model
 
         Prev ->
-            selectPrev model
+            Update.pure (overCursor ItemTree.backward model)
+                |> Update.effect ensureFocusCmd
 
         Next ->
-            selectNext model
+            Update.pure (overCursor ItemTree.forward model)
+                |> Update.effect ensureFocusCmd
 
         MoveUp ->
-            moveUp model
+            Update.pure (overCursor ItemTree.moveUp model)
+                |> Update.effect ensureFocusCmd
 
         MoveDown ->
-            moveDown model
+            Update.pure (overCursor ItemTree.moveDown model)
+                |> Update.effect ensureFocusCmd
 
         Outdent ->
-            outdent model
+            ( overCursor ItemTree.outdent model
+            , ensureFocusCmd model
+            )
 
         Indent ->
-            indent model
+            ( overCursor ItemTree.indent model
+            , ensureFocusCmd model
+            )
 
         LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
@@ -201,38 +209,6 @@ ensureEditingSelected model =
         ( { model | viewMode = EditingSelected }
         , Cmd.batch [ focusInputCmd model ]
         )
-
-
-moveUp model =
-    Update.pure (overCursor ItemTree.moveUp model)
-        |> Update.effect ensureFocusCmd
-
-
-moveDown model =
-    Update.pure (overCursor ItemTree.moveDown model)
-        |> Update.effect ensureFocusCmd
-
-
-indent model =
-    ( overCursor ItemTree.indent model
-    , ensureFocusCmd model
-    )
-
-
-outdent model =
-    ( overCursor ItemTree.outdent model
-    , ensureFocusCmd model
-    )
-
-
-selectPrev model =
-    Update.pure (overCursor ItemTree.backward model)
-        |> Update.effect ensureFocusCmd
-
-
-selectNext model =
-    Update.pure (overCursor ItemTree.forward model)
-        |> Update.effect ensureFocusCmd
 
 
 withNewId fn model =
