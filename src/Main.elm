@@ -131,7 +131,7 @@ update message model =
         InitReceived ->
             ( model, ensureFocusCmd model )
 
-        GlobalKeyDown keyEvent ->
+        GlobalKeyDown _ ->
             ( model, ensureFocusCmd model )
 
         NOP ->
