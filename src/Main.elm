@@ -174,6 +174,32 @@ update message model =
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
 
 
+generateId model =
+    let
+        idGen : Generator String
+        idGen =
+            Random.int 999999999 Random.maxInt
+                |> Random.map String.fromInt
+
+        ( id, newSeed ) =
+            Random.step idGen model.seed
+
+        newModel =
+            { model | seed = newSeed }
+    in
+    Update.pure ( id, newModel )
+
+
+ensureEditingSelected model =
+    if model.viewMode == EditingSelected then
+        ( model, Cmd.none )
+
+    else
+        ( { model | viewMode = EditingSelected }
+        , Cmd.batch [ focusInputCmd model ]
+        )
+
+
 focusInputCmd model =
     Browser.Dom.focus (getItemTreeInputDomId <| ItemTree.getSelectedTree model.cursor)
         |> Task.attempt (Debug.log "focusing master input" >> Debug.log "focusInputCmd" >> (\_ -> NOP))
@@ -190,32 +216,6 @@ ensureFocusCmd model =
 
     else
         Cmd.batch [ focusSelectedCmd model ]
-
-
-ensureEditingSelected model =
-    if model.viewMode == EditingSelected then
-        ( model, Cmd.none )
-
-    else
-        ( { model | viewMode = EditingSelected }
-        , Cmd.batch [ focusInputCmd model ]
-        )
-
-
-generateId model =
-    let
-        idGen : Generator String
-        idGen =
-            Random.int 999999999 Random.maxInt
-                |> Random.map String.fromInt
-
-        ( id, newSeed ) =
-            Random.step idGen model.seed
-
-        newModel =
-            { model | seed = newSeed }
-    in
-    Update.pure ( id, newModel )
 
 
 
