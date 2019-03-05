@@ -117,13 +117,6 @@ update message model =
             ( model, ensureFocusCmd model )
 
         GlobalKeyDown keyEvent ->
-            let
-                {- _ =
-                   Debug.log "KeyDownReceived" keyEvent
-                -}
-                _ =
-                    1
-            in
             ( model, ensureFocusCmd model )
 
         NOP ->
