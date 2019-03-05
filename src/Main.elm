@@ -353,6 +353,23 @@ isRootTree tree treeVM =
     ItemTree.rootTree treeVM.cursor == tree
 
 
+itemHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
+itemHotKeyDispatcher ke =
+    let
+        inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
+        inputKeyMap =
+            [ ( HotKey.is "Enter", ( NewLine, True ) )
+            , ( HotKey.isMeta "Enter", ( SaveLine, True ) )
+            , ( HotKey.is "Escape", ( SaveLine, True ) )
+            , ( HotKey.isShift "Enter", ( NOP, True ) )
+            ]
+    in
+    inputKeyMap
+        |> List.Extra.find (Tuple.first >> applyTo ke)
+        |> Maybe.map Tuple.second
+        |> Debug.log "itemEditorHotKeyDispatcher"
+
+
 viewAnyTree treeVM tree =
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
@@ -363,7 +380,7 @@ viewAnyTree treeVM tree =
                 { text = ItemTree.treeFragment tree
                 , isRoot = isRootTree tree treeVM
                 , isSelected = isSelectedTree tree treeVM
-                , attrs = []
+                , attrs = [ HotKey.preventDefaultOnKeyDownEvent itemHotKeyDispatcher ]
                 }
         , div [ classes [ pl3 ] ]
             (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
