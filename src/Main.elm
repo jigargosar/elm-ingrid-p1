@@ -7,7 +7,7 @@ import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, textarea)
 import Html.Attributes exposing (style, value)
 import Html.Events exposing (onInput)
-import ItemLookup exposing (Item, ItemLookup)
+import Item exposing (Item)
 import ItemTree exposing (ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
 import List.Extra
@@ -37,8 +37,7 @@ type ViewMode
 
 
 type alias Model =
-    { itemLookup : ItemLookup
-    , maybeFocusedItemId : Maybe String
+    { maybeFocusedItemId : Maybe String
     , cursor : ItemTreeCursor
     , viewMode : ViewMode
     , seed : Random.Seed
@@ -52,16 +51,16 @@ type alias Flags =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     update InitReceived
-        { itemLookup = ItemLookup.fromList flags.items
-        , maybeFocusedItemId = flags.maybeFocusedItemId
+        { maybeFocusedItemId = flags.maybeFocusedItemId
         , cursor = ItemTree.initialCursor
         , viewMode = Navigating
         , seed = Random.initialSeed flags.now
         }
 
 
-getItems model =
-    model.itemLookup |> ItemLookup.toList
+overCursor : (ItemTreeCursor -> ItemTreeCursor) -> Model -> Model
+overCursor fn model =
+    { model | cursor = fn model.cursor }
 
 
 
@@ -69,7 +68,7 @@ getItems model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map KeyDownReceived HotKey.keyEventDecoder
         ]
@@ -100,8 +99,8 @@ getItemInputDomId tree =
     "item-input-dom-id-"
 
 
-cacheNewModel model =
-    toJsCache { items = getItems model, maybeFocusedItemId = model.maybeFocusedItemId }
+cacheNewModel _ =
+    toJsCache { items = [], maybeFocusedItemId = Nothing }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -247,11 +246,6 @@ outdent model =
     ( overCursor ItemTree.outdent model
     , ensureEditInputFocusCmd model
     )
-
-
-overCursor : (ItemTreeCursor -> ItemTreeCursor) -> Model -> Model
-overCursor fn model =
-    { model | cursor = fn model.cursor }
 
 
 selectBackward model =
