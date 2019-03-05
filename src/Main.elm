@@ -99,6 +99,8 @@ type Msg
     | MoveDown
     | Outdent
     | Indent
+    | Collapse
+    | Expand
     | Delete
 
 
@@ -156,6 +158,12 @@ update message model =
             ( model |> overCursor ItemTree.delete, Cmd.none )
 
         Edit ->
+            ensureEditingSelected model
+
+        Collapse ->
+            ensureEditingSelected model
+
+        Expand ->
             ensureEditingSelected model
 
         Prev ->
@@ -325,6 +333,8 @@ itemLabelHotKeyDispatcher ke =
             , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
             , ( HotKey.isShift "Tab", ( Outdent, True ) )
             , ( HotKey.is "Tab", ( Indent, True ) )
+            , ( HotKey.is "Left", ( Collapse, True ) )
+            , ( HotKey.is "Right", ( Expand, True ) )
             , ( HotKey.is "Delete", ( Delete, True ) )
             ]
     in
