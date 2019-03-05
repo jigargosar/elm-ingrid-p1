@@ -83,10 +83,14 @@ type Msg
     = NOP
     | KeyDownReceived KeyEvent
     | InitReceived
-    | ContentChanged String
+    | LineChanged String
     | InputKeyEventReceived KeyEvent
     | NewLine
     | SaveLine
+    | Prev
+    | Next
+    | MoveUp
+    | MoveDown
 
 
 getItemTreeLabelDomId : ItemTree -> String
@@ -116,7 +120,19 @@ update message model =
         SaveLine ->
             saveEditingLine model
 
-        ContentChanged newContent ->
+        Prev ->
+            selectPrev model
+
+        Next ->
+            selectNext model
+
+        MoveUp ->
+            moveUp model
+
+        MoveDown ->
+            moveDown model
+
+        LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
 
         InitReceived ->
@@ -147,12 +163,15 @@ update message model =
 
                 findMapping =
                     List.Extra.find (Tuple.first >> applyTo keyEvent)
+
+                _ =
+                    keyMap
+                        |> findMapping
+                        |> Maybe.Extra.orElseLazy (\_ -> findMapping globalKeyMap)
+                        |> Maybe.map (\( _, mFn ) -> mFn model)
+                        |> Maybe.withDefault ( model, Cmd.none )
             in
-            keyMap
-                |> findMapping
-                |> Maybe.Extra.orElseLazy (\_ -> findMapping globalKeyMap)
-                |> Maybe.map (\( _, mFn ) -> mFn model)
-                |> Maybe.withDefault ( model, Cmd.none )
+            ( model, ensureFocusCmd model )
 
 
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
@@ -406,7 +425,7 @@ viewAnyTreeEditLabel treeVM tree =
         [ Html.Attributes.id <| getItemTreeInputDomId tree
         , cx []
         , value <| ItemTree.treeFragment tree
-        , onInput ContentChanged
+        , onInput LineChanged
         , HotKey.preventDefaultOnKeyDownEvent itemEditorHotKeyDispatcher
         ]
         []
@@ -554,7 +573,7 @@ viewEditItemLabel tree =
                     , "break-word"
                     ]
                 , value content
-                , onInput ContentChanged
+                , onInput LineChanged
                 , HotKey.preventDefaultOnKeyDownEvent itemEditorHotKeyDispatcher
                 ]
                 []
