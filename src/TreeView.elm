@@ -17,10 +17,10 @@ viewItemLabel : ItemLabelProps -> Html msg
 viewItemLabel props =
     let
         nonRootC =
-            [ pa1, bg_white ]
+            [ dib, pa1, bg_white, br1 ]
 
         rootC =
-            [ f4, pa2, bg_white ]
+            [ dib, pa2, f4, bg_white, br1 ]
 
         selectedC =
             [ bg_light_red, white ]

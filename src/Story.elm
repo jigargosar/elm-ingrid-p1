@@ -45,8 +45,8 @@ storyContainer =
 
             --            , pa3
             , ma3
-            , flex
 
+            --            , flex
             --            , items_center
             --            , justify_center
             , bg_light_gray
