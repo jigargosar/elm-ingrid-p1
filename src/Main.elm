@@ -374,7 +374,7 @@ viewAnyTree treeVM tree =
                     ]
                 }
         , viewIf canCollapse <|
-            div [ classes [ pl3, pt2 ] ]
+            div [ classes [ pl3, pv1 ] ]
                 (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
 
