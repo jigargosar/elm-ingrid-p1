@@ -51,7 +51,7 @@ storyContainer =
             --            , justify_center
             , bg_light_gray
             , ba
-            , b__black_50
+            , b__black
             , b__dashed
             , br1
             ]
