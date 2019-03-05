@@ -5,6 +5,7 @@ module ItemTree exposing
     , appendNew
     , backward
     , canTreeCollapse
+    , canTreeExpand
     , collapseOrParent
     , delete
     , deleteIfEmptyAndLeaf
@@ -14,7 +15,6 @@ module ItemTree exposing
     , indent
     , initialCursor
     , isFragmentBlank
-    , isTreeLeaf
     , moveDown
     , moveUp
     , outdent
@@ -23,7 +23,6 @@ module ItemTree exposing
     , setContent
     , treeChildren
     , treeFragment
-    , treeHasChildren
     , treeId
     )
 

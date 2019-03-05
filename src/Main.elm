@@ -352,11 +352,11 @@ viewAnyTree treeVM tree =
         canCollapse =
             ItemTree.canTreeCollapse tree
 
-        isLeaf =
-            ItemTree.isTreeLeaf tree
+        canExpand =
+            ItemTree.canTreeExpand tree
 
         prefix =
-            ter isLeaf "  " (ter canCollapse " - " " + ")
+            ter canExpand " + " (ter canCollapse " - " "   ")
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
