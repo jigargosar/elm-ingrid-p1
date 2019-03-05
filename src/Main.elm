@@ -342,14 +342,18 @@ viewTreeContainer model =
 
 type alias TreeViewModel =
     { isEditingMode : Bool
-    , selected : ItemTree
     , cursor : ItemTreeCursor
     }
 
 
 isEditingTree : ItemTree -> TreeViewModel -> Bool
 isEditingTree tree treeVM =
-    treeVM.selected == tree
+    ItemTree.getSelectedTree treeVM.cursor == tree
+
+
+isRootTree : ItemTree -> TreeViewModel -> Bool
+isRootTree tree treeVM =
+    ItemTree.rootTree treeVM.cursor == tree
 
 
 viewAnyTree treeVM =
