@@ -192,7 +192,7 @@ indent zipper =
             (\prevSibLabel ->
                 Zipper.removeTree zipper
                     |> Maybe.andThen (Zipper.findNext (eqs prevSibLabel))
-                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT))
+                    |> Maybe.map (Zipper.mapTree (Tree.appendChild selectedT) >> expand)
                     |> Maybe.andThen Zipper.lastChild
             )
         |> Maybe.withDefault zipper
