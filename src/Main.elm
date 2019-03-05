@@ -126,7 +126,7 @@ update message model =
             )
 
         Edit ->
-            edit model
+            ensureEditingSelected model
 
         Prev ->
             selectPrev model
@@ -183,12 +183,6 @@ focusSelectedCmd model =
         |> Task.attempt (Debug.log "focusing selected label" >> Debug.log "focusSelectedCmd" >> (\_ -> NOP))
 
 
-initEditingMode model =
-    ( { model | viewMode = EditingSelected }
-    , Cmd.batch [ focusInputCmd model ]
-    )
-
-
 ensureFocusCmd model =
     if model.viewMode == EditingSelected then
         Cmd.batch [ focusInputCmd model ]
@@ -197,14 +191,16 @@ ensureFocusCmd model =
         Cmd.batch [ focusSelectedCmd model ]
 
 
-edit model =
+ensureEditingSelected model =
     if model.viewMode == EditingSelected then
         ( model
         , Cmd.batch []
         )
 
     else
-        initEditingMode model
+        ( { model | viewMode = EditingSelected }
+        , Cmd.batch [ focusInputCmd model ]
+        )
 
 
 moveUp model =
@@ -263,7 +259,7 @@ newLine =
                 { model
                     | cursor = ItemTree.appendNew id model.cursor
                 }
-                |> Update.andThen initEditingMode
+                |> Update.andThen ensureEditingSelected
         )
 
 
@@ -275,7 +271,7 @@ prependNewAndStartEditing =
                 { model
                     | cursor = ItemTree.prependNew id model.cursor
                 }
-                |> Update.andThen initEditingMode
+                |> Update.andThen ensureEditingSelected
         )
 
 
