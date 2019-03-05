@@ -5,8 +5,8 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import HotKey exposing (KeyEvent)
-import Html exposing (Html, div, input, textarea)
-import Html.Attributes exposing (style, tabindex, value)
+import Html exposing (Html, div, input)
+import Html.Attributes exposing (tabindex, value)
 import Html.Events exposing (onInput)
 import ItemTree exposing (Item, ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -16,12 +16,13 @@ import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
-import TreeView
+import UI.TreeView
 import Update
 import V exposing (co, cx, t, viewIf)
 
 
-port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
+
+--port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
 
 
 main =
@@ -110,13 +111,14 @@ getItemTreeLabelDomId tree =
 
 
 getItemTreeInputDomId : ItemTree -> String
-getItemTreeInputDomId tree =
+getItemTreeInputDomId _ =
     {- ++ ItemTree.treeId tree -}
     "item-input-dom-id-"
 
 
-cacheNewModel _ =
-    toJsCache { items = [], maybeFocusedItemId = Nothing }
+
+--cacheNewModel _ =
+--    toJsCache { items = [], maybeFocusedItemId = Nothing }
 
 
 isEditingMode model =
@@ -364,7 +366,7 @@ viewAnyTree treeVM tree =
                 viewFragmentEditor treeVM tree
 
               else
-                TreeView.viewFragment
+                UI.TreeView.viewFragment
                     { text = ItemTree.treeFragment tree |> (++) prefix
                     , isRoot = isRootTree tree treeVM
                     , isSelected = sel
@@ -401,7 +403,7 @@ itemEditorHotKeyDispatcher ke =
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
-viewFragmentEditor treeVM tree =
+viewFragmentEditor _ tree =
     input
         [ Html.Attributes.id <| getItemTreeInputDomId tree
         , cx []

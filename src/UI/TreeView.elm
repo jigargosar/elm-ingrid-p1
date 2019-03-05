@@ -1,4 +1,4 @@
-module TreeView exposing (ItemLabelProps, viewFragment)
+module UI.TreeView exposing (ItemLabelProps, viewFragment)
 
 import BasicsX exposing (..)
 import Html exposing (Html, div)
