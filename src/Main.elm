@@ -363,6 +363,8 @@ itemEditorHotKeyDispatcher ke =
             , ( HotKey.isMeta "Enter", ( Save, True ) )
             , ( HotKey.is "Escape", ( Save, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
+            , ( HotKey.isShift "Tab", ( Outdent, True ) )
+            , ( HotKey.is "Tab", ( Indent, True ) )
             ]
     in
     inputKeyMap
