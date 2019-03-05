@@ -209,7 +209,7 @@ ensureEditingSelected model =
         )
 
 
-genNewIdAndUpdateModel model =
+generateId model =
     let
         idGen : Generator String
         idGen =
@@ -222,13 +222,12 @@ genNewIdAndUpdateModel model =
         newModel =
             { model | seed = newSeed }
     in
-    ( id, newModel )
+    Update.pure ( id, newModel )
 
 
 newLine : Model -> ( Model, Cmd Msg )
 newLine model =
-    genNewIdAndUpdateModel model
-        |> Update.pure
+    generateId model
         |> Update.map
             (\( id, newModel ) ->
                 overCursor (ItemTree.appendNew id) newModel
