@@ -351,6 +351,12 @@ viewAnyTree treeVM tree =
 
         expanded =
             ItemTree.isTreeExpanded tree
+
+        isLeaf =
+            ItemTree.isTreeLeaf tree
+
+        prefix =
+            ter isLeaf "  " (ter expanded " - " " + ")
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
@@ -358,7 +364,7 @@ viewAnyTree treeVM tree =
 
           else
             TreeView.viewFragment
-                { text = ItemTree.treeFragment tree |> (++) (ter expanded "-" "+")
+                { text = ItemTree.treeFragment tree |> (++) prefix
                 , isRoot = isRootTree tree treeVM
                 , isSelected = sel
                 , attrs =

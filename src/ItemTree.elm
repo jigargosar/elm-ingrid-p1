@@ -14,6 +14,7 @@ module ItemTree exposing
     , initialCursor
     , isFragmentBlank
     , isTreeExpanded
+    , isTreeLeaf
     , moveDown
     , moveUp
     , outdent
@@ -22,6 +23,7 @@ module ItemTree exposing
     , setContent
     , treeChildren
     , treeFragment
+    , treeHasChildren
     , treeId
     )
 
@@ -324,3 +326,7 @@ isTreeExpanded tree =
 
 treeHasChildren =
     Tree.children >> List.head >> Maybe.Extra.isJust
+
+
+isTreeLeaf =
+    treeHasChildren >> not
