@@ -231,6 +231,7 @@ deleteIfEmpty zipper =
                 (\newZipper ->
                     Zipper.findNext (eqs next) newZipper
                         |> Maybe.Extra.orElseLazy (\_ -> Zipper.findPrevious (eqs next) newZipper)
+                        |> Maybe.Extra.orElseLazy (\_ -> Zipper.findFromRoot (eqs next) newZipper)
                 )
             |> Maybe.withDefault zipper
 
