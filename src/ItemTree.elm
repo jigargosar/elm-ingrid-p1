@@ -91,8 +91,23 @@ isExpanded =
 
 forward zipper =
     zipper
-        |> ifElse isExpanded Zipper.forward Zipper.nextSibling
+        |> ifElse (\nz -> isExpanded nz || isLeaf nz)
+            Zipper.forward
+            (Zipper.nextSibling
+                >> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent zipper)
+            )
         |> Maybe.withDefault zipper
+
+
+nextSiblingOfParent : ItemTreeCursor -> Maybe ItemTreeCursor
+nextSiblingOfParent zipper =
+    if isRoot zipper then
+        Just zipper
+
+    else
+        zipper
+            |> Zipper.parent
+            |> Maybe.andThen (\nz -> Zipper.nextSibling nz |> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent nz))
 
 
 appendNew : String -> ItemTreeCursor -> ItemTreeCursor
