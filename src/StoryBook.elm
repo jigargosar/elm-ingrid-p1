@@ -64,6 +64,15 @@ type alias ItemLabelProps =
     }
 
 
+concatIf : Bool -> List a -> List a -> List a
+concatIf bool l1 l2 =
+    if bool then
+        l1 ++ l2
+
+    else
+        l2
+
+
 viewItemLabel props =
     let
         nonRootC =
@@ -83,11 +92,7 @@ viewItemLabel props =
                 nonRootC
 
         finalC =
-            if props.isSelected then
-                baseC ++ selectedC
-
-            else
-                baseC
+            baseC |> concatIf props.isSelected selectedC
     in
     div [ cx finalC ] [ t props.text ]
 
