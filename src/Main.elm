@@ -201,9 +201,7 @@ ensureFocusCmd model =
 
 ensureEditingSelected model =
     if model.viewMode == EditingSelected then
-        ( model
-        , Cmd.batch []
-        )
+        ( model, Cmd.none )
 
     else
         ( { model | viewMode = EditingSelected }
