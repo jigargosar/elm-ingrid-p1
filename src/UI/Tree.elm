@@ -18,10 +18,10 @@ viewFragment : ItemLabelProps msg -> Html msg
 viewFragment props =
     let
         nonRootC =
-            [ dib, pa1, bg_white, br1 ]
+            [ dib, ph1, bg_white, br1 ]
 
         rootC =
-            [ dib, pa2, f4, bg_white, br1 ]
+            [ dib, pv2, f4, bg_white, br1 ]
 
         selectedC =
             [ bg_light_red, white ]
