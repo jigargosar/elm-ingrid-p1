@@ -221,11 +221,12 @@ deleteIfEmpty zipper =
         let
             maybeNext : Maybe Item
             maybeNext =
-                Zipper.forward zipper
+                Zipper.nextSibling zipper
                     |> Maybe.Extra.orElseLazy (\_ -> Zipper.backward zipper)
                     |> Maybe.map (Zipper.tree >> Tree.label)
         in
         maybeNext
+            |> Debug.log "maybeNext"
             |> Maybe.andThen
                 (\next ->
                     Zipper.removeTree zipper
