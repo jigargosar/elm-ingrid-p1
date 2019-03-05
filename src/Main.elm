@@ -118,10 +118,7 @@ update message model =
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
 
         InitReceived ->
-            ( model
-            , Cmd.batch
-                []
-            )
+            ( model, Cmd.none )
 
         InputKeyEventReceived keyEvent ->
             let
