@@ -65,7 +65,21 @@ type alias ItemLabelProps =
 
 
 viewItemLabel props =
-    div [ cx [ pa3, ma3, f4, bg_white ] ] [ t props.text ]
+    let
+        defaultC =
+            [ pa3, ma3, f4, bg_white ]
+
+        selectedC =
+            [ bg_light_red, white ]
+
+        finalC =
+            if props.isSelected then
+                defaultC ++ selectedC
+
+            else
+                defaultC
+    in
+    div [ cx finalC ] [ t props.text ]
 
 
 view : Model -> Html Msg
