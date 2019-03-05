@@ -16,7 +16,7 @@ import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
-import UI.TreeView
+import UI.Tree
 import Update
 import V exposing (co, cx, t, viewIf)
 
@@ -366,7 +366,7 @@ viewAnyTree treeVM tree =
                 viewFragmentEditor treeVM tree
 
               else
-                UI.TreeView.viewFragment
+                UI.Tree.viewFragment
                     { text = ItemTree.treeFragment tree |> (++) prefix
                     , isRoot = isRootTree tree treeVM
                     , isSelected = sel
