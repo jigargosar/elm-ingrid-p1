@@ -66,18 +66,28 @@ type alias ItemLabelProps =
 
 viewItemLabel props =
     let
-        defaultC =
-            [ pa2, mv1, f5, bg_white ]
+        nonRootC =
+            [ pa1, mv1, bg_white ]
+
+        rootC =
+            [ f4, pa2, mv1, bg_white ]
 
         selectedC =
             [ bg_light_red, white ]
 
-        finalC =
-            if props.isSelected then
-                defaultC ++ selectedC
+        baseC =
+            if props.isRoot then
+                rootC
 
             else
-                defaultC
+                nonRootC
+
+        finalC =
+            if props.isSelected then
+                baseC ++ selectedC
+
+            else
+                baseC
     in
     div [ cx finalC ] [ t props.text ]
 
@@ -121,6 +131,8 @@ rootItemLabelStories =
             viewItemLabel defaultP
         , Story.add "selected root" <|
             viewItemLabel selectedP
-        , Story.add "another unselected root" <|
-            viewItemLabel { defaultP | text = "I am another plain ROOT label" }
+        , Story.add "long unselected root" <|
+            viewItemLabel { defaultP | text = "I am long unselected ROOT label" }
+        , Story.add "long selected root" <|
+            viewItemLabel { selectedP | text = "I am long selected ROOT label" }
         ]
