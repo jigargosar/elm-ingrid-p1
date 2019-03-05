@@ -348,14 +348,14 @@ viewItemForest isEditing selected forest =
         )
 
 
-viewItemTree isEditing selected tree =
+viewItemTree isEditingMode selected tree =
     div []
-        [ if isEditing && selected == tree then
+        [ if isEditingMode && selected == tree then
             viewEditItemLabel tree
 
           else
             viewItemTreeLabel selected tree
-        , viewItemForest isEditing selected (ItemTree.treeChildren tree)
+        , viewItemForest isEditingMode selected (ItemTree.treeChildren tree)
         ]
 
 
