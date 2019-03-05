@@ -354,12 +354,12 @@ viewItemTree isEditing selected tree =
             viewEditItemLabel tree
 
           else
-            viewItemLabel selected tree
+            viewItemTreeLabel selected tree
         , viewItemForest isEditing selected (ItemTree.treeChildren tree)
         ]
 
 
-viewItemLabel selected tree =
+viewItemTreeLabel selected tree =
     let
         labelClasses =
             let
