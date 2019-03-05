@@ -1,5 +1,6 @@
 port module Main exposing (main)
 
+import BasicsX exposing (..)
 import Browser
 import Browser.Dom
 import Browser.Events
@@ -151,10 +152,6 @@ update message model =
                 |> Maybe.Extra.orElseLazy (\_ -> findMapping globalKeyMap)
                 |> Maybe.map (\( _, mFn ) -> mFn model)
                 |> Maybe.withDefault ( model, Cmd.none )
-
-
-applyTo =
-    (|>)
 
 
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
