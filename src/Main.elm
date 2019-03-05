@@ -113,6 +113,19 @@ cacheNewModel _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
+        InitReceived ->
+            ( model, ensureFocusCmd model )
+
+        GlobalKeyDown keyEvent ->
+            let
+                {- _ =
+                   Debug.log "KeyDownReceived" keyEvent
+                -}
+                _ =
+                    1
+            in
+            ( model, ensureFocusCmd model )
+
         NOP ->
             ( model, Cmd.none )
 
@@ -160,19 +173,6 @@ update message model =
 
         LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
-
-        InitReceived ->
-            ( model, ensureFocusCmd model )
-
-        GlobalKeyDown keyEvent ->
-            let
-                {- _ =
-                   Debug.log "KeyDownReceived" keyEvent
-                -}
-                _ =
-                    1
-            in
-            ( model, ensureFocusCmd model )
 
 
 focusInputCmd model =
