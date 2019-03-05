@@ -198,14 +198,6 @@ initEditingMode model =
     )
 
 
-ensureEditInputFocusCmd model =
-    if model.viewMode == EditingSelected then
-        Cmd.batch [ focusInputCmd model ]
-
-    else
-        Cmd.batch []
-
-
 ensureFocusCmd model =
     if model.viewMode == EditingSelected then
         Cmd.batch [ focusInputCmd model ]
@@ -226,34 +218,34 @@ edit model =
 
 moveUp model =
     Update.pure (overCursor ItemTree.moveUp model)
-        |> Update.effect ensureEditInputFocusCmd
+        |> Update.effect ensureFocusCmd
 
 
 moveDown model =
     Update.pure (overCursor ItemTree.moveDown model)
-        |> Update.effect ensureEditInputFocusCmd
+        |> Update.effect ensureFocusCmd
 
 
 indent model =
     ( overCursor ItemTree.indent model
-    , ensureEditInputFocusCmd model
+    , ensureFocusCmd model
     )
 
 
 outdent model =
     ( overCursor ItemTree.outdent model
-    , ensureEditInputFocusCmd model
+    , ensureFocusCmd model
     )
 
 
 selectPrev model =
     Update.pure (overCursor ItemTree.backward model)
-        |> Update.effect ensureEditInputFocusCmd
+        |> Update.effect ensureFocusCmd
 
 
 selectNext model =
     Update.pure (overCursor ItemTree.forward model)
-        |> Update.effect ensureEditInputFocusCmd
+        |> Update.effect ensureFocusCmd
 
 
 withNewId fn model =
