@@ -8,7 +8,7 @@ import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
 import Html.Attributes exposing (tabindex, value)
 import Html.Events exposing (onInput)
-import ItemTree exposing (Item, ItemTree, ItemTreeCursor)
+import ItemTree exposing (Item, ItemCursor, ItemTree)
 import Json.Decode exposing (Decoder)
 import List.Extra
 import Maybe.Extra
@@ -46,7 +46,7 @@ type ViewMode
 
 type alias Model =
     { maybeFocusedItemId : Maybe String
-    , cursor : ItemTreeCursor
+    , cursor : ItemCursor
     , viewMode : ViewMode
     , seed : Random.Seed
     }
@@ -66,7 +66,7 @@ init flags =
         }
 
 
-overCursor : (ItemTreeCursor -> ItemTreeCursor) -> Model -> Model
+overCursor : (ItemCursor -> ItemCursor) -> Model -> Model
 overCursor fn model =
     { model | cursor = fn model.cursor }
 
@@ -302,7 +302,7 @@ viewAnyTreeContainer model =
 
 type alias TreeViewModel =
     { isEditingMode : Bool
-    , cursor : ItemTreeCursor
+    , cursor : ItemCursor
     }
 
 

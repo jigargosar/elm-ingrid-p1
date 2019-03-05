@@ -1,7 +1,7 @@
 module ItemTree exposing
     ( Item
+    , ItemCursor
     , ItemTree
-    , ItemTreeCursor
     , appendNew
     , backward
     , canTreeCollapse
@@ -51,7 +51,7 @@ type alias ItemTree =
     Tree.Tree Item
 
 
-type alias ItemTreeCursor =
+type alias ItemCursor =
     Zipper Item
 
 
@@ -60,12 +60,12 @@ initialRoot =
     Tree.singleton { id = "ROOT_ITEM_ID", fragment = "Root", collapsed = False }
 
 
-initialCursor : ItemTreeCursor
+initialCursor : ItemCursor
 initialCursor =
     Zipper.fromTree initialRoot
 
 
-rootTree : ItemTreeCursor -> ItemTree
+rootTree : ItemCursor -> ItemTree
 rootTree =
     Zipper.root >> Zipper.tree
 
@@ -80,7 +80,7 @@ treeId =
     Tree.label >> .id
 
 
-getSelectedTree : ItemTreeCursor -> ItemTree
+getSelectedTree : ItemCursor -> ItemTree
 getSelectedTree =
     Zipper.tree
 
@@ -95,7 +95,7 @@ forward zipper =
         |> Maybe.withDefault zipper
 
 
-nextSiblingOfParent : ItemTreeCursor -> Maybe ItemTreeCursor
+nextSiblingOfParent : ItemCursor -> Maybe ItemCursor
 nextSiblingOfParent zipper =
     if isRoot zipper then
         Nothing
@@ -134,7 +134,7 @@ lastVisibleDescendentOrSelf z =
         z
 
 
-appendNew : String -> ItemTreeCursor -> ItemTreeCursor
+appendNew : String -> ItemCursor -> ItemCursor
 appendNew id zipper =
     let
         newTree =
@@ -151,7 +151,7 @@ appendNew id zipper =
         |> Maybe.withDefault newZipper
 
 
-prependNew : String -> ItemTreeCursor -> ItemTreeCursor
+prependNew : String -> ItemCursor -> ItemCursor
 prependNew id zipper =
     if isRoot zipper then
         appendNew id zipper
@@ -254,12 +254,12 @@ isNotRoot =
     isRoot >> not
 
 
-getFragment : ItemTreeCursor -> String
+getFragment : ItemCursor -> String
 getFragment =
     Zipper.label >> .fragment
 
 
-isFragmentBlank : ItemTreeCursor -> Bool
+isFragmentBlank : ItemCursor -> Bool
 isFragmentBlank =
     getFragment >> String.trim >> String.isEmpty
 
