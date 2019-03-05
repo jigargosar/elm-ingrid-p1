@@ -58,6 +58,6 @@ update message model =
 
 view : Model -> Html Msg
 view model =
-    co [ sans_serif, "us-none", ma0, min_vh_100, flex, flex_column ]
+    co [ sans_serif, ma0, min_vh_100, flex, flex_column ]
         [ t "Story Book"
         ]
