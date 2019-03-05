@@ -73,6 +73,23 @@ concatIf bool l1 l2 =
         l2
 
 
+ifElse cFn tFn fFn val =
+    if cFn val then
+        tFn val
+
+    else
+        fFn val
+
+
+ter : Bool -> a -> a -> a
+ter bool v1 v2 =
+    if bool then
+        v1
+
+    else
+        v2
+
+
 viewItemLabel props =
     let
         nonRootC =
@@ -84,15 +101,9 @@ viewItemLabel props =
         selectedC =
             [ bg_light_red, white ]
 
-        baseC =
-            if props.isRoot then
-                rootC
-
-            else
-                nonRootC
-
         finalC =
-            baseC |> concatIf props.isSelected selectedC
+            ter props.isRoot rootC nonRootC
+                |> concatIf props.isSelected selectedC
     in
     div [ cx finalC ] [ t props.text ]
 
