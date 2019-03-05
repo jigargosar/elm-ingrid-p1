@@ -230,9 +230,7 @@ newLine =
     withNewId
         (\id model ->
             Update.pure
-                { model
-                    | cursor = ItemTree.appendNew id model.cursor
-                }
+                (overCursor (ItemTree.appendNew id) model)
                 |> Update.andThen ensureEditingSelected
         )
 
