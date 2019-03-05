@@ -116,11 +116,11 @@ rootItemLabelStories =
         selectedP =
             { defaultP | isSelected = True }
     in
-    Story.of_ "ItemLabel root"
-        [ Story.add "with defaultProps" <|
+    Story.of_ "ItemLabel"
+        [ Story.add "unselected root" <|
             viewItemLabel defaultP
-        , Story.add "with selected" <|
+        , Story.add "selected root" <|
             viewItemLabel { selectedP | text = "I should be Selected" }
-        , Story.add "with another defaultProps example" <|
+        , Story.add "another unselected root" <|
             viewItemLabel { defaultP | text = "I am another plain label" }
         ]
