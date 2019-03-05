@@ -395,9 +395,6 @@ viewLine vm tree =
 
 viewFragment vm tree =
     let
-        sel =
-            isSelectedTree tree vm
-
         canCollapse =
             ItemTree.canTreeCollapse tree
 
@@ -410,7 +407,7 @@ viewFragment vm tree =
     UI.Tree.viewFragment
         { text = ItemTree.treeFragment tree |> (++) prefix
         , isRoot = isRootTree tree vm
-        , isSelected = sel
+        , isSelected = isSelectedTree tree vm
         , attrs =
             [ Html.Attributes.id <| getItemTreeLabelDomId tree
             , tabindex 0
