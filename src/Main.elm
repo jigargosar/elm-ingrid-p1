@@ -89,9 +89,9 @@ type Msg
     | SaveLine
 
 
-getItemDomId : Item -> String
-getItemDomId item =
-    "item-id-" ++ item.id
+getItemTreeLabelDomId : ItemTree -> String
+getItemTreeLabelDomId tree =
+    "item-id-" ++ ItemTree.treeId tree
 
 
 getItemTreeInputDomId : ItemTree -> String
@@ -385,9 +385,13 @@ viewAnyTree treeVM tree =
                 { text = ItemTree.treeFragment tree
                 , isRoot = isRootTree tree treeVM
                 , isSelected = sel
-                , attrs = [ tabindex 0, HotKey.preventDefaultOnKeyDownEvent itemHotKeyDispatcher ]
+                , attrs =
+                    [ Html.Attributes.id <| getItemTreeLabelDomId tree
+                    , tabindex 0
+                    , HotKey.preventDefaultOnKeyDownEvent itemHotKeyDispatcher
+                    ]
                 }
-        , div [ classes [ pl3 ] ]
+        , div [ classes [ pl3, pt2 ] ]
             (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
 
