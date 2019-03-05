@@ -64,6 +64,17 @@ view model =
         ]
 
 
+type alias Story msg =
+    { title : String
+    , view : Html msg
+    }
+
+
+story : String -> Html msg -> Story msg
+story title view_ =
+    { title = title, view = view_ }
+
+
 storyContainer =
     div
         [ cx
