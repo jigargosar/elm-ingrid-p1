@@ -383,8 +383,8 @@ isRootTree tree treeVM =
     ItemTree.rootTree treeVM.cursor == tree
 
 
-itemHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
-itemHotKeyDispatcher ke =
+itemLabelHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
+itemLabelHotKeyDispatcher ke =
     let
         labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         labelKeyMap =
@@ -400,7 +400,7 @@ itemHotKeyDispatcher ke =
     labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
-        |> Debug.log "itemHotKeyDispatcher"
+        |> Debug.log "itemLabelHotKeyDispatcher"
 
 
 viewAnyTree treeVM tree =
@@ -420,7 +420,7 @@ viewAnyTree treeVM tree =
                 , attrs =
                     [ Html.Attributes.id <| getItemTreeLabelDomId tree
                     , tabindex 0
-                    , HotKey.preventDefaultOnKeyDownEvent itemHotKeyDispatcher
+                    , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
                     ]
                 }
         , div [ classes [ pl3, pt2 ] ]
