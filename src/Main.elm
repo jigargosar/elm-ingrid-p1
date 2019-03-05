@@ -363,6 +363,7 @@ viewAnyTree treeVM tree =
                 { text = ItemTree.treeFragment tree
                 , isRoot = isRootTree tree treeVM
                 , isSelected = isSelectedTree tree treeVM
+                , attrs = []
                 }
         , div [ classes [ pl3 ] ]
             (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))

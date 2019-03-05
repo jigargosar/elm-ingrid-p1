@@ -6,14 +6,15 @@ import Tachyons.Classes exposing (..)
 import V exposing (cx, t)
 
 
-type alias ItemLabelProps =
+type alias ItemLabelProps msg =
     { text : String
     , isRoot : Bool
     , isSelected : Bool
+    , attrs : List (Html.Attribute msg)
     }
 
 
-viewItemLabel : ItemLabelProps -> Html msg
+viewItemLabel : ItemLabelProps msg -> Html msg
 viewItemLabel props =
     let
         nonRootC =
