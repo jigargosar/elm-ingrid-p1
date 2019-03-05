@@ -6,7 +6,7 @@ import Browser.Dom
 import Browser.Events
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, textarea)
-import Html.Attributes exposing (style, value)
+import Html.Attributes exposing (style, tabindex, value)
 import Html.Events exposing (onInput)
 import ItemTree exposing (Item, ItemTree, ItemTreeCursor)
 import Json.Decode exposing (Decoder)
@@ -372,6 +372,10 @@ itemHotKeyDispatcher ke =
 
 
 viewAnyTree treeVM tree =
+    let
+        sel =
+            isSelectedTree tree treeVM
+    in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
             viewAnyTreeDisplayLabel treeVM tree
@@ -380,8 +384,8 @@ viewAnyTree treeVM tree =
             TreeView.viewItemLabel
                 { text = ItemTree.treeFragment tree
                 , isRoot = isRootTree tree treeVM
-                , isSelected = isSelectedTree tree treeVM
-                , attrs = [ HotKey.preventDefaultOnKeyDownEvent itemHotKeyDispatcher ]
+                , isSelected = sel
+                , attrs = [ tabindex 0, HotKey.preventDefaultOnKeyDownEvent itemHotKeyDispatcher ]
                 }
         , div [ classes [ pl3 ] ]
             (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
