@@ -354,7 +354,7 @@ isRootTree tree treeVM =
 
 
 viewAnyTree treeVM tree =
-    div [ classes [ flex, flex_column ] ]
+    div [ classes [] ]
         [ if isEditingTree tree treeVM then
             viewAnyTreeDisplayLabel treeVM tree
 
