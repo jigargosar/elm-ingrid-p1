@@ -1,4 +1,4 @@
-module UI.Tree exposing (ItemLabelProps, viewFragment)
+module UI.Tree exposing (FragmentProps, viewFragment)
 
 import BasicsX exposing (..)
 import Html exposing (Html, div)
@@ -6,7 +6,7 @@ import Tachyons.Classes exposing (..)
 import V exposing (cx, t)
 
 
-type alias ItemLabelProps msg =
+type alias FragmentProps msg =
     { text : String
     , isRoot : Bool
     , isSelected : Bool
@@ -14,7 +14,7 @@ type alias ItemLabelProps msg =
     }
 
 
-viewFragment : ItemLabelProps msg -> Html msg
+viewFragment : FragmentProps msg -> Html msg
 viewFragment props =
     let
         nonRootC =
