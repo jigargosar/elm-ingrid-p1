@@ -67,10 +67,10 @@ type alias ItemLabelProps =
 viewItemLabel props =
     let
         nonRootC =
-            [ pa1, mv1, bg_white ]
+            [ pa1, bg_white ]
 
         rootC =
-            [ f4, pa2, mv1, bg_white ]
+            [ f4, pa2, bg_white ]
 
         selectedC =
             [ bg_light_red, white ]
