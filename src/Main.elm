@@ -393,6 +393,12 @@ viewLine vm tree =
     div [] [ viewFragment vm tree ]
 
 
+type ExpandIndicator
+    = NoChildren
+    | Expanded
+    | Collapsed
+
+
 viewFragment vm tree =
     let
         canCollapse =
