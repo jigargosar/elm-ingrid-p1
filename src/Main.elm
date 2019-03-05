@@ -346,40 +346,22 @@ itemLabelHotKeyDispatcher ke =
         |> Debug.log "itemLabelHotKeyDispatcher"
 
 
-viewAnyTree treeVM tree =
+viewAnyTree vm tree =
     let
-        sel =
-            isSelectedTree tree treeVM
-
         canCollapse =
             ItemTree.canTreeCollapse tree
-
-        canExpand =
-            ItemTree.canTreeExpand tree
-
-        prefix =
-            ter canExpand " + " (ter canCollapse " - " "   ")
     in
     div [ classes [] ]
         [ div [ cx [ mb1 ] ]
-            [ if isEditingTree tree treeVM then
-                viewFragmentEditor treeVM tree
+            [ if isEditingTree tree vm then
+                viewFragmentEditor vm tree
 
               else
-                UI.Tree.viewFragment
-                    { text = ItemTree.treeFragment tree |> (++) prefix
-                    , isRoot = isRootTree tree treeVM
-                    , isSelected = sel
-                    , attrs =
-                        [ Html.Attributes.id <| getItemTreeLabelDomId tree
-                        , tabindex 0
-                        , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
-                        ]
-                    }
+                viewFragment vm tree
             ]
         , viewIf canCollapse <|
             div [ classes [ pl3 ] ]
-                (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
+                (List.map (viewAnyTree vm) (ItemTree.treeChildren tree))
         ]
 
 
@@ -401,6 +383,32 @@ itemEditorHotKeyDispatcher ke =
         |> Maybe.map Tuple.second
         |> Maybe.Extra.orElse (Just ( NOP, False ))
         |> Debug.log "itemEditorHotKeyDispatcher"
+
+
+viewFragment vm tree =
+    let
+        sel =
+            isSelectedTree tree vm
+
+        canCollapse =
+            ItemTree.canTreeCollapse tree
+
+        canExpand =
+            ItemTree.canTreeExpand tree
+
+        prefix =
+            ter canExpand " + " (ter canCollapse " - " "   ")
+    in
+    UI.Tree.viewFragment
+        { text = ItemTree.treeFragment tree |> (++) prefix
+        , isRoot = isRootTree tree vm
+        , isSelected = sel
+        , attrs =
+            [ Html.Attributes.id <| getItemTreeLabelDomId tree
+            , tabindex 0
+            , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
+            ]
+        }
 
 
 viewFragmentEditor _ tree =
