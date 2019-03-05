@@ -1,4 +1,4 @@
-module BasicsX exposing (applyTo, concatIf, ifElse, ter)
+module BasicsX exposing (applyTo, concatIf, defaultEmptyStringTo, ifElse, ter)
 
 
 concatIf : Bool -> List a -> List a -> List a
@@ -29,3 +29,11 @@ ter bool v1 v2 =
 
 applyTo =
     (|>)
+
+
+defaultEmptyStringTo def str =
+    if String.isEmpty str then
+        def
+
+    else
+        str

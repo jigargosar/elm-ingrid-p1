@@ -29,5 +29,8 @@ viewItemLabel props =
         finalC =
             ter props.isRoot rootC nonRootC
                 |> concatIf props.isSelected selectedC
+
+        renderText =
+            defaultEmptyStringTo "Untitled" props.text
     in
-    div ([ cx finalC ] ++ props.attrs) [ t props.text ]
+    div ([ cx finalC ] ++ props.attrs) [ t renderText ]
