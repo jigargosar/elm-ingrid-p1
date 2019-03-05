@@ -9,6 +9,7 @@ module ItemTree exposing
     , getSelectedTree
     , indent
     , initialCursor
+    , isFragmentBlank
     , moveDown
     , moveUp
     , outdent
@@ -213,8 +214,8 @@ getFragment =
     Zipper.label >> .fragment
 
 
-isFragmentEmpty : ItemTreeCursor -> Bool
-isFragmentEmpty =
+isFragmentBlank : ItemTreeCursor -> Bool
+isFragmentBlank =
     getFragment >> String.trim >> String.isEmpty
 
 
@@ -223,7 +224,7 @@ isLeaf =
 
 
 deleteIfEmptyAndLeaf zipper =
-    if isLeaf zipper && isFragmentEmpty zipper then
+    if isLeaf zipper && isFragmentBlank zipper then
         let
             maybeNext : Maybe Item
             maybeNext =
