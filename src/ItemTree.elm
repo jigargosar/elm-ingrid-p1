@@ -93,7 +93,7 @@ forward zipper =
         |> ifElse (\nz -> isExpanded nz || isLeaf nz)
             Zipper.forward
             (Zipper.nextSibling
-                >> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent zipper)
+                >> orl (\_ -> nextSiblingOfParent zipper)
             )
         |> Maybe.withDefault zipper
 
@@ -109,7 +109,7 @@ nextSiblingOfParent zipper =
             |> Maybe.andThen
                 (\nz ->
                     Zipper.nextSibling nz
-                        |> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent nz)
+                        |> orl (\_ -> nextSiblingOfParent nz)
                 )
 
 
@@ -284,7 +284,7 @@ delete zipper =
         maybeNext : Maybe Item
         maybeNext =
             Zipper.nextSibling zipper
-                |> Maybe.Extra.orElseLazy (\_ -> Zipper.backward zipper)
+                |> orl (\_ -> Zipper.backward zipper)
                 |> Maybe.map Zipper.label
     in
     maybeNext
@@ -295,8 +295,8 @@ delete zipper =
                     |> Maybe.andThen
                         (\newZipper ->
                             Zipper.findNext (eqs next) newZipper
-                                |> Maybe.Extra.orElseLazy (\_ -> Zipper.findPrevious (eqs next) newZipper)
-                                |> Maybe.Extra.orElseLazy (\_ -> Zipper.findFromRoot (eqs next) newZipper)
+                                |> orl (\_ -> Zipper.findPrevious (eqs next) newZipper)
+                                |> orl (\_ -> Zipper.findFromRoot (eqs next) newZipper)
                         )
             )
         |> Maybe.withDefault zipper
@@ -314,9 +314,13 @@ expand =
     Zipper.mapLabel (\item -> { item | collapsed = False })
 
 
-isTreeExpanded =
-    isTreeCollapsed >> not
+isTreeExpanded tree =
+    let
+        item =
+            Tree.label tree
+    in
+    treeHasChildren tree && not item.collapsed
 
 
-isTreeCollapsed =
-    Tree.label >> .collapsed
+treeHasChildren =
+    Tree.children >> List.head >> Maybe.Extra.isJust
