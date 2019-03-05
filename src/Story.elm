@@ -1,4 +1,4 @@
-module Story exposing (Story, add, of_, storyContainer, viewBook, viewStories, viewStory)
+module Story exposing (Story, add, of_, storyContainer, viewBook, viewStory)
 
 import Html exposing (Html, div)
 import Tachyons.Classes exposing (..)
@@ -30,14 +30,6 @@ viewStoryGroup sg =
         [ div [ cx [ pa3 ] ] [ t sg.title ]
         , div [ cx [ flex, flex_column, flex_grow_1 ] ] <|
             List.map viewStory sg.stories
-        ]
-
-
-viewStories storyList =
-    co [ sans_serif, ma0, min_vh_100, flex, flex_column ]
-        [ t "Story Book"
-        , div [ cx [ flex, flex_column, flex_grow_1 ] ] <|
-            List.map viewStory storyList
         ]
 
 
