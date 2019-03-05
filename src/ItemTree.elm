@@ -51,23 +51,9 @@ type alias ItemTree =
     Tree.Tree Item
 
 
-type alias ItemCursor =
-    Zipper Item
-
-
 initialRoot : ItemTree
 initialRoot =
     Tree.singleton { id = "ROOT_ITEM_ID", fragment = "Root", collapsed = False }
-
-
-initialCursor : ItemCursor
-initialCursor =
-    Zipper.fromTree initialRoot
-
-
-rootTree : ItemCursor -> ItemTree
-rootTree =
-    Zipper.root >> Zipper.tree
 
 
 treeFragment : ItemTree -> Fragment
@@ -78,6 +64,29 @@ treeFragment =
 treeId : ItemTree -> Fragment
 treeId =
     Tree.label >> .id
+
+
+createEmptyNode : String -> ItemTree
+createEmptyNode id =
+    Tree.singleton { id = id, fragment = "", collapsed = False }
+
+
+
+--- ITEM Cursor Code ----
+
+
+type alias ItemCursor =
+    Zipper Item
+
+
+initialCursor : ItemCursor
+initialCursor =
+    Zipper.fromTree initialRoot
+
+
+rootTree : ItemCursor -> ItemTree
+rootTree =
+    Zipper.root >> Zipper.tree
 
 
 getSelectedTree : ItemCursor -> ItemTree
@@ -164,11 +173,6 @@ prependNew id zipper =
         Zipper.prepend newTree zipper
             |> Zipper.findPrevious (eqs (Tree.label newTree))
             |> Maybe.withDefault zipper
-
-
-createEmptyNode : String -> ItemTree
-createEmptyNode id =
-    Tree.singleton { id = id, fragment = "", collapsed = False }
 
 
 treeChildren : ItemTree -> List ItemTree
