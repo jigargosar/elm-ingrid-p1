@@ -298,7 +298,7 @@ view model =
             , viewShortcutHint "Move Up" "Cmd+Up"
             , viewShortcutHint "Move Down" "Cmd+Down"
             ]
-        , viewCursor model
+        , viewTree model
         ]
 
 
@@ -309,7 +309,7 @@ viewShortcutHint label shortcut =
         ]
 
 
-viewCursor model =
+viewTree model =
     let
         root =
             ItemTree.rootTree model.cursor
