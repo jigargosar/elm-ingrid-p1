@@ -333,8 +333,8 @@ itemLabelHotKeyDispatcher ke =
             , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
             , ( HotKey.isShift "Tab", ( Outdent, True ) )
             , ( HotKey.is "Tab", ( Indent, True ) )
-            , ( HotKey.is "Left", ( Collapse, True ) )
-            , ( HotKey.is "Right", ( Expand, True ) )
+            , ( HotKey.is "ArrowLeft", ( Collapse, True ) )
+            , ( HotKey.is "ArrowRight", ( Expand, True ) )
             , ( HotKey.is "Delete", ( Delete, True ) )
             ]
     in
@@ -355,7 +355,7 @@ viewAnyTree treeVM tree =
 
           else
             TreeView.viewFragment
-                { text = ItemTree.treeFragment tree |> (++) (ter (ItemTree.isTreeExpanded tree) "+" "-")
+                { text = ItemTree.treeFragment tree |> (++) (ter (ItemTree.isTreeExpanded tree) "-" "+")
                 , isRoot = isRootTree tree treeVM
                 , isSelected = sel
                 , attrs =
