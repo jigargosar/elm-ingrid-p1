@@ -56,11 +56,19 @@ update message model =
 -- VIEW
 
 
+stories =
+    [ story "ItemLabel" <| viewItemLabel "I M L" True True
+    , story "ItemLabel1" <| viewItemLabel "I M L" True True
+    , story "ItemLabel2" <| viewItemLabel "I M L" True True
+    ]
+
+
 view : Model -> Html Msg
 view model =
     co [ sans_serif, ma0, min_vh_100, flex, flex_column ]
         [ t "Story Book"
-        , storyContainer <| [ viewItemLabel "I M L" True True ]
+        , div [ cx [ flex, flex_column, flex_grow_1 ] ] <|
+            List.map viewStory stories
         ]
 
 
@@ -89,6 +97,13 @@ storyContainer =
             , b__black_50
             , br1
             ]
+        ]
+
+
+viewStory s =
+    div [ cx [] ]
+        [ t s.title
+        , storyContainer [ s.view ]
         ]
 
 
