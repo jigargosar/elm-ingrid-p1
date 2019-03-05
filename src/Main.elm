@@ -88,6 +88,7 @@ type Msg
     | NewLine
     | SaveLine
     | Prev
+    | Edit
     | Next
     | MoveUp
     | MoveDown
@@ -119,6 +120,9 @@ update message model =
 
         SaveLine ->
             saveEditingLine model
+
+        Edit ->
+            edit model
 
         Prev ->
             selectPrev model
@@ -385,7 +389,7 @@ itemHotKeyDispatcher ke =
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
             [ ( HotKey.is "Enter", ( NewLine, True ) )
-            , ( HotKey.is " ", ( NOP, True ) )
+            , ( HotKey.is " ", ( Edit, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
             , ( HotKey.is "ArrowUp", ( Prev, True ) )
             , ( HotKey.is "ArrowDown", ( Next, True ) )
