@@ -359,22 +359,24 @@ viewAnyTree treeVM tree =
             ter canExpand " + " (ter canCollapse " - " "   ")
     in
     div [ classes [] ]
-        [ if isEditingTree tree treeVM then
-            viewFragmentEditor treeVM tree
+        [ div [ cx [ mb1 ] ]
+            [ if isEditingTree tree treeVM then
+                viewFragmentEditor treeVM tree
 
-          else
-            TreeView.viewFragment
-                { text = ItemTree.treeFragment tree |> (++) prefix
-                , isRoot = isRootTree tree treeVM
-                , isSelected = sel
-                , attrs =
-                    [ Html.Attributes.id <| getItemTreeLabelDomId tree
-                    , tabindex 0
-                    , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
-                    ]
-                }
+              else
+                TreeView.viewFragment
+                    { text = ItemTree.treeFragment tree |> (++) prefix
+                    , isRoot = isRootTree tree treeVM
+                    , isSelected = sel
+                    , attrs =
+                        [ Html.Attributes.id <| getItemTreeLabelDomId tree
+                        , tabindex 0
+                        , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
+                        ]
+                    }
+            ]
         , viewIf canCollapse <|
-            div [ classes [ pl3, pv1 ] ]
+            div [ classes [ pl3 ] ]
                 (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
 
