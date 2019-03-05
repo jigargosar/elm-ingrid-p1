@@ -159,18 +159,7 @@ applyTo =
 
 globalKeyMap : List ( KeyEvent -> Bool, Model -> ( Model, Cmd Msg ) )
 globalKeyMap =
-    [ {- ( HotKey.is "Enter", appendNewAndStartEditing )
-         , ( HotKey.is " ", edit )
-         , ( HotKey.isShift "Enter", prependNewAndStartEditing )
-         , ( HotKey.is "ArrowUp", selectBackward )
-         , ( HotKey.is "ArrowDown", selectForward )
-         , ( HotKey.isMeta "ArrowLeft", outdent )
-         , ( HotKey.isMeta "ArrowRight", indent )
-         , ( HotKey.isMeta "ArrowUp", moveUp )
-         , ( HotKey.isMeta "ArrowDown", moveDown )
-         ,
-      -}
-      ( HotKey.isShift "Tab", outdent )
+    [ ( HotKey.isShift "Tab", outdent )
     , ( HotKey.is "Tab", indent )
     ]
 
@@ -180,8 +169,8 @@ navKeyMap =
     [ ( HotKey.is "Enter", newLine )
     , ( HotKey.is " ", edit )
     , ( HotKey.isShift "Enter", prependNewAndStartEditing )
-    , ( HotKey.is "ArrowUp", selectBackward )
-    , ( HotKey.is "ArrowDown", selectForward )
+    , ( HotKey.is "ArrowUp", selectPrev )
+    , ( HotKey.is "ArrowDown", selectNext )
     , ( HotKey.isMeta "ArrowUp", moveUp )
     , ( HotKey.isMeta "ArrowDown", moveDown )
     ]
@@ -244,12 +233,12 @@ outdent model =
     )
 
 
-selectBackward model =
+selectPrev model =
     Update.pure (overCursor ItemTree.backward model)
         |> Update.effect ensureEditInputFocusCmd
 
 
-selectForward model =
+selectNext model =
     Update.pure (overCursor ItemTree.forward model)
         |> Update.effect ensureEditInputFocusCmd
 
