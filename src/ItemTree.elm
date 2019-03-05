@@ -22,6 +22,7 @@ module ItemTree exposing
     , treeId
     )
 
+import BasicsX exposing (..)
 import Maybe.Extra
 import Tree
 import Tree.Zipper as Zipper exposing (Zipper)
@@ -126,10 +127,6 @@ backward cursor =
 forward cursor =
     Zipper.forward cursor
         |> Maybe.withDefault cursor
-
-
-eqs =
-    (==)
 
 
 indent zipper =

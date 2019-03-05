@@ -1,4 +1,8 @@
-module BasicsX exposing (applyTo, concatIf, defaultEmptyStringTo, ifElse, ter)
+module BasicsX exposing (applyTo, concatIf, defaultEmptyStringTo, eqs, ifElse, ter)
+
+
+eqs =
+    (==)
 
 
 concatIf : Bool -> List a -> List a -> List a
