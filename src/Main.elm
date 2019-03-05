@@ -351,10 +351,10 @@ viewAnyTree treeVM tree =
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
-            viewAnyTreeEditLabel treeVM tree
+            viewEditFragment treeVM tree
 
           else
-            TreeView.viewItemLabel
+            TreeView.viewFragment
                 { text = ItemTree.treeFragment tree
                 , isRoot = isRootTree tree treeVM
                 , isSelected = sel
@@ -389,7 +389,7 @@ itemEditorHotKeyDispatcher ke =
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
-viewAnyTreeEditLabel treeVM tree =
+viewEditFragment treeVM tree =
     input
         [ Html.Attributes.id <| getItemTreeInputDomId tree
         , cx []
@@ -398,10 +398,6 @@ viewAnyTreeEditLabel treeVM tree =
         , HotKey.preventDefaultOnKeyDownEvent itemEditorHotKeyDispatcher
         ]
         []
-
-
-viewAnyTreeDisplayLabel treeVM tree =
-    div [ classes [] ] []
 
 
 

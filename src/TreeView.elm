@@ -1,4 +1,4 @@
-module TreeView exposing (ItemLabelProps, viewItemLabel)
+module TreeView exposing (ItemLabelProps, viewFragment)
 
 import BasicsX exposing (..)
 import Html exposing (Html, div)
@@ -14,8 +14,8 @@ type alias ItemLabelProps msg =
     }
 
 
-viewItemLabel : ItemLabelProps msg -> Html msg
-viewItemLabel props =
+viewFragment : ItemLabelProps msg -> Html msg
+viewFragment props =
     let
         nonRootC =
             [ dib, pa1, bg_white, br1 ]

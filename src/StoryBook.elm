@@ -76,11 +76,11 @@ itemLabelStories =
     in
     Story.of_ "ItemLabel"
         [ Story.add "with defaultProps" <|
-            TreeView.viewItemLabel defaultP
+            TreeView.viewFragment defaultP
         , Story.add "with selected" <|
-            TreeView.viewItemLabel { selectedP | text = "I should be Selected" }
+            TreeView.viewFragment { selectedP | text = "I should be Selected" }
         , Story.add "with another defaultProps example" <|
-            TreeView.viewItemLabel { defaultP | text = "I am another plain label" }
+            TreeView.viewFragment { defaultP | text = "I am another plain label" }
         ]
 
 
@@ -94,11 +94,11 @@ rootItemLabelStories =
     in
     Story.of_ "ItemLabel"
         [ Story.add "unselected root" <|
-            TreeView.viewItemLabel defaultP
+            TreeView.viewFragment defaultP
         , Story.add "selected root" <|
-            TreeView.viewItemLabel selectedP
+            TreeView.viewFragment selectedP
         , Story.add "long unselected root" <|
-            TreeView.viewItemLabel { defaultP | text = "I am long unselected ROOT label" }
+            TreeView.viewFragment { defaultP | text = "I am long unselected ROOT label" }
         , Story.add "long selected root" <|
-            TreeView.viewItemLabel { selectedP | text = "I am long selected ROOT label" }
+            TreeView.viewFragment { selectedP | text = "I am long selected ROOT label" }
         ]
