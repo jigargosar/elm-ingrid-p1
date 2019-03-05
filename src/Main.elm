@@ -161,10 +161,10 @@ update message model =
             ensureEditingSelected model
 
         Collapse ->
-            ensureEditingSelected model
+            ( model |> overCursor ItemTree.collapse, Cmd.none )
 
         Expand ->
-            ensureEditingSelected model
+            ( model |> overCursor ItemTree.expand, Cmd.none )
 
         Prev ->
             Update.pure (overCursor ItemTree.backward model)
