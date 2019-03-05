@@ -60,9 +60,26 @@ view : Model -> Html Msg
 view model =
     co [ sans_serif, ma0, min_vh_100, flex, flex_column ]
         [ t "Story Book"
-        , viewItemLabel "I M L" True
+        , storyContainer <| [ viewItemLabel "I M L" True True ]
         ]
 
 
-viewItemLabel labelText isRoot =
-    div [ cx [ pa3, ma3, f4 ] ] [ t labelText ]
+storyContainer =
+    div
+        [ cx
+            [ flex_grow_1
+            , pa3
+            , ma3
+            , flex
+            , items_center
+            , justify_center
+            , bg_light_gray
+            , ba
+            , b__black_50
+            , br1
+            ]
+        ]
+
+
+viewItemLabel labelText root selected =
+    div [ cx [ pa3, ma3, f4, bg_white ] ] [ t labelText ]
