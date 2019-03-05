@@ -386,8 +386,8 @@ isRootTree tree treeVM =
 itemHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
 itemHotKeyDispatcher ke =
     let
-        inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
-        inputKeyMap =
+        labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
+        labelKeyMap =
             [ ( HotKey.is "Enter", ( NewLine, True ) )
             , ( HotKey.is " ", ( Edit, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
@@ -397,7 +397,7 @@ itemHotKeyDispatcher ke =
             , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
             ]
     in
-    inputKeyMap
+    labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
         |> Debug.log "itemHotKeyDispatcher"
