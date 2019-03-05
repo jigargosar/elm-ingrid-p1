@@ -57,11 +57,12 @@ window.addEventListener('keydown', function(event) {
   if (isHotKey('tab')(event) || isHotKey('shift+tab')(event)) {
     event.preventDefault()
   }
-  const inputEl = document.getElementById('item-input-dom-id-')
-  if (inputEl && !inputEl.hasFocus) {
-    event.preventDefault()
-    inputEl.focus()
-  }
+  // const inputEl = document.getElementById('item-input-dom-id-')
+  // if (inputEl && !inputEl.hasFocus) {
+  //   console.log(`'preventingDefault'`, 'preventingDefault')
+  //   event.preventDefault()
+  //   inputEl.focus()
+  // }
 })
 
 /* ELM APP */

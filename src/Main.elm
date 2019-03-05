@@ -5,7 +5,7 @@ import Browser
 import Browser.Dom
 import Browser.Events
 import HotKey exposing (KeyEvent)
-import Html exposing (Html, div, textarea)
+import Html exposing (Html, div, input, textarea)
 import Html.Attributes exposing (style, tabindex, value)
 import Html.Events exposing (onInput)
 import ItemTree exposing (Item, ItemTree, ItemTreeCursor)
@@ -18,7 +18,7 @@ import Tachyons.Classes exposing (..)
 import Task
 import TreeView
 import Update
-import V exposing (co, t)
+import V exposing (co, cx, t)
 
 
 port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
@@ -94,8 +94,8 @@ getItemDomId item =
     "item-id-" ++ item.id
 
 
-getItemInputDomId : ItemTree -> String
-getItemInputDomId tree =
+getItemTreeInputDomId : ItemTree -> String
+getItemTreeInputDomId tree =
     {- ++ ItemTree.treeId tree -}
     "item-input-dom-id-"
 
@@ -183,7 +183,7 @@ saveEditingLine model =
 
 
 focusInputCmd model =
-    Browser.Dom.focus (getItemInputDomId <| ItemTree.getSelectedTree model.cursor)
+    Browser.Dom.focus (getItemTreeInputDomId <| ItemTree.getSelectedTree model.cursor)
         |> Task.attempt (Debug.log "focusing master input" >> Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
@@ -368,7 +368,7 @@ itemHotKeyDispatcher ke =
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
-        |> Debug.log "itemEditorHotKeyDispatcher"
+        |> Debug.log "itemHotKeyDispatcher"
 
 
 viewAnyTree treeVM tree =
@@ -378,7 +378,7 @@ viewAnyTree treeVM tree =
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
-            viewAnyTreeDisplayLabel treeVM tree
+            viewAnyTreeEditLabel treeVM tree
 
           else
             TreeView.viewItemLabel
@@ -393,7 +393,14 @@ viewAnyTree treeVM tree =
 
 
 viewAnyTreeEditLabel treeVM tree =
-    div [ classes [] ] []
+    input
+        [ Html.Attributes.id <| getItemTreeInputDomId tree
+        , cx []
+        , value <| ItemTree.treeFragment tree
+        , onInput ContentChanged
+        , HotKey.preventDefaultOnKeyDownEvent itemEditorHotKeyDispatcher
+        ]
+        []
 
 
 viewAnyTreeDisplayLabel treeVM tree =
@@ -511,6 +518,7 @@ itemEditorHotKeyDispatcher ke =
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
+        |> Maybe.Extra.orElse (Just ( NOP, False ))
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
@@ -522,7 +530,7 @@ viewEditItemLabel tree =
     div [ classes [ dib, mv1, pa2, br1, bg_white ] ]
         [ div [ classes [ dib, relative, "pre-wrap", "break-word" ], style "min-width" "10rem" ]
             [ textarea
-                [ Html.Attributes.id (getItemInputDomId tree)
+                [ Html.Attributes.id (getItemTreeInputDomId tree)
                 , classes
                     [ pa0
                     , bn
