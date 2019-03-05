@@ -275,8 +275,12 @@ delete zipper =
         |> Maybe.withDefault zipper
 
 
-collapse =
-    Zipper.mapLabel (\item -> { item | collapsed = True })
+collapse zipper =
+    if isRoot zipper then
+        zipper
+
+    else
+        Zipper.mapLabel (\item -> { item | collapsed = True }) zipper
 
 
 expand =
