@@ -25,7 +25,13 @@ port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd
 
 
 main =
-    Browser.element { init = init, update = update, view = view, subscriptions = subscriptions }
+    Browser.element
+        { init = init
+        , update =
+            \msg -> update (Debug.log "msg" msg)
+        , view = view
+        , subscriptions = subscriptions
+        }
 
 
 
