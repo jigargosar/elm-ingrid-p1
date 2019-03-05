@@ -4,8 +4,10 @@ module ItemTree exposing
     , ItemTreeCursor
     , appendNew
     , backward
+    , collapse
     , delete
     , deleteIfEmptyAndLeaf
+    , expand
     , forward
     , getSelectedTree
     , indent
@@ -250,3 +252,11 @@ delete zipper =
                         )
             )
         |> Maybe.withDefault zipper
+
+
+collapse =
+    Zipper.mapLabel (\item -> { item | collapsed = True })
+
+
+expand =
+    Zipper.mapLabel (\item -> { item | collapsed = False })
