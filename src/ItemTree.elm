@@ -13,6 +13,7 @@ module ItemTree exposing
     , indent
     , initialCursor
     , isFragmentBlank
+    , isTreeExpanded
     , moveDown
     , moveUp
     , outdent
@@ -260,3 +261,11 @@ collapse =
 
 expand =
     Zipper.mapLabel (\item -> { item | collapsed = False })
+
+
+isTreeExpanded =
+    isTreeCollapsed >> not
+
+
+isTreeCollapsed =
+    Tree.label >> .collapsed

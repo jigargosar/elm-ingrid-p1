@@ -355,7 +355,7 @@ viewAnyTree treeVM tree =
 
           else
             TreeView.viewFragment
-                { text = ItemTree.treeFragment tree
+                { text = ItemTree.treeFragment tree |> (++) (ter (ItemTree.isTreeExpanded tree) "+" "-")
                 , isRoot = isRootTree tree treeVM
                 , isSelected = sel
                 , attrs =
