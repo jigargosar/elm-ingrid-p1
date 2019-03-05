@@ -298,7 +298,7 @@ view model =
             , viewShortcutHint "Move Up" "Cmd+Up"
             , viewShortcutHint "Move Down" "Cmd+Down"
             ]
-        , viewTree model
+        , viewTreeContainer model
         ]
 
 
@@ -309,7 +309,7 @@ viewShortcutHint label shortcut =
         ]
 
 
-viewTree model =
+viewTreeContainer model =
     let
         root =
             ItemTree.rootTree model.cursor
@@ -338,6 +338,22 @@ viewTree model =
         [ viewRootItemTreeLabel isEditing selected root
         , viewItemForest isEditing selected (ItemTree.treeChildren root)
         ]
+
+
+type alias TreeViewModel =
+    { isEditingMode : Bool
+    , selected : ItemTree
+    , cursor : ItemTreeCursor
+    }
+
+
+isEditingTree : ItemTree -> TreeViewModel -> Bool
+isEditingTree tree treeVM =
+    treeVM.selected == tree
+
+
+viewAnyTree treeVM =
+    div [ classes [] ] []
 
 
 viewItemForest : Bool -> ItemTree -> List ItemTree -> Html Msg
