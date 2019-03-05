@@ -138,6 +138,7 @@ update message model =
 
         Save ->
             ( { model | viewMode = Navigating }
+                |> overCursor ItemTree.deleteIfEmpty
             , Cmd.batch []
             )
 

@@ -4,6 +4,7 @@ module ItemTree exposing
     , ItemTreeCursor
     , appendNew
     , backward
+    , deleteIfEmpty
     , forward
     , getSelectedTree
     , indent
@@ -19,6 +20,7 @@ module ItemTree exposing
     , treeId
     )
 
+import Maybe.Extra
 import Tree
 import Tree.Zipper as Zipper exposing (Zipper)
 
@@ -91,7 +93,7 @@ appendNew id zipper =
 
 prependNew : String -> ItemTreeCursor -> ItemTreeCursor
 prependNew id zipper =
-    if zipper == Zipper.root zipper then
+    if isRoot zipper then
         appendNew id zipper
 
     else
@@ -106,7 +108,7 @@ prependNew id zipper =
 
 createEmptyNode : String -> ItemTree
 createEmptyNode id =
-    Tree.singleton { id = id, fragment = "Empty", collapsed = False }
+    Tree.singleton { id = id, fragment = "", collapsed = False }
 
 
 treeChildren : ItemTree -> List ItemTree
@@ -196,3 +198,45 @@ moveDown zipper =
 
 setContent newContent =
     Zipper.mapLabel (\label -> { label | fragment = newContent })
+
+
+isRoot zipper =
+    zipper == Zipper.root zipper
+
+
+isNotRoot =
+    isRoot >> not
+
+
+getFragment =
+    getSelectedTree >> treeFragment
+
+
+isFragmentEmpty =
+    getFragment >> String.trim >> String.isEmpty
+
+
+deleteIfEmpty zipper =
+    if isFragmentEmpty zipper then
+        {- let
+               maybeNextLabel =
+                   Zipper.forward zipper
+                       |> Maybe.Extra.orElseLazy (\_ -> Zipper.backward zipper)
+                       |> Maybe.map (Zipper.tree >> Tree.label)
+           in
+           Maybe.map2
+               (\nextLabel ->
+                   Zipper.findNext (eqs nextLabel)
+                       >> Maybe.andThen (Zipper.findPrevious (eqs nextLabel))
+                       >> Maybe.andThen (Zipper.findFromRoot (eqs nextLabel))
+               )
+               maybeNextLabel
+               (Zipper.removeTree zipper)
+               |> Maybe.andThen identity
+               |> Maybe.withDefault zipper
+        -}
+        Zipper.removeTree zipper
+            |> Maybe.withDefault zipper
+
+    else
+        zipper
