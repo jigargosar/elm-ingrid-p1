@@ -351,7 +351,7 @@ viewAnyTree treeVM tree =
     in
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
-            viewEditFragment treeVM tree
+            viewFragmentEditor treeVM tree
 
           else
             TreeView.viewFragment
@@ -389,7 +389,7 @@ itemEditorHotKeyDispatcher ke =
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
-viewEditFragment treeVM tree =
+viewFragmentEditor treeVM tree =
     input
         [ Html.Attributes.id <| getItemTreeInputDomId tree
         , cx []
