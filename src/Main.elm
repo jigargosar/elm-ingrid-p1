@@ -16,6 +16,7 @@ import Random exposing (Generator)
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
+import TreeView
 import Update
 import V exposing (co, t)
 
@@ -337,9 +338,14 @@ type alias TreeViewModel =
     }
 
 
+isSelectedTree : ItemTree -> TreeViewModel -> Bool
+isSelectedTree tree treeVM =
+    ItemTree.getSelectedTree treeVM.cursor == tree
+
+
 isEditingTree : ItemTree -> TreeViewModel -> Bool
 isEditingTree tree treeVM =
-    treeVM.isEditingMode && ItemTree.getSelectedTree treeVM.cursor == tree
+    treeVM.isEditingMode && isSelectedTree tree treeVM
 
 
 isRootTree : ItemTree -> TreeViewModel -> Bool
@@ -350,10 +356,14 @@ isRootTree tree treeVM =
 viewAnyTree treeVM tree =
     div [ classes [] ]
         [ if isEditingTree tree treeVM then
-            viewAnyTreeEditLabel treeVM tree
+            viewAnyTreeDisplayLabel treeVM tree
 
           else
-            viewAnyTreeDisplayLabel treeVM tree
+            TreeView.viewItemLabel
+                { text = ItemTree.treeFragment tree
+                , isRoot = isRootTree tree treeVM
+                , isSelected = isSelectedTree tree treeVM
+                }
         , div [ classes [ pl3 ] ]
             (List.map (viewAnyTree treeVM) (ItemTree.treeChildren tree))
         ]
