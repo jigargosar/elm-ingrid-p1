@@ -93,7 +93,7 @@ view model =
 itemLabelStories =
     let
         defaultP =
-            { text = "I am default vanilla Item Label", isSelected = False, isRoot = False }
+            { text = "I am vanilla Item Label", isSelected = False, isRoot = False }
 
         selectedP =
             { defaultP | isSelected = True }
@@ -111,7 +111,7 @@ itemLabelStories =
 rootItemLabelStories =
     let
         defaultP =
-            { text = "I am default vanilla Item Label", isSelected = False, isRoot = False }
+            { text = "Root", isSelected = False, isRoot = True }
 
         selectedP =
             { defaultP | isSelected = True }
@@ -120,7 +120,7 @@ rootItemLabelStories =
         [ Story.add "unselected root" <|
             viewItemLabel defaultP
         , Story.add "selected root" <|
-            viewItemLabel { selectedP | text = "I should be Selected" }
+            viewItemLabel selectedP
         , Story.add "another unselected root" <|
-            viewItemLabel { defaultP | text = "I am another plain label" }
+            viewItemLabel { defaultP | text = "I am another plain ROOT label" }
         ]
