@@ -80,6 +80,16 @@ getSelectedTree =
     Zipper.tree
 
 
+backward cursor =
+    Zipper.backward cursor
+        |> Maybe.withDefault cursor
+
+
+forward cursor =
+    Zipper.forward cursor
+        |> Maybe.withDefault cursor
+
+
 appendNew : String -> ItemTreeCursor -> ItemTreeCursor
 appendNew id zipper =
     let
@@ -120,16 +130,6 @@ createEmptyNode id =
 treeChildren : ItemTree -> List ItemTree
 treeChildren tree =
     Tree.children tree
-
-
-backward cursor =
-    Zipper.backward cursor
-        |> Maybe.withDefault cursor
-
-
-forward cursor =
-    Zipper.forward cursor
-        |> Maybe.withDefault cursor
 
 
 indent zipper =
