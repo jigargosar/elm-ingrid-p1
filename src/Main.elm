@@ -99,6 +99,7 @@ type Msg
     | MoveDown
     | Outdent
     | Indent
+    | Delete
 
 
 getItemTreeLabelDomId : ItemTree -> String
@@ -150,6 +151,9 @@ update message model =
 
         Save ->
             stopEditing model
+
+        Delete ->
+            ( model |> overCursor ItemTree.delete, Cmd.none )
 
         Edit ->
             ensureEditingSelected model
@@ -321,6 +325,7 @@ itemLabelHotKeyDispatcher ke =
             , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
             , ( HotKey.isShift "Tab", ( Outdent, True ) )
             , ( HotKey.is "Tab", ( Indent, True ) )
+            , ( HotKey.is "Delete", ( Delete, True ) )
             ]
     in
     labelKeyMap
