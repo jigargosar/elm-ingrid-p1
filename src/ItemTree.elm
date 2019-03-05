@@ -31,6 +31,10 @@ import Tree
 import Tree.Zipper as Zipper exposing (Zipper)
 
 
+orl =
+    Maybe.Extra.orElseLazy
+
+
 type alias Fragment =
     String
 
@@ -107,10 +111,6 @@ nextSiblingOfParent zipper =
                     Zipper.nextSibling nz
                         |> Maybe.Extra.orElseLazy (\_ -> nextSiblingOfParent nz)
                 )
-
-
-orl =
-    Maybe.Extra.orElseLazy
 
 
 backward zipper =
