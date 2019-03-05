@@ -1,9 +1,9 @@
 module StoryBook exposing (main)
 
 import Browser
-import Html exposing (Html)
+import Html exposing (Html, div)
 import Tachyons.Classes exposing (..)
-import V exposing (co, t)
+import V exposing (co, cx, t)
 
 
 main =
@@ -60,4 +60,9 @@ view : Model -> Html Msg
 view model =
     co [ sans_serif, ma0, min_vh_100, flex, flex_column ]
         [ t "Story Book"
+        , viewItemLabel "I M L" True
         ]
+
+
+viewItemLabel labelText isRoot =
+    div [ cx [ pa3, ma3, f4 ] ] [ t labelText ]

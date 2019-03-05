@@ -1,4 +1,4 @@
-module V exposing (btn, cc, co, noHtml, rr, t, tInt)
+module V exposing (btn, cc, co, cx, noHtml, rr, t, tInt)
 
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (style)
@@ -28,6 +28,10 @@ tInt i =
 
 t =
     text
+
+
+cx =
+    classes
 
 
 noHtml =
