@@ -227,7 +227,11 @@ deleteIfEmpty zipper =
                     |> (Zipper.tree >> Tree.label)
         in
         Zipper.removeTree zipper
-            |> Maybe.andThen (Zipper.findFromRoot (eqs next))
+            |> Maybe.andThen
+                (\newZipper ->
+                    Zipper.findNext (eqs next) newZipper
+                        |> Maybe.Extra.orElseLazy (\_ -> Zipper.findPrevious (eqs next) newZipper)
+                )
             |> Maybe.withDefault zipper
 
     else
