@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "sb": "parcel src/story-book.html"
   },
   "dependencies": {
     "aproba": "latest",
