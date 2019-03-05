@@ -387,6 +387,10 @@ itemHotKeyDispatcher ke =
             [ ( HotKey.is "Enter", ( NewLine, True ) )
             , ( HotKey.is " ", ( NOP, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
+            , ( HotKey.is "ArrowUp", ( Prev, True ) )
+            , ( HotKey.is "ArrowDown", ( Next, True ) )
+            , ( HotKey.isMeta "ArrowUp", ( MoveUp, True ) )
+            , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
             ]
     in
     inputKeyMap
