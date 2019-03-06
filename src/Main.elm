@@ -6,7 +6,7 @@ import Browser.Dom
 import Browser.Events
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
-import Html.Attributes exposing (tabindex, value)
+import Html.Attributes exposing (style, tabindex, value)
 import Html.Events exposing (onInput)
 import Html.Styled
 import Html.Styled.Attributes
@@ -402,9 +402,18 @@ viewLine vm tree =
             ItemTree.canTreeExpand tree
 
         prefix =
-            ter canExpand " + " (ter canCollapse " - " "   ")
+            ter canExpand "+" (ter canCollapse "-" "o")
     in
-    div [] [ viewFragment vm tree ]
+    div [ cx [ flex, inline_flex ] ]
+        [ div
+            [ cx [ flex, items_center, justify_center, lh_solid, code ]
+            , style "min-width" "32px"
+
+            --            , style "min-height" "32px"
+            ]
+            [ t prefix ]
+        , viewFragment vm tree
+        ]
 
 
 viewFragment vm tree =
