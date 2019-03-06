@@ -223,7 +223,7 @@ loadEncodedCursor encodedCursor model =
             ( model, toJsError [ "Decode Error: Cursor", errorToString error ] )
 
         loadCursor cursor =
-            ( overCursor (always cursor) model, Cmd.none )
+            ( overCursor (always cursor) model, toJsError [ "Decode Error: Cursor", "Just Kidding" ] )
     in
     encodedCursor
         |> decodeValue Item.Zipper.decoder
