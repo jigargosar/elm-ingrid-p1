@@ -145,12 +145,10 @@ update message model =
                         |> Result.mapError (Json.Decode.errorToString >> Debug.log "Decode Error: Cursor")
 
                 newModel =
-                    case cursorResult of
-                        Err decodeError ->
-                            model
-
-                        Ok cursor ->
-                            overCursor (always cursor) model
+                    cursorResult
+                        |> Result.toMaybe
+                        |> Maybe.map (\cursor -> overCursor (always cursor) model)
+                        |> Maybe.withDefault model
             in
             Update.pure newModel
                 |> Update.andThen ensureFocus
