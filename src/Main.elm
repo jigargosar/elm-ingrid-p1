@@ -154,6 +154,7 @@ update message model =
                         |> Maybe.withDefault model
             in
             Update.pure newModel
+                |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
@@ -221,13 +222,6 @@ update message model =
 
 
 cacheModel model =
-    let
-        prettyJson =
-            model.cursor
-                |> Item.Zipper.encoder
-                |> Json.Encode.encode 2
-                |> Debug.log "prettyJson"
-    in
     ( model
     , toJsCache <|
         { cursor = Item.Zipper.encoder model.cursor }
