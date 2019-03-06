@@ -159,7 +159,7 @@ function getMainCache() {
   return R.compose(
     R.mergeDeepRight({ cursor: null }),
     R.defaultTo({}),
-    R.always(null),
+    // R.always(null),
     getCached,
   )('elm-main')
 }
