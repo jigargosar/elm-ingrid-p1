@@ -251,13 +251,13 @@ generateId model =
             Random.int 999999999 Random.maxInt
                 |> Random.map String.fromInt
 
-        ( id, newSeed ) =
+        ( randomId, newSeed ) =
             Random.step idGen model.seed
 
         newModel =
             { model | seed = newSeed }
     in
-    Update.pure ( id, newModel )
+    Update.pure ( randomId, newModel )
 
 
 ensureEditingSelected model =
