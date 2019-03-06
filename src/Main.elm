@@ -273,9 +273,6 @@ ensureEditingSelected model =
 
 ensureFocus model =
     let
-        itemId =
-            Item.Zipper.id model.cursor
-
         domIdFn =
             case model.viewMode of
                 EditingSelected ->
@@ -285,7 +282,7 @@ ensureFocus model =
                     fragDomId
 
         domId =
-            domIdFn itemId
+            domIdFn <| Item.Zipper.id model.cursor
     in
     ( model
     , Dom.focus domId |> Task.attempt DomFocusResult
