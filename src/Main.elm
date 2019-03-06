@@ -222,7 +222,7 @@ loadEncodedCursor encodedCursor model =
             ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
-            ( overCursor (always cursor) model, toJsError [ "Decode Error: Cursor", "Just Kidding" ] )
+            Update.pure (overCursor (always cursor) model)
                 |> Update.andThen cacheModel
     in
     encodedCursor
