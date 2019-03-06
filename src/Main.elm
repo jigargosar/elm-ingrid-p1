@@ -417,8 +417,7 @@ fragmentEditorHotKeyDecoder ke =
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
-        |> Maybe.Extra.orElse (Just ( NOP, False ))
-        |> Debug.log "itemEditorHotKeyDispatcher"
+        |> Debug.log "fragmentEditorHotKeyDecoder"
 
 
 type ChildrenAre
