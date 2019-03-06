@@ -400,7 +400,7 @@ viewLine vm tree =
     in
     div [ cx [ flex, inline_flex ] ]
         [ div
-            [ cx [ ml3, flex, items_center, justify_center, lh_solid, code ]
+            [ cx [ flex, items_center, justify_center, lh_solid, code ]
 
             --            , style "min-height" "32px"
             ]
