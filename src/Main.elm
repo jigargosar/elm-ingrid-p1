@@ -142,7 +142,7 @@ update message model =
             let
                 cursorResult =
                     Json.Decode.decodeValue Item.Zipper.decoder flags.cursor
-                        |> Result.mapError (Json.Decode.errorToString >> Debug.log "Cursor:")
+                        |> Result.mapError (Json.Decode.errorToString >> Debug.log "Decode Error: Cursor")
 
                 newModel =
                     case cursorResult of
