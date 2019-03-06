@@ -1,4 +1,4 @@
-module Item.Zipper exposing (ItemCursor, ItemZipper, decoder, encoder)
+module Item.Zipper exposing (ItemZipper, decoder, encoder)
 
 import Item exposing (Item)
 import Item.Tree
@@ -9,10 +9,6 @@ import Tree.Zipper as Zipper exposing (Zipper)
 
 type alias ItemZipper =
     Zipper Item
-
-
-type alias ItemCursor =
-    ItemZipper
 
 
 encoder : ItemZipper -> Json.Encode.Value
