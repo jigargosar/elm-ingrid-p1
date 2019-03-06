@@ -76,7 +76,7 @@ white =
 
 
 bg_s =
-    Css.property "background_color"
+    Css.property "background-color"
 
 
 bg_dodgerblue =

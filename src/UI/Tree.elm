@@ -39,7 +39,8 @@ viewFragment props =
             [ black_ 80 ]
 
         finalC =
-            ter props.isRoot rootC nonRootC
+            baseStyles
+                |> (++) (ter props.isRoot rootC nonRootC)
                 |> (++) (ter props.isSelected selectedC notSelectedC)
 
         renderText =
