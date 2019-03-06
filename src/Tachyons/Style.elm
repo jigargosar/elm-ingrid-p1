@@ -7,12 +7,12 @@ dib =
     Css.display Css.inlineBlock
 
 
-lh_title =
-    Css.lineHeight (Css.num 1.25)
-
-
 lh_solid =
     Css.lineHeight (Css.num 1)
+
+
+lh_title =
+    Css.lineHeight (Css.num 1.25)
 
 
 lh_copy =
