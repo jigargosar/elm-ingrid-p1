@@ -354,13 +354,7 @@ viewAnyTree vm tree =
             ItemTree.canTreeCollapse tree
     in
     div [ classes [] ]
-        [ div [ cx [ mb1 ] ]
-            [ if isEditingTree tree vm then
-                viewFragmentEditor vm tree
-
-              else
-                viewLine vm tree
-            ]
+        [ div [ cx [ mb1 ] ] [ viewLine vm tree ]
         , viewIf canCollapse <|
             div [ classes [ pl3 ] ]
                 (List.map (viewAnyTree vm) (ItemTree.treeChildren tree))
@@ -412,7 +406,11 @@ viewLine vm tree =
             --            , style "min-height" "32px"
             ]
             [ t prefix ]
-        , viewFragment vm tree
+        , if isEditingTree tree vm then
+            viewFragmentEditor vm tree
+
+          else
+            viewFragment vm tree
         ]
 
 
