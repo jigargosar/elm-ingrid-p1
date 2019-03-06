@@ -60,7 +60,7 @@ type alias Model =
 
 
 type alias Flags =
-    { cache : Json.Encode.Value, now : Int }
+    { cursor : Json.Encode.Value, now : Int }
 
 
 init : Flags -> ( Model, Cmd Msg )
