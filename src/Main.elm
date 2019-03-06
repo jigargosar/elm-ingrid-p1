@@ -293,6 +293,48 @@ ensureFocus model =
 -- VIEW
 
 
+fragmentHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
+fragmentHotKeyDecoder ke =
+    let
+        labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
+        labelKeyMap =
+            [ ( HotKey.is "Enter", ( New, True ) )
+            , ( HotKey.is " ", ( Edit, True ) )
+            , ( HotKey.isShift "Enter", ( NOP, True ) )
+            , ( HotKey.is "ArrowUp", ( Prev, True ) )
+            , ( HotKey.is "ArrowDown", ( Next, True ) )
+            , ( HotKey.isMeta "ArrowUp", ( MoveUp, True ) )
+            , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
+            , ( HotKey.isShift "Tab", ( Outdent, True ) )
+            , ( HotKey.is "Tab", ( Indent, True ) )
+            , ( HotKey.is "ArrowLeft", ( CollapseOrPrev, True ) )
+            , ( HotKey.is "ArrowRight", ( ExpandOrNext, True ) )
+            , ( HotKey.is "Delete", ( Delete, True ) )
+            ]
+    in
+    labelKeyMap
+        |> List.Extra.find (Tuple.first >> applyTo ke)
+        |> Maybe.map Tuple.second
+
+
+fragmentEditorHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
+fragmentEditorHotKeyDecoder ke =
+    let
+        inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
+        inputKeyMap =
+            [ ( HotKey.is "Enter", ( New, True ) )
+            , ( HotKey.isMeta "Enter", ( Save, True ) )
+            , ( HotKey.is "Escape", ( Save, True ) )
+            , ( HotKey.isShift "Enter", ( NOP, True ) )
+            , ( HotKey.isShift "Tab", ( Outdent, True ) )
+            , ( HotKey.is "Tab", ( Indent, True ) )
+            ]
+    in
+    inputKeyMap
+        |> List.Extra.find (Tuple.first >> applyTo ke)
+        |> Maybe.map Tuple.second
+
+
 view : Model -> Html Msg
 view model =
     co [ sans_serif, "us-none", ma0, min_vh_100, flex, flex_column ]
@@ -390,48 +432,6 @@ getChildrenState tree =
             ItemTree.canTreeExpand tree
     in
     ter canExpand Expanded (ter canCollapse Collapsed NoChildren)
-
-
-fragmentHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
-fragmentHotKeyDecoder ke =
-    let
-        labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
-        labelKeyMap =
-            [ ( HotKey.is "Enter", ( New, True ) )
-            , ( HotKey.is " ", ( Edit, True ) )
-            , ( HotKey.isShift "Enter", ( NOP, True ) )
-            , ( HotKey.is "ArrowUp", ( Prev, True ) )
-            , ( HotKey.is "ArrowDown", ( Next, True ) )
-            , ( HotKey.isMeta "ArrowUp", ( MoveUp, True ) )
-            , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
-            , ( HotKey.isShift "Tab", ( Outdent, True ) )
-            , ( HotKey.is "Tab", ( Indent, True ) )
-            , ( HotKey.is "ArrowLeft", ( CollapseOrPrev, True ) )
-            , ( HotKey.is "ArrowRight", ( ExpandOrNext, True ) )
-            , ( HotKey.is "Delete", ( Delete, True ) )
-            ]
-    in
-    labelKeyMap
-        |> List.Extra.find (Tuple.first >> applyTo ke)
-        |> Maybe.map Tuple.second
-
-
-fragmentEditorHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
-fragmentEditorHotKeyDecoder ke =
-    let
-        inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
-        inputKeyMap =
-            [ ( HotKey.is "Enter", ( New, True ) )
-            , ( HotKey.isMeta "Enter", ( Save, True ) )
-            , ( HotKey.is "Escape", ( Save, True ) )
-            , ( HotKey.isShift "Enter", ( NOP, True ) )
-            , ( HotKey.isShift "Tab", ( Outdent, True ) )
-            , ( HotKey.is "Tab", ( Indent, True ) )
-            ]
-    in
-    inputKeyMap
-        |> List.Extra.find (Tuple.first >> applyTo ke)
-        |> Maybe.map Tuple.second
 
 
 viewLine vm tree =
