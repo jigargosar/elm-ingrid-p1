@@ -21,27 +21,18 @@ viewFragment props =
     let
         baseStyles : List Css.Style
         baseStyles =
-            [ dib, lh_title ]
+            [ dib, lh_title, ph 2, blackA 80 ]
 
-        finalStyles =
-            baseStyles
-
-        rootC =
+        rootStyles =
             [ pa 1, f4 ]
 
-        nonRootC =
-            [ ph 2 ]
-
-        selectedC =
+        selectedStyles =
             [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblue ] ]
-
-        notSelectedC =
-            [ blackA 80 ]
 
         finalC =
             baseStyles
-                |> (++) (ter props.isRoot rootC nonRootC)
-                |> (++) (ter props.isSelected selectedC notSelectedC)
+                |> concatIf props.isRoot rootStyles
+                |> concatIf props.isSelected selectedStyles
 
         renderText =
             defaultEmptyStringTo "Untitled" props.text
