@@ -12,11 +12,18 @@ type alias ItemZipper =
 
 
 encoder : ItemZipper -> Json.Encode.Value
-encoder =
-    Zipper.root >> Zipper.tree >> Item.Tree.encoder
+encoder z =
+    Json.Encode.object
+        [ ( "root", z |> Zipper.root >> Zipper.tree >> Item.Tree.encoder )
+        , ( "focusedItemId", z |> id >> Json.Encode.string )
+        ]
 
 
 decoder : Decoder ItemZipper
 decoder =
     Item.Tree.decoder
         |> Json.Decode.map Zipper.fromTree
+
+
+id =
+    Zipper.tree >> Item.Tree.id

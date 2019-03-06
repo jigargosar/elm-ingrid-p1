@@ -1,4 +1,4 @@
-module Item.Tree exposing (ItemTree, decoder, encoder)
+module Item.Tree exposing (ItemTree, decoder, encoder, id)
 
 import Item exposing (Item)
 import Json.Decode exposing (Decoder)
@@ -41,3 +41,7 @@ decoder =
     Json.Decode.map2 (\label children -> Tree.singleton label |> Tree.replaceChildren children)
         (Json.Decode.field "label" Item.decoder)
         (Json.Decode.lazy (\_ -> Json.Decode.field "children" (Json.Decode.list decoder)))
+
+
+id =
+    Tree.label >> .id
