@@ -3,6 +3,7 @@ import { getCached, setCache } from './cache-helpers'
 import './main.scss'
 import { Elm } from './Main.elm'
 import * as R from 'ramda'
+import PouchDB from 'pouchdb-browser'
 
 /* ITEM */
 
@@ -74,7 +75,7 @@ const app = Elm.Main.init({
   flags: { now: Date.now(), ...getMainCache() },
 })
 
-// const db = new PouchDb('items')
+const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
 
 // db.allDocs({ include_docs: true }).then(({ rows }) => {
 //   if (rows.length === 0) {
@@ -111,6 +112,9 @@ const app = Elm.Main.init({
 
 app.ports.toJsCache.subscribe(model => {
   setCache('elm-main', model)
+  db.put({ model, cAt: Date.now() })
+    .then(console.log)
+    .catch(console.error)
 })
 
 app.ports.toJsError.subscribe(errorArgs => {
