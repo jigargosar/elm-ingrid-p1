@@ -219,8 +219,9 @@ update message model =
 
 loadEncodedCursor encodedCursor model =
     Json.Decode.decodeValue Item.Zipper.decoder encodedCursor
-        |> Result.map (\cursor -> loadCursor cursor model)
-        |> Result.Extra.extract (\error -> handleCursorDecodeError error model)
+        |> Result.Extra.unpack
+            (\error -> handleCursorDecodeError error model)
+            (\cursor -> loadCursor cursor model)
 
 
 handleCursorDecodeError error model =
