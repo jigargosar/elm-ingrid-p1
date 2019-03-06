@@ -142,7 +142,6 @@ update message model =
     case message of
         Init flags ->
             loadEncodedCursor flags.cursor model
-                |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
@@ -224,6 +223,7 @@ loadEncodedCursor encodedCursor model =
 
         loadCursor cursor =
             ( overCursor (always cursor) model, toJsError [ "Decode Error: Cursor", "Just Kidding" ] )
+                |> Update.andThen cacheModel
     in
     encodedCursor
         |> decodeValue Item.Zipper.decoder
