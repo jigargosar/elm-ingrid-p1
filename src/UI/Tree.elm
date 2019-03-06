@@ -28,7 +28,7 @@ viewFragment p =
             [ dib, lh_title, ph 2, blackA 0.8 ]
 
         rootStyles =
-            [ pa 1, f4 ]
+            [ f4 ]
 
         selectedStyles =
             [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblueA 0.8, white ] ]
