@@ -1,4 +1,4 @@
-module BasicsX exposing (applyTo, concatIf, defaultEmptyStringTo, eqs, ifElse, ter)
+module BasicsX exposing (applyTo, concatIf, defaultEmptyStringTo, eqs, ifElse, tap, ter)
 
 
 eqs =
@@ -41,3 +41,11 @@ defaultEmptyStringTo def str =
 
     else
         str
+
+
+tap fn v =
+    let
+        _ =
+            fn v
+    in
+    v

@@ -140,9 +140,12 @@ update message model =
     case message of
         Init flags ->
             let
+                logError =
+                    Json.Decode.errorToString >> Debug.log "Decode Error: Cursor"
+
                 cursorResult =
                     Json.Decode.decodeValue Item.Zipper.decoder flags.cursor
-                        |> Result.mapError (Json.Decode.errorToString >> Debug.log "Decode Error: Cursor")
+                        |> Result.mapError (tap logError)
 
                 newModel =
                     cursorResult
