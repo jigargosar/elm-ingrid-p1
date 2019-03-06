@@ -25,7 +25,7 @@ viewFragment p =
     let
         baseStyles : List Css.Style
         baseStyles =
-            [ dib, lh_title, ph 2, blackA 0.8 ]
+            [ dib, lh_title, ph 1, blackA 0.8 ]
 
         rootStyles =
             [ f4 ]
