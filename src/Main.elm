@@ -30,7 +30,7 @@ import V exposing (co, cx, t, viewIf)
 --port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
 
 
-port toJsCache : Json.Encode.Value -> Cmd msg
+port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 
 
 main =
@@ -217,7 +217,7 @@ cacheModel model =
     in
     ( model
     , toJsCache <|
-        Item.Zipper.encoder model.cursor
+        { cursor = Item.Zipper.encoder model.cursor }
     )
 
 
