@@ -137,21 +137,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         Init flags ->
-            let
-                logError =
-                    Json.Decode.errorToString >> Debug.log "Decode Error: Cursor"
-
-                cursorResult =
-                    Json.Decode.decodeValue Item.Zipper.decoder flags.cursor
-                        |> Result.mapError (tap logError)
-
-                newModel =
-                    cursorResult
-                        |> Result.toMaybe
-                        |> Maybe.map (\cursor -> overCursor (always cursor) model)
-                        |> Maybe.withDefault model
-            in
-            Update.pure newModel
+            loadCursor flags model
                 |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
@@ -225,6 +211,21 @@ update message model =
         LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
                 |> Update.andThen cacheModel
+
+
+loadCursor flags model =
+    let
+        logError =
+            Json.Decode.errorToString >> Debug.log "Decode Error: Cursor"
+
+        cursorResult =
+            Json.Decode.decodeValue Item.Zipper.decoder flags.cursor
+                |> Result.mapError (tap logError)
+    in
+    cursorResult
+        |> Result.toMaybe
+        |> Maybe.map (\cursor -> overCursor (always cursor) model)
+        |> Maybe.withDefault model
 
 
 cacheModel model =
