@@ -5,6 +5,7 @@ import Css exposing (focus)
 import Html.Styled as Html exposing (Html, div)
 import Html.Styled.Attributes exposing (css)
 import SV exposing (cx, t)
+import StringX
 import Tachyons.Style exposing (..)
 
 
@@ -14,10 +15,6 @@ type alias FragmentProps msg =
     , isSelected : Bool
     , attrs : List (Html.Attribute msg)
     }
-
-
-isBlank =
-    String.trim >> String.isEmpty
 
 
 viewFragment : FragmentProps msg -> Html msg
@@ -43,7 +40,7 @@ viewFragment p =
             defaultEmptyStringTo (ter p.isRoot "Root" "Untitled") p.text
 
         shouldDim =
-            isBlank p.text && not p.isRoot
+            StringX.isBlank p.text && not p.isRoot
 
         finalCss =
             baseStyles

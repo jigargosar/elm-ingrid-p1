@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import BasicsX exposing (..)
 import Browser
-import Browser.Dom
+import Browser.DomX as Dom
 import Browser.Events
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
@@ -265,12 +265,12 @@ ensureEditingSelected model =
 
 
 focusInputCmd model =
-    Browser.Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
+    Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
         |> Task.attempt (Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
 focusSelectedCmd model =
-    Browser.Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
+    Dom.focus {- fragDomId <| Item.Zipper.id model.cursor -} ""
         |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
 
 
