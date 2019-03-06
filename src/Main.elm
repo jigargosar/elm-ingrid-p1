@@ -226,6 +226,7 @@ loadCursor flags model =
         |> Result.toMaybe
         |> Maybe.map (\cursor -> overCursor (always cursor) model)
         |> Maybe.withDefault model
+        |> Update.pure
 
 
 cacheModel model =
