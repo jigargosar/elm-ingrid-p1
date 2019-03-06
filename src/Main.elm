@@ -65,7 +65,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    update InitReceived
+    update (Init flags)
         { cursor = ItemTree.initialCursor
         , viewMode = Navigating
         , seed = Random.initialSeed flags.now
@@ -95,7 +95,7 @@ subscriptions _ =
 type Msg
     = NOP
     | GlobalKeyDown KeyEvent
-    | InitReceived
+    | Init Flags
     | LineChanged String
     | New
     | Save
@@ -138,8 +138,22 @@ isSelectedBlank model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
-        InitReceived ->
-            ( model, ensureFocusCmd model )
+        Init flags ->
+            let
+                cursorResult =
+                    Json.Decode.decodeValue Item.Zipper.decoder flags.cursor
+                        |> Result.mapError (Json.Decode.errorToString >> Debug.log "Cursor:")
+
+                newModel =
+                    case cursorResult of
+                        Err decodeError ->
+                            model
+
+                        Ok cursor ->
+                            overCursor (always cursor) model
+            in
+            Update.pure newModel
+                |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
             ( model, ensureFocusCmd model )
@@ -268,6 +282,10 @@ ensureFocusCmd model =
 
     else
         Cmd.batch [ focusSelectedCmd model ]
+
+
+ensureFocus model =
+    ( model, ensureFocusCmd model )
 
 
 
