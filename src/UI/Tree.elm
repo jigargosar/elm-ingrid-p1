@@ -1,7 +1,9 @@
 module UI.Tree exposing (FragmentProps, viewFragment)
 
 import BasicsX exposing (..)
+import Css
 import Html.Styled as Html exposing (Html, div)
+import Html.Styled.Attributes exposing (css)
 import SV exposing (cx, t)
 import Tachyons.Classes exposing (..)
 
@@ -14,14 +16,37 @@ type alias FragmentProps msg =
     }
 
 
+dib =
+    Css.display Css.inlineBlock
+
+
+lh_title =
+    Css.lineHeight (Css.num 1.25)
+
+
+lh_solid =
+    Css.lineHeight (Css.num 1)
+
+
+lh_copy =
+    Css.lineHeight (Css.num 1.5)
+
+
 viewFragment : FragmentProps msg -> Html msg
 viewFragment props =
     let
+        baseStyles : Css.Style
+        baseStyles =
+            Css.batch [ dib, lh_title ]
+
+        finalStyles =
+            baseStyles
+
         rootC =
-            [ dib, pa1, f4 ]
+            [ pa1, f4 ]
 
         nonRootC =
-            [ dib, lh_title, ph2 ]
+            [ ph2 ]
 
         selectedC =
             [ outline_0, br1, bg_washed_red, black_50, hover_white, hover_bg_light_red ]
@@ -36,7 +61,7 @@ viewFragment props =
         renderText =
             defaultEmptyStringTo "Untitled" props.text
     in
-    div ([ cx finalC ] ++ props.attrs) [ t renderText ]
+    div ([ cx finalC, css [ finalStyles ] ] ++ props.attrs) [ t renderText ]
 
 
 
