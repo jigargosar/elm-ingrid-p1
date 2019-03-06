@@ -1,7 +1,7 @@
 module UI.Tree exposing (FragmentProps, viewFragment)
 
 import BasicsX exposing (..)
-import Css
+import Css exposing (focus)
 import Html.Styled as Html exposing (Html, div)
 import Html.Styled.Attributes exposing (css)
 import SV exposing (cx, t)
@@ -33,7 +33,7 @@ viewFragment props =
             [ ph2 ]
 
         selectedC =
-            [ outline_0, br1, bg_dodgerblue, white ]
+            [ outline_0, br1, bg_lightblue, white, focus [ bg_dodgerblue ] ]
 
         notSelectedC =
             [ black_ 80 ]
