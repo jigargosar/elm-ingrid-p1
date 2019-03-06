@@ -1,5 +1,6 @@
 module Item.Zipper exposing (ItemZipper, decoder, encoder)
 
+import BasicsX exposing (..)
 import Item exposing (Item)
 import Item.Tree
 import Json.Decode exposing (Decoder)
@@ -21,8 +22,17 @@ encoder z =
 
 decoder : Decoder ItemZipper
 decoder =
-    Item.Tree.decoder
-        |> Json.Decode.map Zipper.fromTree
+    Json.Decode.map2
+        (\tree fid ->
+            let
+                z =
+                    Zipper.fromTree tree
+            in
+            Zipper.findFromRoot (.id >> eqs fid) z
+                |> Maybe.withDefault z
+        )
+        (Json.Decode.field "root" Item.Tree.decoder)
+        (Json.Decode.field "focusedItemId" Json.Decode.string)
 
 
 id =
