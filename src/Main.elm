@@ -188,38 +188,47 @@ update message model =
 
         CollapseOrPrev ->
             ( model |> overCursor ItemTree.collapseOrParent, Cmd.none )
+                |> Update.andThen cacheModel
 
         ExpandOrNext ->
             ( model |> overCursor ItemTree.expandOrNext, Cmd.none )
+                |> Update.andThen cacheModel
 
         Prev ->
             Update.pure (overCursor ItemTree.backward model)
+                |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
         Next ->
             Update.pure (overCursor ItemTree.forward model)
+                |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
         MoveUp ->
             Update.pure (overCursor ItemTree.moveUp model)
+                |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
         MoveDown ->
             Update.pure (overCursor ItemTree.moveDown model)
+                |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
         Outdent ->
             ( overCursor ItemTree.outdent model
             , ensureFocusCmd model
             )
+                |> Update.andThen cacheModel
 
         Indent ->
             ( overCursor ItemTree.indent model
             , ensureFocusCmd model
             )
+                |> Update.andThen cacheModel
 
         LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
+                |> Update.andThen cacheModel
 
 
 cacheModel model =
