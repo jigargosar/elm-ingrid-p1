@@ -33,6 +33,9 @@ import V exposing (co, cx, t, viewIf)
 port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 
 
+port toJsError : List String -> Cmd msg
+
+
 main =
     Browser.element
         { init = init
@@ -137,7 +140,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
         Init flags ->
-            loadCursor flags model
+            loadEncodedCursor flags.cursor model
                 |> Update.andThen cacheModel
                 |> Update.andThen ensureFocus
 
@@ -213,13 +216,13 @@ update message model =
                 |> Update.andThen cacheModel
 
 
-loadCursor flags model =
+loadEncodedCursor encodedCursor model =
     let
         logError =
             Json.Decode.errorToString >> Debug.log "Decode Error: Cursor"
 
         cursorResult =
-            Json.Decode.decodeValue Item.Zipper.decoder flags.cursor
+            Json.Decode.decodeValue Item.Zipper.decoder encodedCursor
                 |> Result.mapError (tap logError)
     in
     cursorResult
@@ -227,6 +230,14 @@ loadCursor flags model =
         |> Maybe.map (\cursor -> overCursor (always cursor) model)
         |> Maybe.withDefault model
         |> Update.pure
+
+
+handleCursorDecodeError error model =
+    ( model, toJsError [ "Decode Error: Cursor", Json.Decode.errorToString error ] )
+
+
+loadCursor cursor model =
+    ( overCursor (always cursor) model, Cmd.none )
 
 
 cacheModel model =
