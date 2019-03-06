@@ -37,7 +37,8 @@ main =
     Browser.element
         { init = init
         , update =
-            \msg -> update (Debug.log "msg" msg)
+            --            \msg -> update (Debug.log "msg" msg)
+            update
         , view = view
         , subscriptions = subscriptions
         }
