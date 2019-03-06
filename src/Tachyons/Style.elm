@@ -1,5 +1,21 @@
-module Tachyons.Style exposing (bg_dodgerblue, bg_dodgerblueA, bg_lightblue, black_, br1, dib, f4, lh_copy, lh_solid, lh_title, outline_0, pa1, ph2, white)
+module Tachyons.Style exposing
+    ( bgDodgerblue
+    , bgDodgerblueA
+    , bg_lightblue
+    , blackA
+    , br1
+    , dib
+    , f4
+    , lh_copy
+    , lh_solid
+    , lh_title
+    , noOutline
+    , pa
+    , ph
+    , white
+    )
 
+import Array
 import Css exposing (Style, color, hex, hsla, rem, rgba)
 import Tachyons.Color as Color
 
@@ -20,24 +36,32 @@ lh_copy =
     Css.lineHeight (Css.num 1.5)
 
 
-su1 =
-    Css.rem 0.25
+spacingScale =
+    [ 0, 0.25, 0.5, 1, 2, 4, 8, 16 ]
+        |> Array.fromList
 
 
-su2 =
-    Css.rem 0.5
+spacingUnitFromN : Int -> Css.Rem
+spacingUnitFromN n =
+    let
+        newN =
+            clamp 0 7 n
+    in
+    Array.get newN spacingScale
+        |> Maybe.withDefault 0
+        |> rem
 
 
-pa1 =
-    Css.padding su1
+pa =
+    Css.padding << spacingUnitFromN
 
 
 phN su =
     Css.batch [ Css.paddingLeft su, Css.paddingRight su ]
 
 
-ph2 =
-    phN su2
+ph =
+    phN << spacingUnitFromN
 
 
 f4 =
@@ -68,7 +92,7 @@ br1 =
     brN bru1
 
 
-outline_0 =
+noOutline =
     Css.outline Css.none
 
 
@@ -84,16 +108,16 @@ bg_S =
     Css.property "background-color"
 
 
-bg_dodgerblue =
+bgDodgerblue =
     Css.backgroundColor Color.dodgerblue
 
 
-bg_dodgerblueA =
+bgDodgerblueA =
     Css.backgroundColor << Color.dodgerblueA
 
 
-black_ : Float -> Style
-black_ pct =
+blackA : Float -> Style
+blackA pct =
     color <| rgba 0 0 0 (pct / 100)
 
 

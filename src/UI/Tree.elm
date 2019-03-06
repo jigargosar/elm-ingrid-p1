@@ -27,16 +27,16 @@ viewFragment props =
             baseStyles
 
         rootC =
-            [ pa1, f4 ]
+            [ pa 1, f4 ]
 
         nonRootC =
-            [ ph2 ]
+            [ ph 2 ]
 
         selectedC =
-            [ outline_0, br1, bg_dodgerblueA 0.5, white, focus [ bg_dodgerblue ] ]
+            [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblue ] ]
 
         notSelectedC =
-            [ black_ 80 ]
+            [ blackA 80 ]
 
         finalC =
             baseStyles
