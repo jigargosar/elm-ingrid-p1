@@ -8,7 +8,7 @@ eqs =
 concatIf : Bool -> List a -> List a -> List a
 concatIf bool l1 l2 =
     if bool then
-        l1 ++ l2
+        l2 ++ l1
 
     else
         l2

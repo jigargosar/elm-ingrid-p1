@@ -13,6 +13,7 @@ module Tachyons.Style exposing
     , o_
     , pa
     , ph
+    , stylesIf
     , white
     )
 
@@ -124,3 +125,11 @@ bg_lightblue =
 
 o_ =
     Css.opacity << Css.num
+
+
+stylesIf bool conditionalStyles baseStyles =
+    if bool then
+        baseStyles ++ conditionalStyles
+
+    else
+        conditionalStyles
