@@ -266,7 +266,7 @@ view model =
             ]
 
         --        , viewTreeContainer model
-        , viewAnyTreeContainer model
+        , viewTreeContainer model
         ]
 
 
@@ -277,7 +277,7 @@ viewShortcutHint label shortcut =
         ]
 
 
-viewAnyTreeContainer model =
+viewTreeContainer model =
     let
         root =
             ItemTree.rootTree model.cursor
@@ -288,7 +288,7 @@ viewAnyTreeContainer model =
         containerClasses =
             let
                 baseClasses =
-                    [ flex_grow_1, pl3 ]
+                    [ flex_grow_1, pl3, pt3 ]
 
                 editingModeClasses =
                     [ bg_black_20, black_50 ]
