@@ -5,7 +5,7 @@ import Css
 import Html.Styled as Html exposing (Html, div)
 import Html.Styled.Attributes exposing (css)
 import SV exposing (cx, t)
-import Tachyons.Classes exposing (..)
+import Tachyons.Style exposing (..)
 
 
 type alias FragmentProps msg =
@@ -14,22 +14,6 @@ type alias FragmentProps msg =
     , isSelected : Bool
     , attrs : List (Html.Attribute msg)
     }
-
-
-dib =
-    Css.display Css.inlineBlock
-
-
-lh_title =
-    Css.lineHeight (Css.num 1.25)
-
-
-lh_solid =
-    Css.lineHeight (Css.num 1)
-
-
-lh_copy =
-    Css.lineHeight (Css.num 1.5)
 
 
 viewFragment : FragmentProps msg -> Html msg
