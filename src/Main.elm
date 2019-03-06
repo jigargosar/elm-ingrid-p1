@@ -8,6 +8,8 @@ import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
 import Html.Attributes exposing (tabindex, value)
 import Html.Events exposing (onInput)
+import Html.Styled
+import Html.Styled.Attributes
 import ItemTree exposing (Item, ItemCursor, ItemTree)
 import Json.Decode exposing (Decoder)
 import List.Extra
@@ -410,16 +412,18 @@ viewFragment vm tree =
         prefix =
             ter canExpand " + " (ter canCollapse " - " "   ")
     in
-    UI.Tree.viewFragment
-        { text = ItemTree.treeFragment tree |> (++) prefix
-        , isRoot = isRootTree tree vm
-        , isSelected = isSelectedTree tree vm
-        , attrs =
-            [ Html.Attributes.id <| getItemTreeLabelDomId tree
-            , tabindex 0
-            , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
-            ]
-        }
+    Html.Styled.toUnstyled <|
+        UI.Tree.viewFragment
+            { text = ItemTree.treeFragment tree |> (++) prefix
+            , isRoot = isRootTree tree vm
+            , isSelected = isSelectedTree tree vm
+            , attrs =
+                List.map Html.Styled.Attributes.fromUnstyled
+                    [ Html.Attributes.id <| getItemTreeLabelDomId tree
+                    , tabindex 0
+                    , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
+                    ]
+            }
 
 
 viewFragmentEditor _ tree =

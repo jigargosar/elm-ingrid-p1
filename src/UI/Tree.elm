@@ -1,9 +1,9 @@
 module UI.Tree exposing (FragmentProps, viewFragment)
 
 import BasicsX exposing (..)
-import Html exposing (Html, div)
+import Html.Styled as Html exposing (Html, div)
+import SV exposing (cx, t)
 import Tachyons.Classes exposing (..)
-import V exposing (cx, t)
 
 
 type alias FragmentProps msg =
@@ -24,10 +24,10 @@ viewFragment props =
             [ dib, lh_title, ph2 ]
 
         selectedC =
-            [ outline_0, bg_washed_red, black_50, hover_white, hover_bg_light_red ]
+            [ outline_0, br1, bg_washed_red, black_50, hover_white, hover_bg_light_red ]
 
         notSelectedC =
-            [ black_80, br1 ]
+            [ black_80 ]
 
         finalC =
             ter props.isRoot rootC nonRootC

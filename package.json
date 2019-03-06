@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "clean": "rm -fr elm-stuff",
     "start": "parcel src/index.html",
     "sb": "parcel src/story-book.html -p 1235"
   },
