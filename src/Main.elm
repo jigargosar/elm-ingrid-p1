@@ -16,7 +16,6 @@ import ItemTree exposing (ItemTree)
 import Json.Decode exposing (Decoder, decodeValue, errorToString)
 import Json.Encode
 import List.Extra
-import Maybe.Extra
 import Random exposing (Generator)
 import Result.Extra
 import Tachyons exposing (classes)
