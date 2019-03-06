@@ -200,19 +200,17 @@ update message model =
                 |> Update.andThen cacheModel
 
         Outdent ->
-            ( overCursor ItemTree.outdent model
-            , ensureFocusCmd model
-            )
+            Update.pure
+                (overCursor ItemTree.outdent model)
                 |> Update.andThen cacheModel
 
         Indent ->
-            ( overCursor ItemTree.indent model
-            , ensureFocusCmd model
-            )
+            Update.pure
+                (overCursor ItemTree.indent model)
                 |> Update.andThen cacheModel
 
         LineChanged newContent ->
-            ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
+            Update.pure (overCursor (ItemTree.setContent newContent) model)
                 |> Update.andThen cacheModel
 
 
