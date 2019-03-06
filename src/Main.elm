@@ -270,7 +270,7 @@ focusInputCmd model =
 
 
 focusSelectedCmd model =
-    Dom.focus {- fragDomId <| Item.Zipper.id model.cursor -} ""
+    Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
         |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
 
 
