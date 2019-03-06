@@ -166,6 +166,7 @@ update message model =
         New ->
             if isEditingMode model && isSelectedBlank model then
                 stopEditing model
+                    |> Update.andThen cacheModel
 
             else
                 generateId model
