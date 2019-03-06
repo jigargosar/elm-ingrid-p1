@@ -264,23 +264,15 @@ ensureEditingSelected model =
         |> Update.andThen ensureFocus
 
 
-focusInputCmd model =
-    Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
-        |> Task.attempt (Debug.log "focusInputCmd" >> (\_ -> NOP))
-
-
-focusSelectedCmd model =
-    Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
-        |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
-
-
 ensureFocus model =
     ( model
     , if model.viewMode == EditingSelected then
-        focusInputCmd model
+        Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
+            |> Task.attempt (Debug.log "focusInputCmd" >> (\_ -> NOP))
 
       else
-        focusSelectedCmd model
+        Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
+            |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
     )
 
 
