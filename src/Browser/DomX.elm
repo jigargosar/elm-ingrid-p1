@@ -12,4 +12,4 @@ focus domId =
 
     else
         Browser.Dom.focus domId
-            |> Task.mapError (\_ -> "Focus Error: domId not found: " ++ domId)
+            |> Task.mapError (\_ -> "Focus Error: domId not found, " ++ domId)
