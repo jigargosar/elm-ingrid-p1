@@ -456,12 +456,24 @@ viewLine vm tree =
 
             else
                 []
+
+        viewPrefix =
+            div
+                [ cx
+                    ([ pr1
+                     , flex
+                     , items_center
+                     , justify_center
+                     , lh_solid
+                     , code
+                     ]
+                        ++ additionalStyles
+                    )
+                ]
+                [ t prefix ]
     in
-    div [ cx [ flex, inline_flex ] ]
-        [ div
-            [ cx ([ pr1, flex, items_center, justify_center, lh_solid, code ] ++ additionalStyles)
-            ]
-            [ t prefix ]
+    div [ cx [ flex ] ]
+        [ viewPrefix
         , if isEditingTree tree vm then
             viewFragmentEditor vm tree
 
@@ -492,7 +504,7 @@ viewFragment vm tree =
 viewFragmentEditor _ tree =
     input
         [ id <| fragInputDomId <| Item.Tree.id tree
-        , cx [ w_100 ]
+        , cx [ ph1, mr1, w_100, bn ]
         , value <| ItemTree.treeFragment tree
         , onInput LineChanged
         , HotKey.preventDefaultOnKeyDownEvent fragmentEditorHotKeyDecoder
