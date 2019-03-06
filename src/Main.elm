@@ -492,7 +492,7 @@ viewFragment vm tree =
 viewFragmentEditor _ tree =
     input
         [ id <| fragInputDomId <| Item.Tree.id tree
-        , cx []
+        , cx [ w_100 ]
         , value <| ItemTree.treeFragment tree
         , onInput LineChanged
         , HotKey.preventDefaultOnKeyDownEvent fragmentEditorHotKeyDecoder
