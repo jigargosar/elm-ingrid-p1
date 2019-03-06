@@ -118,10 +118,9 @@ fragDomId itemId =
     "item-id-" ++ itemId
 
 
-getItemTreeInputDomId : ItemTree -> String
-getItemTreeInputDomId _ =
-    {- ++ ItemTree.treeId tree -}
-    "item-input-dom-id-"
+fragInputDomId : String -> String
+fragInputDomId itemId =
+    "item-input-dom-id-" ++ itemId
 
 
 
@@ -272,7 +271,7 @@ ensureEditingSelected model =
 
 
 focusInputCmd model =
-    Browser.Dom.focus (getItemTreeInputDomId <| ItemTree.getSelectedTree model.cursor)
+    Browser.Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
         |> Task.attempt (Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
@@ -497,7 +496,7 @@ viewFragment vm tree =
 
 viewFragmentEditor _ tree =
     input
-        [ Html.Attributes.id <| getItemTreeInputDomId tree
+        [ Html.Attributes.id <| fragInputDomId <| Item.Tree.id tree
         , cx []
         , value <| ItemTree.treeFragment tree
         , onInput LineChanged
