@@ -18,17 +18,20 @@ viewFragment : FragmentProps msg -> Html msg
 viewFragment props =
     let
         rootC =
-            [ dib, pa1, f4, bg_white, br1 ]
+            [ dib, pa1, f4 ]
 
         nonRootC =
-            [ dib, lh_title, ph2, bg_white, br1 ]
+            [ dib, lh_title, ph2 ]
 
         selectedC =
-            [ outline_0, bg_light_blue, black_50, hover_white, hover_bg_blue ]
+            [ outline_0, bg_washed_red, black_50, hover_white, hover_bg_light_red ]
+
+        notSelectedC =
+            [ black_80, br1 ]
 
         finalC =
             ter props.isRoot rootC nonRootC
-                |> concatIf props.isSelected selectedC
+                |> (++) (ter props.isSelected selectedC notSelectedC)
 
         renderText =
             defaultEmptyStringTo "Untitled" props.text
