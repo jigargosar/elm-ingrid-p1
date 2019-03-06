@@ -356,7 +356,7 @@ viewAnyTree vm tree =
     div [ classes [] ]
         [ div [ cx [ mb1 ] ] [ viewLine vm tree ]
         , viewIf canCollapse <|
-            div [ classes [ pl3 ] ]
+            div [ classes [ pl4 ] ]
                 (List.map (viewAnyTree vm) (ItemTree.treeChildren tree))
         ]
 
