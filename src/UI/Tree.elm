@@ -34,7 +34,7 @@ viewFragment p =
             [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblueA 0.8, white ] ]
 
         dimStyles =
-            [ whiteA 0.5 ]
+            [ blackA 0.5 ]
 
         selectedDimStyle =
             [ focus [ whiteA 0.5 ] ]
