@@ -387,7 +387,7 @@ type ChildVisibility
     | Collapsed
 
 
-treeChildVisiblity tree =
+treeChildVisibility tree =
     let
         canCollapse =
             ItemTree.canTreeCollapse tree
@@ -401,7 +401,7 @@ treeChildVisiblity tree =
 viewLine vm tree =
     let
         childVisibility =
-            treeChildVisiblity tree
+            treeChildVisibility tree
 
         prefix =
             case childVisibility of
