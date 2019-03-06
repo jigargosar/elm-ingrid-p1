@@ -31,7 +31,7 @@ viewFragment p =
             [ pa 1, f4 ]
 
         selectedStyles =
-            [ Css.batch [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblueA 0.8, white ] ] ]
+            [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblueA 0.8, white ] ]
 
         dimStyles =
             [ o_ 0 ]
@@ -42,13 +42,13 @@ viewFragment p =
         shouldDim =
             isBlank p.text && not p.isRoot
 
-        finalC =
+        finalCss =
             baseStyles
                 |> concatIf p.isRoot rootStyles
                 |> concatIf p.isSelected selectedStyles
                 |> concatIf shouldDim dimStyles
     in
-    div ([ css finalC ] ++ p.attrs) [ t renderText ]
+    div ([ css finalCss ] ++ p.attrs) [ t renderText ]
 
 
 
