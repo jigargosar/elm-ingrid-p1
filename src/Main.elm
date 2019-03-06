@@ -144,7 +144,7 @@ update message model =
                 |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
-            ( model, ensureFocusCmd model )
+            ensureFocus model
 
         NOP ->
             ( model, Cmd.none )
@@ -260,13 +260,8 @@ generateId model =
 
 
 ensureEditingSelected model =
-    if model.viewMode == EditingSelected then
-        ( model, Cmd.none )
-
-    else
-        ( { model | viewMode = EditingSelected }
-        , Cmd.batch [ focusInputCmd model ]
-        )
+    Update.pure { model | viewMode = EditingSelected }
+        |> Update.andThen ensureFocus
 
 
 focusInputCmd model =
@@ -279,16 +274,14 @@ focusSelectedCmd model =
         |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
 
 
-ensureFocusCmd model =
-    if model.viewMode == EditingSelected then
-        Cmd.batch [ focusInputCmd model ]
-
-    else
-        Cmd.batch [ focusSelectedCmd model ]
-
-
 ensureFocus model =
-    ( model, ensureFocusCmd model )
+    ( model
+    , if model.viewMode == EditingSelected then
+        focusInputCmd model
+
+      else
+        focusSelectedCmd model
+    )
 
 
 
