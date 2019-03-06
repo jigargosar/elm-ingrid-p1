@@ -19,9 +19,9 @@ type alias FragmentProps msg =
 viewFragment : FragmentProps msg -> Html msg
 viewFragment props =
     let
-        baseStyles : Css.Style
+        baseStyles : List Css.Style
         baseStyles =
-            Css.batch [ dib, lh_title ]
+            [ dib, lh_title ]
 
         finalStyles =
             baseStyles
@@ -33,10 +33,10 @@ viewFragment props =
             [ ph2 ]
 
         selectedC =
-            [ outline_0, br1, bg_washed_red, black_50, hover_white, hover_bg_light_red ]
+            [ outline_0, br1, bg_dodgerblue, white ]
 
         notSelectedC =
-            [ black_80 ]
+            [ black_ 80 ]
 
         finalC =
             ter props.isRoot rootC nonRootC
@@ -45,7 +45,7 @@ viewFragment props =
         renderText =
             defaultEmptyStringTo "Untitled" props.text
     in
-    div ([ cx finalC, css [ finalStyles ] ] ++ props.attrs) [ t renderText ]
+    div ([ css finalC ] ++ props.attrs) [ t renderText ]
 
 
 

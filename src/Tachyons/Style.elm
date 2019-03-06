@@ -1,6 +1,6 @@
-module Tachyons.Style exposing (br1, dib, f4, lh_copy, lh_solid, lh_title, outline_0, pa1, ph2)
+module Tachyons.Style exposing (bg_dodgerblue, black_, br1, dib, f4, lh_copy, lh_solid, lh_title, outline_0, pa1, ph2, white)
 
-import Css exposing (rem)
+import Css exposing (Style, color, hex, rem, rgba)
 
 
 dib =
@@ -69,3 +69,20 @@ br1 =
 
 outline_0 =
     Css.outline Css.none
+
+
+white =
+    color <| hex "#fff"
+
+
+bg_s =
+    Css.property "background_color"
+
+
+bg_dodgerblue =
+    bg_s "dodgerblue"
+
+
+black_ : Float -> Style
+black_ pct =
+    color <| rgba 0 0 0 (pct / 100)
