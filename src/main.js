@@ -153,7 +153,7 @@ app.ports.toJsCache.subscribe(model => {
 
 function getMainCache() {
   return R.compose(
-    R.mergeDeepRight({ cursor: null }),
+    R.mergeDeepRight({ cursor: {} }),
     R.defaultTo({}),
     // always(null),
     getCached,
