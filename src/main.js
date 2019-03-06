@@ -53,6 +53,8 @@ import * as R from 'ramda'
 // })
 
 window.addEventListener('keydown', function(event) {
+  // console.log(`event`, event)
+  // event.preventDefault()
   // if (isHotKey('tab')(event) || isHotKey('shift+tab')(event)) {
   //   event.preventDefault()
   // }
