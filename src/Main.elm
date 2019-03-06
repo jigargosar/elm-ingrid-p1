@@ -381,7 +381,7 @@ fragmentEditorHotKeyDecoder ke =
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
-type ExpandIndicator
+type ChildVisibility
     = NoChildren
     | Expanded
     | Collapsed
@@ -400,12 +400,6 @@ treeExpandIndicator tree =
 
 viewLine vm tree =
     let
-        canCollapse =
-            ItemTree.canTreeCollapse tree
-
-        canExpand =
-            ItemTree.canTreeExpand tree
-
         exInd =
             treeExpandIndicator tree
 
