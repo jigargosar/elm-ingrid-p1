@@ -1,6 +1,7 @@
 module Tachyons.Style exposing (bg_dodgerblue, bg_lightblue, black_, br1, dib, f4, lh_copy, lh_solid, lh_title, outline_0, pa1, ph2, white)
 
 import Css exposing (Style, color, hex, hsla, rem, rgba)
+import Tachyons.Color as Color
 
 
 dib =
@@ -83,12 +84,8 @@ bg_S =
     Css.property "background-color"
 
 
-dodgerblue =
-    hsla 210 1 0.56 1
-
-
 bg_dodgerblue =
-    Css.backgroundColor dodgerblue
+    Css.backgroundColor Color.dodgerblue
 
 
 black_ : Float -> Style
