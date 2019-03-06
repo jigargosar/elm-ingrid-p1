@@ -300,7 +300,8 @@ view model =
     co [ sans_serif, "us-none", ma0, min_vh_100, flex, flex_column ]
         [ div [ classes [ flex, bg_black, white ] ]
             [ viewShortcutHint "Line Below" "Enter"
-            , viewShortcutHint "Line Above" "Shift+Enter"
+
+            --            , viewShortcutHint "Line Above" "Shift+Enter"
             , viewShortcutHint "Indent" "Tab"
             , viewShortcutHint "Outdent" "Shift+Tab"
             , viewShortcutHint "Move Up" "Cmd+Up"
