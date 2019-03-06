@@ -218,18 +218,15 @@ update message model =
 
 loadEncodedCursor encodedCursor model =
     let
-        logError =
-            Json.Decode.errorToString >> Debug.log "Decode Error: Cursor"
-
         cursorResult =
             Json.Decode.decodeValue Item.Zipper.decoder encodedCursor
-                |> Result.mapError (tap logError)
     in
-    cursorResult
-        |> Result.toMaybe
-        |> Maybe.map (\cursor -> overCursor (always cursor) model)
-        |> Maybe.withDefault model
-        |> Update.pure
+    case cursorResult of
+        Ok cursor ->
+            loadCursor cursor model
+
+        Err error ->
+            handleCursorDecodeError error model
 
 
 handleCursorDecodeError error model =
