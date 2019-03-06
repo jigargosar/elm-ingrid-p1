@@ -362,8 +362,38 @@ isRootTree tree treeVM =
     ItemTree.rootTree treeVM.cursor == tree
 
 
-itemLabelHotKeyDispatcher : KeyEvent -> Maybe ( Msg, Bool )
-itemLabelHotKeyDispatcher ke =
+viewAnyTree vm tree =
+    let
+        canCollapse =
+            ItemTree.canTreeCollapse tree
+    in
+    div [ classes [] ]
+        [ div [ cx [ mb1 ] ] [ viewLine vm tree ]
+        , viewIf canCollapse <|
+            div [ classes [ pl4 ] ]
+                (List.map (viewAnyTree vm) (ItemTree.treeChildren tree))
+        ]
+
+
+type ChildrenAre
+    = NoChildren
+    | Expanded
+    | Collapsed
+
+
+getChildrenState tree =
+    let
+        canCollapse =
+            ItemTree.canTreeCollapse tree
+
+        canExpand =
+            ItemTree.canTreeExpand tree
+    in
+    ter canExpand Expanded (ter canCollapse Collapsed NoChildren)
+
+
+fragmentHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
+fragmentHotKeyDecoder ke =
     let
         labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         labelKeyMap =
@@ -386,19 +416,6 @@ itemLabelHotKeyDispatcher ke =
         |> Maybe.map Tuple.second
 
 
-viewAnyTree vm tree =
-    let
-        canCollapse =
-            ItemTree.canTreeCollapse tree
-    in
-    div [ classes [] ]
-        [ div [ cx [ mb1 ] ] [ viewLine vm tree ]
-        , viewIf canCollapse <|
-            div [ classes [ pl4 ] ]
-                (List.map (viewAnyTree vm) (ItemTree.treeChildren tree))
-        ]
-
-
 fragmentEditorHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
 fragmentEditorHotKeyDecoder ke =
     let
@@ -415,23 +432,6 @@ fragmentEditorHotKeyDecoder ke =
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
-
-
-type ChildrenAre
-    = NoChildren
-    | Expanded
-    | Collapsed
-
-
-getChildrenState tree =
-    let
-        canCollapse =
-            ItemTree.canTreeCollapse tree
-
-        canExpand =
-            ItemTree.canTreeExpand tree
-    in
-    ter canExpand Expanded (ter canCollapse Collapsed NoChildren)
 
 
 viewLine vm tree =
@@ -496,7 +496,7 @@ viewFragment vm tree =
                 List.map Html.Styled.Attributes.fromUnstyled
                     [ id <| fragDomId <| Item.Tree.id tree
                     , tabindex 0
-                    , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
+                    , HotKey.preventDefaultOnKeyDownEvent fragmentHotKeyDecoder
                     ]
             }
 
