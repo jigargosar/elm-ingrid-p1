@@ -387,6 +387,17 @@ type ExpandIndicator
     | Collapsed
 
 
+treeExpandIndicator tree =
+    let
+        canCollapse =
+            ItemTree.canTreeCollapse tree
+
+        canExpand =
+            ItemTree.canTreeExpand tree
+    in
+    ter canExpand Expanded (ter canCollapse Collapsed NoChildren)
+
+
 viewLine vm tree =
     let
         canCollapse =
@@ -395,14 +406,30 @@ viewLine vm tree =
         canExpand =
             ItemTree.canTreeExpand tree
 
+        exInd =
+            treeExpandIndicator tree
+
         prefix =
-            ter canExpand "+" (ter canCollapse "-" "o")
+            case exInd of
+                Expanded ->
+                    "+"
+
+                Collapsed ->
+                    "-"
+
+                NoChildren ->
+                    "o"
+
+        additionalStyles =
+            if exInd == NoChildren || isRootTree tree vm then
+                [ o_0 ]
+
+            else
+                []
     in
     div [ cx [ flex, inline_flex ] ]
         [ div
-            [ cx [ flex, items_center, justify_center, lh_solid, code ]
-
-            --            , style "min-height" "32px"
+            [ cx ([ flex, items_center, justify_center, lh_solid, code ] ++ additionalStyles)
             ]
             [ t prefix ]
         , if isEditingTree tree vm then
