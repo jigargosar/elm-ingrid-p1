@@ -13,7 +13,7 @@ import Html.Styled.Attributes
 import Item.Tree
 import Item.Zipper exposing (ItemZipper)
 import ItemTree exposing (ItemTree)
-import Json.Decode exposing (Decoder)
+import Json.Decode exposing (Decoder, decodeValue)
 import Json.Encode
 import List.Extra
 import Maybe.Extra
@@ -218,18 +218,18 @@ update message model =
 
 
 loadEncodedCursor encodedCursor model =
-    Json.Decode.decodeValue Item.Zipper.decoder encodedCursor
+    let
+        handleCursorDecodeError error =
+            ( model, toJsError [ "Decode Error: Cursor", Json.Decode.errorToString error ] )
+
+        loadCursor cursor =
+            ( overCursor (always cursor) model, Cmd.none )
+    in
+    encodedCursor
+        |> decodeValue Item.Zipper.decoder
         |> Result.Extra.unpack
-            (\error -> handleCursorDecodeError error model)
-            (\cursor -> loadCursor cursor model)
-
-
-handleCursorDecodeError error model =
-    ( model, toJsError [ "Decode Error: Cursor", Json.Decode.errorToString error ] )
-
-
-loadCursor cursor model =
-    ( overCursor (always cursor) model, Cmd.none )
+            handleCursorDecodeError
+            loadCursor
 
 
 cacheModel model =
