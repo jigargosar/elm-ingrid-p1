@@ -1,5 +1,5 @@
 // noinspection JSUnresolvedVariable
-import { getCached } from './cache-helpers'
+import { getCached, setCache } from './cache-helpers'
 import './main.scss'
 import { Elm } from './Main.elm'
 import * as R from 'ramda'
@@ -109,9 +109,9 @@ const app = Elm.Main.init({
 //     .catch(console.error)
 // })
 
-// app.ports.toJsCache.subscribe(model => {
-//   setCache('elm-main', model)
-// })
+app.ports.toJsCache.subscribe(model => {
+  setCache('elm-main', model)
+})
 
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)
 
@@ -153,7 +153,7 @@ const app = Elm.Main.init({
 
 function getMainCache() {
   return R.compose(
-    R.mergeDeepRight({ items: [], maybeFocusedItemId: null }),
+    R.mergeDeepRight({ cursor: null }),
     R.defaultTo({}),
     // always(null),
     getCached,
