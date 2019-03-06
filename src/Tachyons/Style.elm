@@ -97,12 +97,8 @@ noOutline =
     Css.outline Css.none
 
 
-colorHex =
-    color << hex
-
-
 white =
-    colorHex "#fff"
+    color <| rgba 255 255 255 1
 
 
 bg_S =
