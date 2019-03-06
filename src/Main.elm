@@ -6,11 +6,10 @@ import Browser.Dom
 import Browser.Events
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
-import Html.Attributes exposing (tabindex, value)
+import Html.Attributes exposing (id, tabindex, value)
 import Html.Events exposing (onInput)
 import Html.Styled
 import Html.Styled.Attributes
-import Item exposing (Item)
 import Item.Tree
 import Item.Zipper exposing (ItemZipper)
 import ItemTree exposing (ItemTree)
@@ -487,7 +486,7 @@ viewFragment vm tree =
             , isSelected = isSelectedTree tree vm
             , attrs =
                 List.map Html.Styled.Attributes.fromUnstyled
-                    [ Html.Attributes.id <| fragDomId <| Item.Tree.id tree
+                    [ id <| fragDomId <| Item.Tree.id tree
                     , tabindex 0
                     , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
                     ]
@@ -496,7 +495,7 @@ viewFragment vm tree =
 
 viewFragmentEditor _ tree =
     input
-        [ Html.Attributes.id <| fragInputDomId <| Item.Tree.id tree
+        [ id <| fragInputDomId <| Item.Tree.id tree
         , cx []
         , value <| ItemTree.treeFragment tree
         , onInput LineChanged
