@@ -112,7 +112,8 @@ const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
 
 app.ports.toJsCache.subscribe(model => {
   setCache('elm-main', model)
-  db.put({ model, cAt: Date.now() })
+  const cAt = Date.now()
+  db.put({ _id: `${cAt}`, model, cAt: cAt })
     .then(console.log)
     .catch(console.error)
 })
