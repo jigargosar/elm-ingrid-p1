@@ -423,7 +423,7 @@ viewLine vm tree =
     in
     div [ cx [ flex, inline_flex ] ]
         [ div
-            [ cx ([ flex, items_center, justify_center, lh_solid, code ] ++ additionalStyles)
+            [ cx ([ pr1, flex, items_center, justify_center, lh_solid, code ] ++ additionalStyles)
             ]
             [ t prefix ]
         , if isEditingTree tree vm then
