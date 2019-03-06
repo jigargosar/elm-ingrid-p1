@@ -272,14 +272,23 @@ ensureEditingSelected model =
 
 
 ensureFocus model =
-    ( model
-    , if model.viewMode == EditingSelected then
-        Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
-            |> Task.attempt (Debug.log "focusInputCmd" >> DomFocusResult)
+    let
+        itemId =
+            Item.Zipper.id model.cursor
 
-      else
-        Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
-            |> Task.attempt (Debug.log "focusSelectedCmd" >> DomFocusResult)
+        domIdFn =
+            case model.viewMode of
+                EditingSelected ->
+                    fragInputDomId
+
+                Navigating ->
+                    fragDomId
+
+        domId =
+            domIdFn itemId
+    in
+    ( model
+    , Dom.focus domId |> Task.attempt DomFocusResult
     )
 
 
