@@ -272,12 +272,12 @@ ensureEditingSelected model =
 
 focusInputCmd model =
     Browser.Dom.focus (getItemTreeInputDomId <| ItemTree.getSelectedTree model.cursor)
-        |> Task.attempt (Debug.log "focusing master input" >> Debug.log "focusInputCmd" >> (\_ -> NOP))
+        |> Task.attempt (Debug.log "focusInputCmd" >> (\_ -> NOP))
 
 
 focusSelectedCmd model =
     Browser.Dom.focus (getItemTreeLabelDomId <| ItemTree.getSelectedTree model.cursor)
-        |> Task.attempt (Debug.log "focusing selected label" >> Debug.log "focusSelectedCmd" >> (\_ -> NOP))
+        |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
 
 
 ensureFocusCmd model =
