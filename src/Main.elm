@@ -11,6 +11,7 @@ import Html.Events exposing (onInput)
 import Html.Styled
 import Html.Styled.Attributes
 import Item exposing (Item)
+import Item.Tree
 import Item.Zipper exposing (ItemZipper)
 import ItemTree exposing (ItemTree)
 import Json.Decode exposing (Decoder)
@@ -112,9 +113,9 @@ type Msg
     | Delete
 
 
-getItemTreeLabelDomId : ItemTree -> String
-getItemTreeLabelDomId tree =
-    "item-id-" ++ ItemTree.treeId tree
+fragDomId : String -> String
+fragDomId itemId =
+    "item-id-" ++ itemId
 
 
 getItemTreeInputDomId : ItemTree -> String
@@ -276,7 +277,7 @@ focusInputCmd model =
 
 
 focusSelectedCmd model =
-    Browser.Dom.focus (getItemTreeLabelDomId <| ItemTree.getSelectedTree model.cursor)
+    Browser.Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
         |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
 
 
@@ -487,7 +488,7 @@ viewFragment vm tree =
             , isSelected = isSelectedTree tree vm
             , attrs =
                 List.map Html.Styled.Attributes.fromUnstyled
-                    [ Html.Attributes.id <| getItemTreeLabelDomId tree
+                    [ Html.Attributes.id <| fragDomId <| Item.Tree.id tree
                     , tabindex 0
                     , HotKey.preventDefaultOnKeyDownEvent itemLabelHotKeyDispatcher
                     ]

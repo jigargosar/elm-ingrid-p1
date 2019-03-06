@@ -1,4 +1,4 @@
-module Item.Zipper exposing (ItemZipper, decoder, encoder)
+module Item.Zipper exposing (ItemZipper, decoder, encoder, id)
 
 import BasicsX exposing (..)
 import Item exposing (Item)
