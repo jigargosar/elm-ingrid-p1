@@ -36,9 +36,7 @@ port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 main =
     Browser.element
         { init = init
-        , update =
-            --            \msg -> update (Debug.log "msg" msg)
-            update
+        , update = update
         , view = view
         , subscriptions = subscriptions
         }
@@ -385,7 +383,6 @@ itemLabelHotKeyDispatcher ke =
     labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
-        |> Debug.log "itemLabelHotKeyDispatcher"
 
 
 viewAnyTree vm tree =
@@ -417,7 +414,6 @@ fragmentEditorHotKeyDecoder ke =
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
-        |> Debug.log "fragmentEditorHotKeyDecoder"
 
 
 type ChildrenAre
