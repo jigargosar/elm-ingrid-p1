@@ -157,9 +157,9 @@ app.ports.toJsError.subscribe(errorArgs => {
 
 function getMainCache() {
   return R.compose(
-    R.mergeDeepRight({ cursor: {} }),
+    R.mergeDeepRight({ cursor: null }),
     R.defaultTo({}),
-    // always(null),
+    R.always(null),
     getCached,
   )('elm-main')
 }

@@ -220,7 +220,7 @@ update message model =
 loadEncodedCursor encodedCursor model =
     let
         handleCursorDecodeError error =
-            ( model, toJsError [ "Decode Error: Cursor", errorToString error ] )
+            ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
             ( overCursor (always cursor) model, toJsError [ "Decode Error: Cursor", "Just Kidding" ] )
