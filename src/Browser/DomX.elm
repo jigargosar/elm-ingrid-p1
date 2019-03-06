@@ -8,8 +8,8 @@ import Task exposing (Task)
 focus : String -> Task String ()
 focus domId =
     if String.isBlank domId then
-        Task.fail "Error: Cannot focus empty domId"
+        Task.fail "Focus Error: empty domId"
 
     else
         Browser.Dom.focus domId
-            |> Task.mapError (\_ -> "DomId NotFound: " ++ domId)
+            |> Task.mapError (\_ -> "Focus Error: domId not found: " ++ domId)

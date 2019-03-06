@@ -285,7 +285,7 @@ ensureFocus model =
             domIdFn <| Item.Zipper.id model.cursor
     in
     ( model
-    , Dom.focus domId |> Task.attempt DomFocusResultReceived
+    , Dom.focus "domId" |> Task.attempt DomFocusResultReceived
     )
 
 
