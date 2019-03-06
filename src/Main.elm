@@ -385,18 +385,18 @@ fragmentEditorHotKeyDecoder ke =
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
+type ExpandIndicator
+    = NoChildren
+    | Expanded
+    | Collapsed
+
+
 viewLine vm tree =
     let
         _ =
             1
     in
     div [] [ viewFragment vm tree ]
-
-
-type ExpandIndicator
-    = NoChildren
-    | Expanded
-    | Collapsed
 
 
 viewFragment vm tree =
