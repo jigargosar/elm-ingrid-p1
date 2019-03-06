@@ -16,8 +16,12 @@ type alias FragmentProps msg =
     }
 
 
+isBlank =
+    String.trim >> String.isEmpty
+
+
 viewFragment : FragmentProps msg -> Html msg
-viewFragment props =
+viewFragment p =
     let
         baseStyles : List Css.Style
         baseStyles =
@@ -27,17 +31,24 @@ viewFragment props =
             [ pa 1, f4 ]
 
         selectedStyles =
-            [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblue ] ]
+            [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblue, white ] ]
+
+        dimStyles =
+            [ o_ 0 ]
+
+        renderText =
+            defaultEmptyStringTo (ter p.isRoot "Root" "Untitled") p.text
+
+        shouldDim =
+            isBlank p.text && not p.isRoot
 
         finalC =
             baseStyles
-                |> concatIf props.isRoot rootStyles
-                |> concatIf props.isSelected selectedStyles
-
-        renderText =
-            defaultEmptyStringTo "Untitled" props.text
+                |> concatIf p.isRoot rootStyles
+                |> concatIf p.isSelected selectedStyles
+                |> concatIf shouldDim dimStyles
     in
-    div ([ css finalC ] ++ props.attrs) [ t renderText ]
+    div ([ css finalC ] ++ p.attrs) [ t renderText ]
 
 
 

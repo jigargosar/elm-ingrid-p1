@@ -10,6 +10,7 @@ module Tachyons.Style exposing
     , lh_solid
     , lh_title
     , noOutline
+    , o_
     , pa
     , ph
     , white
@@ -123,3 +124,7 @@ blackA pct =
 
 bg_lightblue =
     bg_S "lightblue"
+
+
+o_ =
+    Css.opacity << Css.num
