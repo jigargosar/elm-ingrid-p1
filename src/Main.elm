@@ -381,13 +381,13 @@ fragmentEditorHotKeyDecoder ke =
         |> Debug.log "itemEditorHotKeyDispatcher"
 
 
-type ChildVisibility
+type ChildrenAre
     = NoChildren
     | Expanded
     | Collapsed
 
 
-treeChildVisibility tree =
+getChildrenState tree =
     let
         canCollapse =
             ItemTree.canTreeCollapse tree
@@ -400,11 +400,11 @@ treeChildVisibility tree =
 
 viewLine vm tree =
     let
-        childVisibility =
-            treeChildVisibility tree
+        childrenAre =
+            getChildrenState tree
 
         prefix =
-            case childVisibility of
+            case childrenAre of
                 Expanded ->
                     "+"
 
@@ -415,7 +415,7 @@ viewLine vm tree =
                     "o"
 
         additionalStyles =
-            if childVisibility == NoChildren || isRootTree tree vm then
+            if childrenAre == NoChildren || isRootTree tree vm then
                 [ o_0 ]
 
             else
