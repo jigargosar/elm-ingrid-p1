@@ -23,12 +23,12 @@ encoder z =
 decoder : Decoder ItemZipper
 decoder =
     Json.Decode.map2
-        (\tree fid ->
+        (\itemTree focusItemId ->
             let
                 z =
-                    Zipper.fromTree tree
+                    Zipper.fromTree itemTree
             in
-            Zipper.findFromRoot (.id >> eqs fid) z
+            Zipper.findFromRoot (.id >> eqs focusItemId) z
                 |> Maybe.withDefault z
         )
         (Json.Decode.field "root" Item.Tree.decoder)
