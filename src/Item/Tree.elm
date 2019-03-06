@@ -30,8 +30,19 @@ encoder tree =
         ]
 
 
+
+{-
+   --decoder : Decoder ItemTree
+   --decoder =
+   --    Json.Decode.map2 (\label children -> Tree.singleton label |> Tree.replaceChildren children)
+   --        (Json.Decode.field "label" Json.Decode.string)
+   --        (Json.Decode.field "children" (Json.Decode.list decoder))
+
+-}
+
+
 decoder : Decoder ItemTree
 decoder =
     Json.Decode.map2 (\label children -> Tree.singleton label |> Tree.replaceChildren children)
         (Json.Decode.field "label" Json.Decode.string)
-        (Json.Decode.field "children" (Json.Decode.list decoder))
+        (Json.Decode.lazy (\_ -> Json.Decode.field "children" (Json.Decode.list decoder)))
