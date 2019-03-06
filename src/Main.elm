@@ -18,6 +18,7 @@ import Json.Encode
 import List.Extra
 import Maybe.Extra
 import Random exposing (Generator)
+import Result.Extra
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
@@ -217,16 +218,9 @@ update message model =
 
 
 loadEncodedCursor encodedCursor model =
-    let
-        cursorResult =
-            Json.Decode.decodeValue Item.Zipper.decoder encodedCursor
-    in
-    case cursorResult of
-        Ok cursor ->
-            loadCursor cursor model
-
-        Err error ->
-            handleCursorDecodeError error model
+    Json.Decode.decodeValue Item.Zipper.decoder encodedCursor
+        |> Result.map (\cursor -> loadCursor cursor model)
+        |> Result.Extra.extract (\error -> handleCursorDecodeError error model)
 
 
 handleCursorDecodeError error model =
