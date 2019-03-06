@@ -31,7 +31,7 @@ viewFragment p =
             [ pa 1, f4 ]
 
         selectedStyles =
-            [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblue, white ] ]
+            [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblueA 0.8, white ] ]
 
         dimStyles =
             [ o_ 0 ]
