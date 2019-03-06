@@ -96,7 +96,7 @@ subscriptions _ =
 
 type Msg
     = NOP
-    | DomFocusResult (Result String ())
+    | DomFocusResultReceived (Result String ())
     | GlobalKeyDown KeyEvent
     | Init Flags
     | LineChanged String
@@ -143,10 +143,10 @@ update message model =
         NOP ->
             ( model, Cmd.none )
 
-        DomFocusResult (Err msg) ->
+        DomFocusResultReceived (Err msg) ->
             ( model, toJsError [ msg ] )
 
-        DomFocusResult (Ok ()) ->
+        DomFocusResultReceived (Ok ()) ->
             ( model, Cmd.none )
 
         Init flags ->
@@ -285,7 +285,7 @@ ensureFocus model =
             domIdFn <| Item.Zipper.id model.cursor
     in
     ( model
-    , Dom.focus domId |> Task.attempt DomFocusResult
+    , Dom.focus domId |> Task.attempt DomFocusResultReceived
     )
 
 
