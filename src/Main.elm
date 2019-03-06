@@ -290,7 +290,7 @@ viewTreeContainer model =
         containerClasses =
             let
                 baseClasses =
-                    [ flex_grow_1, pl3, pt3 ]
+                    [ flex_grow_1, pt3 ]
 
                 editingModeClasses =
                     [ bg_black_20, black_50 ]
