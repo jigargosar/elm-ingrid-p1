@@ -71,8 +71,12 @@ outline_0 =
     Css.outline Css.none
 
 
+colorHex =
+    color << hex
+
+
 white =
-    color <| hex "#fff"
+    colorHex "#fff"
 
 
 bg_s =
