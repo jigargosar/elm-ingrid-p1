@@ -79,12 +79,12 @@ white =
     colorHex "#fff"
 
 
-bg_s =
+bg_S =
     Css.property "background-color"
 
 
 bg_dodgerblue =
-    bg_s "dodgerblue"
+    bg_S "dodgerblue"
 
 
 black_ : Float -> Style
