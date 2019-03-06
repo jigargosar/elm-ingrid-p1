@@ -182,9 +182,11 @@ update message model =
 
         Delete ->
             ( model |> overCursor ItemTree.delete, Cmd.none )
+                |> Update.andThen cacheModel
 
         Edit ->
             ensureEditingSelected model
+                |> Update.andThen cacheModel
 
         CollapseOrPrev ->
             ( model |> overCursor ItemTree.collapseOrParent, Cmd.none )
