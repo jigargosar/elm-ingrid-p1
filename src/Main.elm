@@ -14,6 +14,7 @@ import Item exposing (Item)
 import Item.Zipper exposing (ItemZipper)
 import ItemTree exposing (ItemTree)
 import Json.Decode exposing (Decoder)
+import Json.Encode
 import List.Extra
 import Maybe.Extra
 import Random exposing (Generator)
@@ -27,6 +28,9 @@ import V exposing (co, cx, t, viewIf)
 
 
 --port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
+
+
+port toJsCache : Json.Encode.Value -> Cmd msg
 
 
 main =
@@ -159,6 +163,7 @@ update message model =
 
         Save ->
             stopEditing model
+                |> Update.andThen cacheModel
 
         Delete ->
             ( model |> overCursor ItemTree.delete, Cmd.none )
@@ -200,6 +205,20 @@ update message model =
 
         LineChanged newContent ->
             ( overCursor (ItemTree.setContent newContent) model, Cmd.none )
+
+
+cacheModel model =
+    let
+        prettyJson =
+            model.cursor
+                |> Item.Zipper.encoder
+                |> Json.Encode.encode 2
+                |> Debug.log "prettyJson"
+    in
+    ( model
+    , toJsCache <|
+        Item.Zipper.encoder model.cursor
+    )
 
 
 stopEditing model =
