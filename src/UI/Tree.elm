@@ -25,7 +25,7 @@ viewFragment p =
     let
         baseStyles : List Css.Style
         baseStyles =
-            [ dib, lh_title, ph 2, blackA 80 ]
+            [ dib, lh_title, ph 2, blackA 0.8 ]
 
         rootStyles =
             [ pa 1, f4 ]
@@ -34,7 +34,10 @@ viewFragment p =
             [ noOutline, br1, bgDodgerblueA 0.5, white, focus [ bgDodgerblueA 0.8, white ] ]
 
         dimStyles =
-            [ o_ 0 ]
+            [ whiteA 0.5 ]
+
+        selectedDimStyle =
+            [ focus [ whiteA 0.5 ] ]
 
         renderText =
             defaultEmptyStringTo (ter p.isRoot "Root" "Untitled") p.text
@@ -47,8 +50,9 @@ viewFragment p =
                 |> concatIf p.isRoot rootStyles
                 |> concatIf p.isSelected selectedStyles
                 |> concatIf shouldDim dimStyles
+                |> concatIf (shouldDim && p.isSelected) selectedDimStyle
     in
-    div ([ css finalCss ] ++ p.attrs) [ t renderText ]
+    div ([ css finalCss ] ++ p.attrs) [ t <| Debug.log "renderText" renderText ]
 
 
 

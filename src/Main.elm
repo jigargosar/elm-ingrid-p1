@@ -395,14 +395,6 @@ type ExpandIndicator
 
 viewLine vm tree =
     let
-        _ =
-            1
-    in
-    div [] [ viewFragment vm tree ]
-
-
-viewFragment vm tree =
-    let
         canCollapse =
             ItemTree.canTreeCollapse tree
 
@@ -412,9 +404,17 @@ viewFragment vm tree =
         prefix =
             ter canExpand " + " (ter canCollapse " - " "   ")
     in
+    div [] [ viewFragment vm tree ]
+
+
+viewFragment vm tree =
+    let
+        _ =
+            1
+    in
     Html.Styled.toUnstyled <|
         UI.Tree.viewFragment
-            { text = ItemTree.treeFragment tree |> (++) prefix
+            { text = ItemTree.treeFragment tree
             , isRoot = isRootTree tree vm
             , isSelected = isSelectedTree tree vm
             , attrs =

@@ -15,6 +15,7 @@ module Tachyons.Style exposing
     , ph
     , stylesIf
     , white
+    , whiteA
     )
 
 import Array
@@ -115,8 +116,13 @@ bgDodgerblueA =
 
 
 blackA : Float -> Style
-blackA pct =
-    color <| rgba 0 0 0 (pct / 100)
+blackA alpha =
+    color <| rgba 0 0 0 alpha
+
+
+whiteA : Float -> Style
+whiteA alpha =
+    color <| rgba 255 255 255 alpha
 
 
 bg_lightblue =
