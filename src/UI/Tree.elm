@@ -17,14 +17,14 @@ type alias FragmentProps msg =
 viewFragment : FragmentProps msg -> Html msg
 viewFragment props =
     let
-        nonRootC =
-            [ dib, ph1, bg_white, br1 ]
-
         rootC =
-            [ dib, pv2, f4, bg_white, br1 ]
+            [ dib, pa1, f4, bg_white, br1 ]
+
+        nonRootC =
+            [ dib, lh_title, ph2, bg_white, br1 ]
 
         selectedC =
-            [ bg_light_red, white ]
+            [ outline_0, bg_light_blue, black_50, hover_white, hover_bg_blue ]
 
         finalC =
             ter props.isRoot rootC nonRootC

@@ -25,3 +25,10 @@ body > div[data-elm-hot='true'] {
 .resize-none{
   resize: none;
 }
+
+*:focus , .outline-1{
+  outline-color: dodgerblue;
+  outline-offset: 0px;
+  outline-width: 5px;
+  outline-style: wave;
+}
