@@ -52,7 +52,7 @@ viewFragment p =
                 |> concatIf shouldDim dimStyles
                 |> concatIf (shouldDim && p.isSelected) selectedDimStyle
     in
-    div ([ css finalCss ] ++ p.attrs) [ t <| Debug.log "renderText" renderText ]
+    div ([ css finalCss ] ++ p.attrs) [ t <| renderText ]
 
 
 

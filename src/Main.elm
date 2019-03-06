@@ -53,22 +53,20 @@ type ViewMode
 
 
 type alias Model =
-    { maybeFocusedItemId : Maybe String
-    , cursor : ItemZipper
+    { cursor : ItemZipper
     , viewMode : ViewMode
     , seed : Random.Seed
     }
 
 
 type alias Flags =
-    { items : List Item, maybeFocusedItemId : Maybe String, now : Int }
+    { now : Int }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     update InitReceived
-        { maybeFocusedItemId = flags.maybeFocusedItemId
-        , cursor = ItemTree.initialCursor
+        { cursor = ItemTree.initialCursor
         , viewMode = Navigating
         , seed = Random.initialSeed flags.now
         }
