@@ -191,19 +191,19 @@ update message model =
 
         Prev ->
             Update.pure (overCursor ItemTree.backward model)
-                |> Update.effect ensureFocusCmd
+                |> Update.andThen ensureFocus
 
         Next ->
             Update.pure (overCursor ItemTree.forward model)
-                |> Update.effect ensureFocusCmd
+                |> Update.andThen ensureFocus
 
         MoveUp ->
             Update.pure (overCursor ItemTree.moveUp model)
-                |> Update.effect ensureFocusCmd
+                |> Update.andThen ensureFocus
 
         MoveDown ->
             Update.pure (overCursor ItemTree.moveDown model)
-                |> Update.effect ensureFocusCmd
+                |> Update.andThen ensureFocus
 
         Outdent ->
             ( overCursor ItemTree.outdent model
