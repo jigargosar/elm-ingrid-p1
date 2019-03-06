@@ -113,6 +113,10 @@ app.ports.toJsCache.subscribe(model => {
   setCache('elm-main', model)
 })
 
+app.ports.toJsError.subscribe(errorArgs => {
+  console.error(...errorArgs)
+})
+
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)
 
 // const debouncedBulkItemDocs = debounce(bulkItemDocs, 1000, {
