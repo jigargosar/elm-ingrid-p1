@@ -1,6 +1,5 @@
 module ItemTree exposing
-    ( Item
-    , ItemCursor
+    ( ItemCursor
     , ItemTree
     , appendNew
     , backward
@@ -27,6 +26,7 @@ module ItemTree exposing
     )
 
 import BasicsX exposing (..)
+import Item exposing (Fragment, Item)
 import Maybe.Extra
 import Tree
 import Tree.Zipper as Zipper exposing (Zipper)
@@ -34,17 +34,6 @@ import Tree.Zipper as Zipper exposing (Zipper)
 
 orl =
     Maybe.Extra.orElseLazy
-
-
-type alias Fragment =
-    String
-
-
-type alias Item =
-    { id : String
-    , fragment : Fragment
-    , collapsed : Bool
-    }
 
 
 type alias ItemTree =

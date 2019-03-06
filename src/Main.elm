@@ -10,7 +10,8 @@ import Html.Attributes exposing (style, tabindex, value)
 import Html.Events exposing (onInput)
 import Html.Styled
 import Html.Styled.Attributes
-import ItemTree exposing (Item, ItemCursor, ItemTree)
+import Item exposing (Item)
+import ItemTree exposing (ItemCursor, ItemTree)
 import Json.Decode exposing (Decoder)
 import List.Extra
 import Maybe.Extra
