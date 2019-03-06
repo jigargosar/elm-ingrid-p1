@@ -1,4 +1,4 @@
-module Tachyons.Style exposing (bg_dodgerblue, bg_lightblue, black_, br1, dib, f4, lh_copy, lh_solid, lh_title, outline_0, pa1, ph2, white)
+module Tachyons.Style exposing (bg_dodgerblue, bg_dodgerblueA, bg_lightblue, black_, br1, dib, f4, lh_copy, lh_solid, lh_title, outline_0, pa1, ph2, white)
 
 import Css exposing (Style, color, hex, hsla, rem, rgba)
 import Tachyons.Color as Color
@@ -86,6 +86,10 @@ bg_S =
 
 bg_dodgerblue =
     Css.backgroundColor Color.dodgerblue
+
+
+bg_dodgerblueA =
+    Css.backgroundColor << Color.dodgerblueA
 
 
 black_ : Float -> Style
