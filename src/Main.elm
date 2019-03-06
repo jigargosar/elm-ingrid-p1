@@ -96,6 +96,7 @@ subscriptions _ =
 
 type Msg
     = NOP
+    | DomFocusResult (Result String ())
     | GlobalKeyDown KeyEvent
     | Init Flags
     | LineChanged String
@@ -139,15 +140,21 @@ isSelectedBlank model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
+        NOP ->
+            ( model, Cmd.none )
+
+        DomFocusResult (Err msg) ->
+            ( model, toJsError [ msg ] )
+
+        DomFocusResult (Ok ()) ->
+            ( model, Cmd.none )
+
         Init flags ->
             loadEncodedCursor flags.cursor model
                 |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
             ensureFocus model
-
-        NOP ->
-            ( model, Cmd.none )
 
         New ->
             if isEditingMode model && isSelectedBlank model then
@@ -268,11 +275,11 @@ ensureFocus model =
     ( model
     , if model.viewMode == EditingSelected then
         Dom.focus (fragInputDomId <| Item.Zipper.id model.cursor)
-            |> Task.attempt (Debug.log "focusInputCmd" >> (\_ -> NOP))
+            |> Task.attempt (Debug.log "focusInputCmd" >> DomFocusResult)
 
       else
         Dom.focus (fragDomId <| Item.Zipper.id model.cursor)
-            |> Task.attempt (Debug.log "focusSelectedCmd" >> (\_ -> NOP))
+            |> Task.attempt (Debug.log "focusSelectedCmd" >> DomFocusResult)
     )
 
 
