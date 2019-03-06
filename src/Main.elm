@@ -387,7 +387,7 @@ type ChildVisibility
     | Collapsed
 
 
-treeExpandIndicator tree =
+treeChildVisiblity tree =
     let
         canCollapse =
             ItemTree.canTreeCollapse tree
@@ -400,11 +400,11 @@ treeExpandIndicator tree =
 
 viewLine vm tree =
     let
-        exInd =
-            treeExpandIndicator tree
+        childVisibility =
+            treeChildVisiblity tree
 
         prefix =
-            case exInd of
+            case childVisibility of
                 Expanded ->
                     "+"
 
@@ -415,7 +415,7 @@ viewLine vm tree =
                     "o"
 
         additionalStyles =
-            if exInd == NoChildren || isRootTree tree vm then
+            if childVisibility == NoChildren || isRootTree tree vm then
                 [ o_0 ]
 
             else
