@@ -206,7 +206,7 @@ update message model =
             , Cmd.none
             )
                 |> Update.andThen cacheModel
-                |> Update.andThen persistentUndo
+                |> Update.do (toJsUndo ())
 
         Redo ->
             ( { model | history = Pivot.withRollback Pivot.goL model.history }
@@ -214,7 +214,7 @@ update message model =
             , Cmd.none
             )
                 |> Update.andThen cacheModel
-                |> Update.andThen persistentRedo
+                |> Update.andThen (toJsRedo ())
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
@@ -366,14 +366,6 @@ cacheModel model =
 
 persistToHistory model =
     ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
-
-
-persistentUndo model =
-    ( model, Cmd.none )
-
-
-persistentRedo model =
-    ( model, Cmd.none )
 
 
 stopEditing model =
