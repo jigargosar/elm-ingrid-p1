@@ -7,6 +7,7 @@ import PouchDB from 'pouchdb-browser'
 import debounce from 'lodash.debounce'
 import ms from 'ms'
 import validate from 'aproba'
+import nanoid from 'nanoid'
 
 /* ITEM */
 
@@ -80,6 +81,7 @@ const app = Elm.Main.init({
 })
 
 const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
+const historyDb = new PouchDB('http://127.0.0.1:5984/elm-ingrid-history')
 
 db.info().catch(sendErrorWithTitle('PouchDB info failed'))
 
@@ -159,6 +161,16 @@ const debouncedBackup = debounce(backup, ms('5s'), {
 app.ports.toJsCache.subscribe(model => {
   setCache('elm-main', model)
   debouncedBackup(model)
+  const cAt = Date.now()
+  historyDb
+    .put({
+      _id: `${cAt}_${nanoid()}`,
+      cursor: model.cursor,
+      pid: model.historyId,
+      cAt,
+    })
+    .then(console.log)
+    .catch(sendErrorWithTitle('HistoryDb Error'))
 })
 
 app.ports.toJsError.subscribe(errorArgs => {
