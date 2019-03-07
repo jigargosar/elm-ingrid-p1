@@ -92,7 +92,7 @@ function send(value, portName) {
   if (canSendToPort(portName)) {
     port.send(value)
   } else {
-    console.error('Port Not Found', portName, value)
+    console.error(`Port Not Found '${portName}', msg=`, value)
   }
 }
 
