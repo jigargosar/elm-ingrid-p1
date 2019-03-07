@@ -71,7 +71,7 @@ type alias Model =
 
 
 type alias Flags =
-    { cursor : Json.Encode.Value, now : Int, historyId : String }
+    { cache : { cursor : Json.Encode.Value, historyId : String }, now : Int }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -227,7 +227,7 @@ update message model =
             ( model, Cmd.none )
 
         Init flags ->
-            loadEncodedCursor flags.cursor model
+            loadEncodedCursor flags.cache.cursor model
                 |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->

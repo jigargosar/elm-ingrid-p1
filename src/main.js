@@ -76,7 +76,7 @@ const mainCache = getMainCache()
 const app = Elm.Main.init({
   node:
     document.querySelector('#main') || document.querySelector('body > *'),
-  flags: { now: Date.now(), ...mainCache },
+  flags: { now: Date.now(), cache: mainCache },
 })
 
 const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
