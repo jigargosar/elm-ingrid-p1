@@ -419,26 +419,19 @@ fragmentHotKeyDecoder ke =
         |> Maybe.map Tuple.second
 
 
-overSecond fn ( v1, v2 ) =
-    ( v1, fn v2 )
-
-
-addSecond v2 v1 =
-    ( v1, v2 )
-
-
 fragmentEditorHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
 fragmentEditorHotKeyDecoder ke =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
-            [ ( HotKey.is "Enter", ( New, True ) )
-            , ( HotKey.isMeta "Enter", ( Save, True ) )
-            , ( HotKey.is "Escape", ( Save, True ) )
-            , ( HotKey.isShift "Enter", ( NOP, True ) )
-            , ( HotKey.isShift "Tab", ( Outdent, True ) )
-            , ( HotKey.is "Tab", ( Indent, True ) )
+            [ ( HotKey.is "Enter", New )
+            , ( HotKey.isMeta "Enter", Save )
+            , ( HotKey.is "Escape", Save )
+            , ( HotKey.isShift "Enter", NOP )
+            , ( HotKey.isShift "Tab", Outdent )
+            , ( HotKey.is "Tab", Indent )
             ]
+                |> List.map (overSecond (addSecond True))
     in
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)

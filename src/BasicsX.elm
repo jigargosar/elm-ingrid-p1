@@ -1,4 +1,4 @@
-module BasicsX exposing (applyTo, concatIf, defaultEmptyStringTo, eqs, ifElse, neq, tap, ter, when)
+module BasicsX exposing (addSecond, applyTo, concatIf, defaultEmptyStringTo, eqs, ifElse, neq, overSecond, tap, ter, when)
 
 
 eqs =
@@ -7,6 +7,14 @@ eqs =
 
 neq =
     (/=)
+
+
+overSecond fn ( v1, v2 ) =
+    ( v1, fn v2 )
+
+
+addSecond v2 v1 =
+    ( v1, v2 )
 
 
 concatIf : Bool -> List a -> List a -> List a
