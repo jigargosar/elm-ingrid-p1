@@ -158,6 +158,8 @@ type Msg
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | OnJsError Err
     | RotateActionable
+    | Undo
+    | Redo
 
 
 fragDomId : String -> String
@@ -188,6 +190,12 @@ update message model =
     case message of
         NOP ->
             ( model, Cmd.none )
+
+        Undo ->
+            ( { model | history = Pivot.withRollback Pivot.goR model.history }, Cmd.none )
+
+        Redo ->
+            ( { model | history = Pivot.withRollback Pivot.goL model.history }, Cmd.none )
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
