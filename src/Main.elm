@@ -33,7 +33,7 @@ import V exposing (co, cx, t, viewIf)
 --port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
 
 
-port toJsCache : { cursor : Json.Encode.Value, historyId : String } -> Cmd msg
+port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 
 
 port toJsError : List String -> Cmd msg
@@ -66,7 +66,6 @@ type alias Model =
     , seed : Random.Seed
     , toasties : Toasty.Stack Toasties.Toast
     , history : Pivot ItemZipper
-    , historyId : String
     }
 
 
@@ -86,7 +85,6 @@ init flags =
         , seed = Random.initialSeed flags.now
         , toasties = Toasty.initialState
         , history = Pivot.singleton cursor
-        , historyId = ""
         }
 
 
@@ -352,7 +350,7 @@ loadEncodedCursor encodedCursor model =
 cacheModel model =
     ( model
     , toJsCache <|
-        { cursor = Item.Zipper.encoder model.cursor, historyId = model.historyId }
+        { cursor = Item.Zipper.encoder model.cursor }
     )
 
 

@@ -95,15 +95,18 @@ fetch(couchDbServerUrl)
 
 // db.info().catch(sendErrorWithTitle('PouchDB info failed'))
 
-historyDb
-  .allDocs({
-    include_docs: true,
-    descending: true,
-    // fields: ['_id', 'name'],
-    limit: 1,
-  })
-  .then(console.log)
-  .catch(sendErrorWithTitle('History Load Error'))
+function cachedRedoHistoryIds() {
+  return R.pipe(
+    getCached,
+    R.defaultTo([]),
+  )('redoHistoryIds')
+}
+
+const redoHistoryIds = cachedRedoHistoryIds()
+
+if (redoHistoryIds.length > 0) {
+  historyDb.get(R.last(redoHistoryIds)).then(console.log)
+}
 
 function canSendToPort(portName) {
   validate('S', arguments)
@@ -182,14 +185,16 @@ app.ports.toJsCache.subscribe(model => {
   setCache('elm-main', model)
   debouncedBackup(model)
   const cAt = Date.now()
+  const newId = `${cAt}_${nanoid()}`
   historyDb
     .put({
-      _id: `${cAt}_${nanoid()}`,
+      _id: newId,
       cursor: model.cursor,
-      pid: model.historyId,
+      pid: R.compose(R.last)(cachedRedoHistoryIds()),
       cAt,
     })
-    .then(console.log)
+    .then(R.tap(console.log))
+    .then(setCache('redoHistoryIds', [newId]))
     .catch(sendErrorWithTitle('HistoryDb Error'))
 })
 
