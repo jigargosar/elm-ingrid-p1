@@ -4,6 +4,8 @@ import './main.scss'
 import { Elm } from './Main.elm'
 import * as R from 'ramda'
 import PouchDB from 'pouchdb-browser'
+import debounce from 'lodash.debounce'
+import ms from 'ms'
 
 /* ITEM */
 
@@ -110,12 +112,21 @@ const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
 //     .catch(console.error)
 // })
 
-app.ports.toJsCache.subscribe(model => {
-  setCache('elm-main', model)
+function backup(model) {
   const cAt = Date.now()
-  db.put({ _id: `${cAt}`, model, cAt: cAt })
+  db.put({ _id: `${cAt}`, model, cAt })
     .then(console.log)
     .catch(console.error)
+}
+
+const debouncedBackup = debounce(backup, ms('5m'), {
+  leading: false,
+  trailing: true,
+})
+
+app.ports.toJsCache.subscribe(model => {
+  setCache('elm-main', model)
+  debouncedBackup(model)
 })
 
 app.ports.toJsError.subscribe(errorArgs => {
