@@ -196,7 +196,7 @@ app.ports.toJsUndo.subscribe(() => {
       R.compose(
         R.defaultTo(''),
         R.last,
-      )(redoHistoryIds),
+      )(cachedRedoHistoryIds()),
     )
     // historyDb
     //   .find({
@@ -221,7 +221,31 @@ app.ports.toJsUndo.subscribe(() => {
     .catch(sendErrorWithTitle('HistoryDb Undo Error'))
 })
 
-app.ports.toJsRedo.subscribe(() => {})
+app.ports.toJsRedo.subscribe(() => {
+  const newRedoHistoryIds = R.compose(R.init)(cachedRedoHistoryIds())
+
+  historyDb
+    .get(
+      R.compose(
+        R.defaultTo(''),
+        R.last,
+      )(newRedoHistoryIds),
+    )
+    // historyDb
+    //   .find({
+    //     selector: {
+    //       pid: R.compose(
+    //         R.defaultTo(''),
+    //         R.last,
+    //       )(redoHistoryIds),
+    //       limit: 1,
+    //       sort: [{ _id: 'desc' }],
+    //     },
+    //   })
+    .then(R.tap(console.log))
+    .then(doc => setCache('redoHistoryIds', newRedoHistoryIds))
+    .catch(sendErrorWithTitle('HistoryDb Undo Error'))
+})
 
 app.ports.toJsPersistToHistory.subscribe(cursor => {
   const cAt = Date.now()
