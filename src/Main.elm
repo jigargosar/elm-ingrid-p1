@@ -71,7 +71,7 @@ type alias Model =
 
 
 type alias Flags =
-    { cursor : Json.Encode.Value, now : Int }
+    { cursor : Json.Encode.Value, now : Int, historyId : String }
 
 
 init : Flags -> ( Model, Cmd Msg )
