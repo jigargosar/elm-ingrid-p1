@@ -396,24 +396,35 @@ fragmentHotKeyDecoder ke =
     let
         labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         labelKeyMap =
-            [ ( HotKey.is "Enter", ( New, True ) )
-            , ( HotKey.is " ", ( Edit, True ) )
-            , ( HotKey.isCtrl " ", ( RotateActionable, True ) )
-            , ( HotKey.isShift "Enter", ( NOP, True ) )
-            , ( HotKey.is "ArrowUp", ( Prev, True ) )
-            , ( HotKey.is "ArrowDown", ( Next, True ) )
-            , ( HotKey.isMeta "ArrowUp", ( MoveUp, True ) )
-            , ( HotKey.isMeta "ArrowDown", ( MoveDown, True ) )
-            , ( HotKey.isShift "Tab", ( Outdent, True ) )
-            , ( HotKey.is "Tab", ( Indent, True ) )
-            , ( HotKey.is "ArrowLeft", ( CollapseOrPrev, True ) )
-            , ( HotKey.is "ArrowRight", ( ExpandOrNext, True ) )
-            , ( HotKey.is "Delete", ( Delete, True ) )
+            [ ( HotKey.is "Enter", New )
+            , ( HotKey.is " ", Edit )
+            , ( HotKey.isCtrl " ", RotateActionable )
+            , ( HotKey.isShift "Enter", NOP )
+            , ( HotKey.is "ArrowUp", Prev )
+            , ( HotKey.is "ArrowDown", Next )
+            , ( HotKey.isMeta "ArrowUp", MoveUp )
+            , ( HotKey.isMeta "ArrowDown", MoveDown )
+            , ( HotKey.isShift "Tab", Outdent )
+            , ( HotKey.is "Tab", Indent )
+            , ( HotKey.is "ArrowLeft", CollapseOrPrev )
+            , ( HotKey.is "ArrowRight", ExpandOrNext )
+            , ( HotKey.is "Delete", Delete )
+            , ( HotKey.isMeta "z", Undo )
+            , ( HotKey.isKeyMetaShift "z", Redo )
             ]
+                |> List.map (overSecond (addSecond True))
     in
     labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
         |> Maybe.map Tuple.second
+
+
+overSecond fn ( v1, v2 ) =
+    ( v1, fn v2 )
+
+
+addSecond v2 v1 =
+    ( v1, v2 )
 
 
 fragmentEditorHotKeyDecoder : KeyEvent -> Maybe ( Msg, Bool )
