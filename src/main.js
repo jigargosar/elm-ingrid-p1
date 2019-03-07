@@ -242,7 +242,7 @@ app.ports.toJsError.subscribe(errorArgs => {
 
 function getMainCache() {
   return R.compose(
-    R.mergeDeepRight({ cursor: null, historyId: '' }),
+    R.mergeDeepRight({ cursor: null }),
     R.defaultTo({}),
     // R.always(null),
     getCached,
