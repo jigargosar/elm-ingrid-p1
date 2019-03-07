@@ -39,6 +39,12 @@ port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 port toJsPersistToHistory : Json.Encode.Value -> Cmd msg
 
 
+port toJsUndo : () -> Cmd msg
+
+
+port toJsRedo : () -> Cmd msg
+
+
 port toJsError : List String -> Cmd msg
 
 
@@ -200,6 +206,7 @@ update message model =
             , Cmd.none
             )
                 |> Update.andThen cacheModel
+                |> Update.andThen persistentUndo
 
         Redo ->
             ( { model | history = Pivot.withRollback Pivot.goL model.history }
@@ -207,6 +214,7 @@ update message model =
             , Cmd.none
             )
                 |> Update.andThen cacheModel
+                |> Update.andThen persistentRedo
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
@@ -358,6 +366,14 @@ cacheModel model =
 
 persistToHistory model =
     ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
+
+
+persistentUndo model =
+    ( model, Cmd.none )
+
+
+persistentRedo model =
+    ( model, Cmd.none )
 
 
 stopEditing model =
