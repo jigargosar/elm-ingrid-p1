@@ -275,11 +275,11 @@ update message model =
                 |> Update.andThen cacheModelAndPersistToHistory
 
         Prev ->
-            Update.pure (overCursorWithHistory ItemTree.backward model)
+            Update.pure (overCursorWithoutHistory ItemTree.backward model)
                 |> Update.andThen cacheModel
 
         Next ->
-            Update.pure (overCursorWithHistory ItemTree.forward model)
+            Update.pure (overCursorWithoutHistory ItemTree.forward model)
                 |> Update.andThen cacheModel
 
         MoveUp ->
