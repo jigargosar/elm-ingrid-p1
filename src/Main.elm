@@ -21,6 +21,7 @@ import Result.Extra
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
+import Toasty
 import UI.Tree
 import Update
 import V exposing (co, cx, t, viewIf)
@@ -58,6 +59,7 @@ type alias Model =
     { cursor : ItemZipper
     , viewMode : ViewMode
     , seed : Random.Seed
+    , toasties : Toasty.Stack String
     }
 
 
@@ -71,6 +73,7 @@ init flags =
         { cursor = ItemTree.initialCursor
         , viewMode = Navigating
         , seed = Random.initialSeed flags.now
+        , toasties = Toasty.initialState
         }
 
 
@@ -88,6 +91,17 @@ subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
         ]
+
+
+
+-- LIB CONFIG
+
+
+toastyConfig : Toasty.Config msg
+toastyConfig =
+    Toasty.config
+        |> Toasty.transitionOutDuration 100
+        |> Toasty.delay 8000
 
 
 
@@ -112,6 +126,7 @@ type Msg
     | CollapseOrPrev
     | ExpandOrNext
     | Delete
+    | ToastyMsg (Toasty.Msg String)
 
 
 fragDomId : String -> String
@@ -142,6 +157,9 @@ update message model =
     case message of
         NOP ->
             ( model, Cmd.none )
+
+        ToastyMsg subMsg ->
+            Toasty.update toastyConfig ToastyMsg subMsg model
 
         DomFocusResultReceived (Err msg) ->
             ( model, toJsError [ msg ] )
@@ -350,7 +368,12 @@ view model =
 
         --        , viewTreeContainer model
         , viewTreeContainer model
+        , Toasty.view toastyConfig renderToast ToastyMsg model.toasties
         ]
+
+
+renderToast msg =
+    div [ cx [] ] [ t msg ]
 
 
 viewShortcutHint label shortcut =
