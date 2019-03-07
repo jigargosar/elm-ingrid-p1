@@ -137,12 +137,13 @@ function sendError(title, desc) {
 function logAndSendError(...args) {
   console.error(...args)
 
+  const whenErrorGetMessage = R.when(R.is(Error))(R.prop('message'))
   sendError(
     'JS ERROR',
     R.compose(
       R.join(''),
       R.filter(R.is(String)),
-      R.map(R.when(R.is(Error))(R.prop('message'))),
+      R.map(whenErrorGetMessage),
     )(args),
   )
 }
