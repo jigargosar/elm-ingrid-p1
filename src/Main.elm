@@ -199,14 +199,14 @@ update message model =
                 |> setCursorFromHistory
             , Cmd.none
             )
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> Update.andThen cacheModel
 
         Redo ->
             ( { model | history = Pivot.withRollback Pivot.goL model.history }
                 |> setCursorFromHistory
             , Cmd.none
             )
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> Update.andThen cacheModel
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
@@ -336,7 +336,7 @@ loadEncodedCursor encodedCursor model =
 
         loadCursor cursor =
             Update.pure (overCursorWithHistory (always cursor) model)
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> Update.andThen cacheModel
     in
     encodedCursor
         |> decodeValue Item.Zipper.decoder
