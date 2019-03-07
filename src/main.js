@@ -98,7 +98,7 @@ function send(value, portName) {
 
 function sendError(title, desc) {
   validate('SS', arguments)
-  send([title, desc], 'onError')
+  send([title, desc], 'onJsError')
 }
 
 // db.allDocs({ include_docs: true }).then(({ rows }) => {
@@ -142,6 +142,7 @@ function logAndSendError(...args) {
     R.compose(
       R.join(''),
       R.filter(R.is(String)),
+      R.map(R.when(R.is(Error))(R.prop('message'))),
     )(args),
   )
 }
@@ -150,7 +151,7 @@ function backup(model) {
   const cAt = Date.now()
   db.put({ _id: `${cAt}`, model, cAt })
     .then(console.log)
-    .catch(logAndSendError)
+    .catch(err => logAndSendError('Pouch Backup: ', err))
 }
 
 const debouncedBackup = debounce(backup, ms('5s'), {

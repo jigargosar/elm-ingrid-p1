@@ -38,6 +38,9 @@ port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 port toJsError : List String -> Cmd msg
 
 
+port onJsError : (Err -> msg) -> Sub msg
+
+
 main =
     Browser.element
         { init = init
@@ -100,6 +103,7 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
+        , onJsError OnJsError
         ]
 
 
@@ -126,6 +130,7 @@ type Msg
     | ExpandOrNext
     | Delete
     | ToastyMsg (Toasty.Msg Toasties.Toast)
+    | OnJsError Err
 
 
 fragDomId : String -> String
@@ -159,6 +164,10 @@ update message model =
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
+
+        OnJsError err ->
+            Update.pure model
+                |> andThenHandleError err
 
         DomFocusResultReceived (Err msg) ->
             Update.pure model
