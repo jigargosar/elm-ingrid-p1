@@ -222,7 +222,9 @@ app.ports.toJsUndo.subscribe(() => {
 })
 
 app.ports.toJsRedo.subscribe(() => {
-  const newRedoHistoryIds = R.compose(R.init)(cachedRedoHistoryIds())
+  const ids = cachedRedoHistoryIds()
+  if (ids.length === 0) return
+  const newRedoHistoryIds = R.compose(R.init)(ids)
 
   historyDb
     .get(
