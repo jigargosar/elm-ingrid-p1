@@ -255,7 +255,7 @@ rotateActionableHelp frag =
             "[x]" ++ String.fromList rest
 
         '[' :: 'x' :: ']' :: rest ->
-            "[ ]" ++ String.fromList rest
+            String.fromList rest
 
         _ ->
             "[ ] " ++ trimmed

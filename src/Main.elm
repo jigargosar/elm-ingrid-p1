@@ -364,6 +364,7 @@ fragmentHotKeyDecoder ke =
         labelKeyMap =
             [ ( HotKey.is "Enter", ( New, True ) )
             , ( HotKey.is " ", ( Edit, True ) )
+            , ( HotKey.isCtrl " ", ( RotateActionable, True ) )
             , ( HotKey.isShift "Enter", ( NOP, True ) )
             , ( HotKey.is "ArrowUp", ( Prev, True ) )
             , ( HotKey.is "ArrowDown", ( Next, True ) )

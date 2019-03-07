@@ -1,4 +1,4 @@
-module HotKey exposing (KeyEvent, is, isKeyMetaShift, isMeta, isShift, keyEventDecoder, metaModifier, metaShiftModifier, noModifiers, preventDefaultOnKeyDownEvent, shiftModifier)
+module HotKey exposing (KeyEvent, is, isCtrl, isKeyMetaShift, isMeta, isShift, keyEventDecoder, metaModifier, metaShiftModifier, noModifiers, preventDefaultOnKeyDownEvent, shiftModifier)
 
 import Html
 import Html.Events
@@ -40,6 +40,10 @@ is key keyEvent =
 
 isShift key keyEvent =
     keyEvent.key == key && shiftModifier keyEvent
+
+
+isCtrl key keyEvent =
+    keyEvent.key == key && keyEvent.ctrl && not (keyEvent.shift || keyEvent.meta || keyEvent.alt)
 
 
 isKeyMetaShift key keyEvent =
