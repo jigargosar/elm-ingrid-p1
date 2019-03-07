@@ -72,10 +72,11 @@ window.addEventListener('keydown', function(event) {
 
 /* ELM APP */
 
+const mainCache = getMainCache()
 const app = Elm.Main.init({
   node:
     document.querySelector('#main') || document.querySelector('body > *'),
-  flags: { now: Date.now(), ...getMainCache() },
+  flags: { now: Date.now(), ...mainCache },
 })
 
 const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
@@ -204,7 +205,7 @@ app.ports.toJsError.subscribe(errorArgs => {
 
 function getMainCache() {
   return R.compose(
-    R.mergeDeepRight({ cursor: null }),
+    R.mergeDeepRight({ cursor: null, historyId: '' }),
     R.defaultTo({}),
     // R.always(null),
     getCached,
