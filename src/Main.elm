@@ -107,6 +107,10 @@ overCursorWithoutHistory fn model =
     { model | cursor = fn model.cursor }
 
 
+reInitCursorAndHistory cursor model =
+    { model | cursor = cursor, history = Pivot.singleton cursor }
+
+
 addCurrentToHistory : Model -> Model
 addCurrentToHistory model =
     when (getCursorFromHistory >> neq model.cursor)
@@ -347,7 +351,7 @@ loadEncodedCursor encodedCursor model =
             ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
-            Update.pure (overCursorWithHistory (always cursor) model)
+            Update.pure (reInitCursorAndHistory cursor model)
                 |> Update.andThen cacheModel
     in
     encodedCursor
