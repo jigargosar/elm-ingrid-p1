@@ -99,8 +99,12 @@ init flags =
 
 overCursorWithHistory : (ItemZipper -> ItemZipper) -> Model -> Model
 overCursorWithHistory fn model =
+    overCursorWithoutHistory fn model |> addCurrentToHistory
+
+
+overCursorWithoutHistory : (ItemZipper -> ItemZipper) -> Model -> Model
+overCursorWithoutHistory fn model =
     { model | cursor = fn model.cursor }
-        |> addCurrentToHistory
 
 
 addCurrentToHistory : Model -> Model
@@ -272,11 +276,11 @@ update message model =
 
         Prev ->
             Update.pure (overCursorWithHistory ItemTree.backward model)
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> Update.andThen cacheModel
 
         Next ->
             Update.pure (overCursorWithHistory ItemTree.forward model)
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> Update.andThen cacheModel
 
         MoveUp ->
             Update.pure (overCursorWithHistory ItemTree.moveUp model)

@@ -190,6 +190,39 @@ app.ports.toJsError.subscribe(errorArgs => {
   console.error(...errorArgs)
 })
 
+app.ports.toJsUndo.subscribe(() => {
+  historyDb
+    .get(
+      R.compose(
+        R.defaultTo(''),
+        R.last,
+      )(redoHistoryIds),
+    )
+    // historyDb
+    //   .find({
+    //     selector: {
+    //       pid: R.compose(
+    //         R.defaultTo(''),
+    //         R.last,
+    //       )(redoHistoryIds),
+    //       limit: 1,
+    //       sort: [{ _id: 'desc' }],
+    //     },
+    //   })
+    .then(R.tap(console.log))
+    .then(({ pid }) => historyDb.get(pid))
+    .then(R.tap(console.log))
+    .then(doc =>
+      setCache(
+        'redoHistoryIds',
+        R.append(doc._id)(cachedRedoHistoryIds()),
+      ),
+    )
+    .catch(sendErrorWithTitle('HistoryDb Undo Error'))
+})
+
+app.ports.toJsRedo.subscribe(() => {})
+
 app.ports.toJsPersistToHistory.subscribe(cursor => {
   const cAt = Date.now()
   const newId = `${cAt}_${nanoid()}`
