@@ -112,6 +112,11 @@ getCursorFromHistory =
     .history >> Pivot.getC
 
 
+setCursorFromHistory : Model -> Model
+setCursorFromHistory model =
+    { model | cursor = Pivot.getC model.history }
+
+
 
 -- LIB CONFIG
 
@@ -192,10 +197,16 @@ update message model =
             ( model, Cmd.none )
 
         Undo ->
-            ( { model | history = Pivot.withRollback Pivot.goR model.history }, Cmd.none )
+            ( { model | history = Pivot.withRollback Pivot.goR model.history }
+                |> setCursorFromHistory
+            , Cmd.none
+            )
 
         Redo ->
-            ( { model | history = Pivot.withRollback Pivot.goL model.history }, Cmd.none )
+            ( { model | history = Pivot.withRollback Pivot.goL model.history }
+                |> setCursorFromHistory
+            , Cmd.none
+            )
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
