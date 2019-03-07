@@ -184,22 +184,28 @@ const debouncedBackup = debounce(backup, ms('5s'), {
 app.ports.toJsCache.subscribe(model => {
   setCache('elm-main', model)
   debouncedBackup(model)
+})
+
+app.ports.toJsError.subscribe(errorArgs => {
+  console.error(...errorArgs)
+})
+
+app.ports.toJsPersistToHistory.subscribe(cursor => {
   const cAt = Date.now()
   const newId = `${cAt}_${nanoid()}`
   historyDb
     .put({
       _id: newId,
-      cursor: model.cursor,
-      pid: R.compose(R.last)(cachedRedoHistoryIds()),
+      cursor,
+      pid: R.compose(
+        R.defaultTo(''),
+        R.last,
+      )(cachedRedoHistoryIds()),
       cAt,
     })
     .then(R.tap(console.log))
     .then(setCache('redoHistoryIds', [newId]))
     .catch(sendErrorWithTitle('HistoryDb Error'))
-})
-
-app.ports.toJsError.subscribe(errorArgs => {
-  console.error(...errorArgs)
 })
 
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)

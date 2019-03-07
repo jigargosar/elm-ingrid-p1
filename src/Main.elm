@@ -36,6 +36,9 @@ import V exposing (co, cx, t, viewIf)
 port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 
 
+port toJsPersistToHistory : Json.Encode.Value -> Cmd msg
+
+
 port toJsError : List String -> Cmd msg
 
 
@@ -177,11 +180,6 @@ fragInputDomId itemId =
     "item-input-dom-id-" ++ itemId
 
 
-
---cacheNewModel _ =
---    toJsCache { items = [], maybeFocusedItemId = Nothing }
-
-
 isEditingMode model =
     model.viewMode == EditingSelected
 
@@ -201,14 +199,14 @@ update message model =
                 |> setCursorFromHistory
             , Cmd.none
             )
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Redo ->
             ( { model | history = Pivot.withRollback Pivot.goL model.history }
                 |> setCursorFromHistory
             , Cmd.none
             )
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
@@ -234,7 +232,7 @@ update message model =
         New ->
             if isEditingMode model && isSelectedBlank model then
                 stopEditing model
-                    |> Update.andThen cacheModel
+                    |> Update.andThen cacheModelAndPersistToHistory
 
             else
                 generateId model
@@ -246,59 +244,59 @@ update message model =
 
         Save ->
             stopEditing model
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Delete ->
             ( model |> overCursorWithHistory ItemTree.delete, Cmd.none )
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Edit ->
             ensureEditingSelected model
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         CollapseOrPrev ->
             ( model |> overCursorWithHistory ItemTree.collapseOrParent, Cmd.none )
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         ExpandOrNext ->
             ( model |> overCursorWithHistory ItemTree.expandOrNext, Cmd.none )
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Prev ->
             Update.pure (overCursorWithHistory ItemTree.backward model)
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Next ->
             Update.pure (overCursorWithHistory ItemTree.forward model)
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         MoveUp ->
             Update.pure (overCursorWithHistory ItemTree.moveUp model)
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         MoveDown ->
             Update.pure (overCursorWithHistory ItemTree.moveDown model)
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Outdent ->
             overCursorWithHistory ItemTree.outdent model
                 |> Update.pure
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         Indent ->
             overCursorWithHistory ItemTree.indent model
                 |> Update.pure
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         LineChanged newContent ->
             overCursorWithHistory (ItemTree.setContent newContent) model
                 |> Update.pure
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
         RotateActionable ->
             overCursorWithHistory ItemTree.rotateActionable model
                 |> Update.pure
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
 
 
 type alias Err =
@@ -338,7 +336,7 @@ loadEncodedCursor encodedCursor model =
 
         loadCursor cursor =
             Update.pure (overCursorWithHistory (always cursor) model)
-                |> Update.andThen cacheModel
+                |> Update.andThen cacheModelAndPersistToHistory
     in
     encodedCursor
         |> decodeValue Item.Zipper.decoder
@@ -347,11 +345,19 @@ loadEncodedCursor encodedCursor model =
             loadCursor
 
 
+cacheModelAndPersistToHistory =
+    cacheModel >> Update.andThen persistToHistory
+
+
 cacheModel model =
     ( model
     , toJsCache <|
         { cursor = Item.Zipper.encoder model.cursor }
     )
+
+
+persistToHistory model =
+    ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
 
 
 stopEditing model =
