@@ -88,6 +88,14 @@ const couchDbServerUrl = `http://127.0.0.1:5984`
 const db = new PouchDB(`${couchDbServerUrl}/elm-ingrid-backup`)
 const historyDb = new PouchDB(`${couchDbServerUrl}/elm-ingrid-history`)
 
+function dbGet(id, db) {
+  validate('S', arguments)
+  if (!id) {
+    throw new Error(`dbGet: InvalidId ${id}`)
+  }
+  return db.get(id)
+}
+
 fetch(couchDbServerUrl)
   .then(R.invoker(0, 'json'))
   // .then(console.log)
@@ -105,7 +113,7 @@ function cachedRedoHistoryIds() {
 const redoHistoryIds = cachedRedoHistoryIds()
 
 if (redoHistoryIds.length > 0) {
-  historyDb.get(R.last(redoHistoryIds)).then(console.log)
+  dbGet(R.last(redoHistoryIds), historyDb).then(console.log)
 }
 
 function canSendToPort(portName) {
@@ -191,13 +199,7 @@ app.ports.toJsError.subscribe(errorArgs => {
 })
 
 app.ports.toJsUndo.subscribe(() => {
-  historyDb
-    .get(
-      R.compose(
-        R.defaultTo(''),
-        R.last,
-      )(cachedRedoHistoryIds()),
-    )
+  dbGet(R.last(cachedRedoHistoryIds()), historyDb)
     // historyDb
     //   .find({
     //     selector: {
@@ -210,29 +212,25 @@ app.ports.toJsUndo.subscribe(() => {
     //     },
     //   })
     .then(R.tap(console.log))
-    .then(({ pid }) => historyDb.get(pid))
+    .then(({ pid }) => dbGet(pid, historyDb))
     .then(R.tap(console.log))
-    .then(doc =>
-      setCache(
-        'redoHistoryIds',
-        R.append(doc._id)(cachedRedoHistoryIds()),
-      ),
-    )
+    .then(doc => {
+      setCache('redoHistoryIds', R.append(doc._id)(cachedRedoHistoryIds()))
+    })
     .catch(sendErrorWithTitle('HistoryDb Undo Error'))
 })
 
 app.ports.toJsRedo.subscribe(() => {
   const ids = cachedRedoHistoryIds()
-  if (ids.length === 0) return
+  if (ids.length <= 1) return
   const newRedoHistoryIds = R.compose(R.init)(ids)
 
-  historyDb
-    .get(
-      R.compose(
-        R.defaultTo(''),
-        R.last,
-      )(newRedoHistoryIds),
-    )
+  const historyId = R.compose(
+    R.defaultTo(''),
+    R.last,
+  )(newRedoHistoryIds)
+
+  dbGet(historyId, historyDb)
     // historyDb
     //   .find({
     //     selector: {
