@@ -21,6 +21,7 @@ import Result.Extra
 import Tachyons exposing (classes)
 import Tachyons.Classes exposing (..)
 import Task
+import Toasties
 import Toasty
 import UI.Tree
 import Update
@@ -59,7 +60,7 @@ type alias Model =
     { cursor : ItemZipper
     , viewMode : ViewMode
     , seed : Random.Seed
-    , toasties : Toasty.Stack String
+    , toasties : Toasty.Stack Toasties.Toast
     }
 
 
@@ -83,6 +84,15 @@ overCursor fn model =
 
 
 
+-- LIB CONFIG
+
+
+toastyConfig : Toasty.Config msg
+toastyConfig =
+    Toasties.config
+
+
+
 -- SUBSCRIPTIONS
 
 
@@ -91,17 +101,6 @@ subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
         ]
-
-
-
--- LIB CONFIG
-
-
-toastyConfig : Toasty.Config msg
-toastyConfig =
-    Toasty.config
-        |> Toasty.transitionOutDuration 100
-        |> Toasty.delay 8000
 
 
 
@@ -126,7 +125,7 @@ type Msg
     | CollapseOrPrev
     | ExpandOrNext
     | Delete
-    | ToastyMsg (Toasty.Msg String)
+    | ToastyMsg (Toasty.Msg Toasties.Toast)
 
 
 fragDomId : String -> String
@@ -162,7 +161,8 @@ update message model =
             Toasty.update toastyConfig ToastyMsg subMsg model
 
         DomFocusResultReceived (Err msg) ->
-            ( model, toJsError [ msg ] )
+            Update.pure model
+                |> andThenHandleError ( "DomFocusError", msg )
 
         DomFocusResultReceived (Ok ()) ->
             ( model, Cmd.none )
@@ -224,18 +224,49 @@ update message model =
                 |> Update.andThen cacheModel
 
         Outdent ->
-            Update.pure
-                (overCursor ItemTree.outdent model)
+            overCursor ItemTree.outdent model
+                |> Update.pure
                 |> Update.andThen cacheModel
 
         Indent ->
-            Update.pure
-                (overCursor ItemTree.indent model)
+            overCursor ItemTree.indent model
+                |> Update.pure
                 |> Update.andThen cacheModel
 
         LineChanged newContent ->
-            Update.pure (overCursor (ItemTree.setContent newContent) model)
+            overCursor (ItemTree.setContent newContent) model
+                |> Update.pure
                 |> Update.andThen cacheModel
+
+
+type alias Err =
+    ( String, String )
+
+
+addToast : Toasties.Toast -> ModelCmd -> ModelCmd
+addToast =
+    Toasty.addToast toastyConfig ToastyMsg
+
+
+addErrorToast : Err -> ModelCmd -> ModelCmd
+addErrorToast ( title, detail ) =
+    Toasties.Error title detail
+        |> addToast
+
+
+type alias ModelCmd =
+    ( Model, Cmd Msg )
+
+
+andThenHandleError : Err -> ModelCmd -> ModelCmd
+andThenHandleError errorTuple =
+    let
+        sendErrorToJS : Err -> Model -> ModelCmd
+        sendErrorToJS ( title, detail ) model =
+            ( model, toJsError [ title, detail ] )
+    in
+    addErrorToast errorTuple
+        >> Update.andThen (sendErrorToJS errorTuple)
 
 
 loadEncodedCursor encodedCursor model =
@@ -368,12 +399,8 @@ view model =
 
         --        , viewTreeContainer model
         , viewTreeContainer model
-        , Toasty.view toastyConfig renderToast ToastyMsg model.toasties
+        , Toasty.view toastyConfig Toasties.view ToastyMsg model.toasties
         ]
-
-
-renderToast msg =
-    div [ cx [] ] [ t msg ]
 
 
 viewShortcutHint label shortcut =
