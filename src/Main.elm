@@ -131,6 +131,7 @@ type Msg
     | Delete
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | OnJsError Err
+    | RotateActionable
 
 
 fragDomId : String -> String
@@ -244,6 +245,11 @@ update message model =
 
         LineChanged newContent ->
             overCursor (ItemTree.setContent newContent) model
+                |> Update.pure
+                |> Update.andThen cacheModel
+
+        RotateActionable ->
+            overCursor ItemTree.rotateActionable model
                 |> Update.pure
                 |> Update.andThen cacheModel
 

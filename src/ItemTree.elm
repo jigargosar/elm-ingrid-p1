@@ -18,6 +18,7 @@ module ItemTree exposing
     , outdent
     , prependNew
     , rootTree
+    , rotateActionable
     , setContent
     , treeChildren
     , treeFragment
@@ -231,8 +232,33 @@ moveDown zipper =
         |> Maybe.withDefault zipper
 
 
+overFragment fn =
+    Zipper.mapLabel (\item -> { item | fragment = fn item.fragment })
+
+
 setContent newContent =
-    Zipper.mapLabel (\label -> { label | fragment = newContent })
+    overFragment (always newContent)
+
+
+rotateActionable =
+    overFragment rotateActionableHelp
+
+
+rotateActionableHelp frag =
+    let
+        trimmed =
+            frag
+                |> String.trimLeft
+    in
+    case String.toList trimmed of
+        '[' :: ' ' :: ']' :: rest ->
+            "[x]" ++ String.fromList rest
+
+        '[' :: 'x' :: ']' :: rest ->
+            "[ ]" ++ String.fromList rest
+
+        _ ->
+            "[ ] " ++ trimmed
 
 
 isRoot zipper =
