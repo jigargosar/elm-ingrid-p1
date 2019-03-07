@@ -274,7 +274,7 @@ delete zipper =
                 |> Maybe.map Zipper.label
     in
     maybeNext
-        |> Debug.log "maybeNext"
+        --        |> Debug.log "maybeNext"
         |> Maybe.andThen
             (\next ->
                 Zipper.removeTree zipper

@@ -119,7 +119,9 @@ function backup(model) {
     .catch(console.error)
 }
 
-const debouncedBackup = debounce(backup, ms('5m'), {
+let waitMs = ms('5s')
+console.log(`waitMs`, waitMs)
+const debouncedBackup = debounce(backup, waitMs, {
   leading: false,
   trailing: true,
 })
