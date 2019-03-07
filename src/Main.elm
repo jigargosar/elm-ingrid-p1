@@ -95,13 +95,16 @@ overCursorWithHistory fn model =
             model.cursor
     in
     { model | cursor = fn model.cursor }
-        |> addCurrentToHistory oldCursor
+        |> when (.cursor >> neq oldCursor) addCurrentToHistory
 
 
-addCurrentToHistory : ItemZipper -> Model -> Model
-addCurrentToHistory oldCursor =
-    when (.cursor >> neq oldCursor)
-        (\model -> { model | history = Pivot.appendGoL model.cursor model.history })
+addCurrentToHistory : Model -> Model
+addCurrentToHistory model =
+    { model
+        | history =
+            Pivot.setL [] model.history
+                |> Pivot.appendGoL model.cursor
+    }
 
 
 
