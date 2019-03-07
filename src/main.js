@@ -89,7 +89,7 @@ const db = new PouchDB(`${couchDbServerUrl}/elm-ingrid-backup`)
 const historyDb = new PouchDB(`${couchDbServerUrl}/elm-ingrid-history`)
 
 function dbGet(id, db) {
-  validate('S', arguments)
+  validate('SO', arguments)
   if (!id) {
     throw new Error(`dbGet: InvalidId ${id}`)
   }
