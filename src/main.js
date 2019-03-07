@@ -117,7 +117,7 @@ function sendError(title, desc) {
 //       app.ports.pouchItemChanged.send(pouchDocToItem(change.doc))
 //     }
 //   })
-//   .on('error', error => handleError('item changes error', error))
+//   .on('error', error => logAndSendError('item changes error', error))
 //
 // app.ports.newItemDoc.subscribe(function([parent, idx]) {
 //   validate('A', arguments)
@@ -131,10 +131,10 @@ function sendError(title, desc) {
 //     }),
 //   )
 //     .then(() => db.put(itemToPouchDoc(newItem)))
-//     .catch(handleError)
+//     .catch(logAndSendError)
 // })
 
-function handleError(...args) {
+function logAndSendError(...args) {
   console.error(...args)
 
   sendError(
@@ -150,7 +150,7 @@ function backup(model) {
   const cAt = Date.now()
   db.put({ _id: `${cAt}`, model, cAt })
     .then(console.log)
-    .catch(handleError)
+    .catch(logAndSendError)
 }
 
 const debouncedBackup = debounce(backup, ms('5s'), {
@@ -164,7 +164,7 @@ app.ports.toJsCache.subscribe(model => {
 })
 
 app.ports.toJsError.subscribe(errorArgs => {
-  handleError(...errorArgs)
+  console.error(...errorArgs)
 })
 
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)
@@ -188,7 +188,7 @@ app.ports.toJsError.subscribe(errorArgs => {
 //     console.log('bulkItemDocs: docs', docs)
 //     db.bulkDocs(docs)
 //       .then(res => console.log('ports.bulkItemDocs res', res))
-//       .catch(handleError)
+//       .catch(logAndSendError)
 //   }
 // }
 //
