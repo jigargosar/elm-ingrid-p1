@@ -98,7 +98,7 @@ function send(value, portName) {
   }
 }
 
-function sendErrorWithTitleDesc(title, desc) {
+function onJsError(title, desc) {
   validate('SS', arguments)
   send([title, desc], 'onJsError')
 }
@@ -139,7 +139,7 @@ function sendErrorWithTitleDesc(title, desc) {
 function sendErrorWithTitle(title) {
   return function(error) {
     console.error(title, error)
-    sendErrorWithTitleDesc(title, error.message)
+    onJsError(title, error.message)
   }
 }
 
