@@ -214,7 +214,7 @@ update message model =
             , Cmd.none
             )
                 |> Update.andThen cacheModel
-                |> Update.andThen (toJsRedo ())
+                |> Update.do (toJsRedo ())
 
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model

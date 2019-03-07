@@ -1,4 +1,4 @@
-module Update exposing (andThen, map, pure, do)
+module Update exposing (andThen, do, map, pure)
 
 
 pure model =
@@ -16,5 +16,6 @@ andThen fn ( model, cmd ) =
 map fn ( model, cmd ) =
     ( fn model, cmd )
 
-do newCmd ( model, cmd )=
-    (model , Cmd.batch[cmd, newCmd)
+
+do newCmd ( model, cmd ) =
+    ( model, Cmd.batch [ cmd, newCmd ] )
