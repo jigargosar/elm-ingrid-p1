@@ -9,7 +9,9 @@ import ms from 'ms'
 import validate from 'aproba'
 import nanoid from 'nanoid'
 
-PouchDB.plugin(require('pouchdb-find'))
+import pouchdbFind from 'pouchdb-find'
+
+PouchDB.plugin(pouchdbFind)
 
 /* ITEM */
 
@@ -92,6 +94,16 @@ fetch(couchDbServerUrl)
   .catch(sendErrorWithTitle('CouchDB Fetch Error'))
 
 // db.info().catch(sendErrorWithTitle('PouchDB info failed'))
+
+historyDb
+  .allDocs({
+    include_docs: true,
+    descending: true,
+    // fields: ['_id', 'name'],
+    limit: 1,
+  })
+  .then(console.log)
+  .catch(sendErrorWithTitle('History Load Error'))
 
 function canSendToPort(portName) {
   validate('S', arguments)
