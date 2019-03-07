@@ -4,11 +4,12 @@
   user-select: none;
 }
 
-body,
-#main,
-body > div[data-elm-hot='true'] {
-  height: 100%;
-}
+//body,
+//#main,
+//body > div[data-elm-hot='true'] {
+//  min-height: 100%;
+//  overflow: scroll;
+//}
 
 //.ws-pre{
 //  white-space: pre;

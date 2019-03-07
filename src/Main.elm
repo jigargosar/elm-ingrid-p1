@@ -16,6 +16,7 @@ import ItemTree exposing (ItemTree)
 import Json.Decode exposing (Decoder, decodeValue, errorToString)
 import Json.Encode
 import List.Extra
+import Pivot exposing (Pivot)
 import Random exposing (Generator)
 import Result.Extra
 import Tachyons exposing (classes)
@@ -64,6 +65,7 @@ type alias Model =
     , viewMode : ViewMode
     , seed : Random.Seed
     , toasties : Toasty.Stack Toasties.Toast
+    , history : Pivot ItemZipper
     }
 
 
@@ -73,17 +75,35 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
+    let
+        cursor =
+            ItemTree.initialCursor
+    in
     update (Init flags)
         { cursor = ItemTree.initialCursor
         , viewMode = Navigating
         , seed = Random.initialSeed flags.now
         , toasties = Toasty.initialState
+        , history = Pivot.singleton cursor
         }
 
 
-overCursor : (ItemZipper -> ItemZipper) -> Model -> Model
-overCursor fn model =
+overCursorWithHistory : (ItemZipper -> ItemZipper) -> Model -> Model
+overCursorWithHistory fn model =
+    let
+        oldCursor =
+            model.cursor
+    in
     { model | cursor = fn model.cursor }
+        |> addCurrentToHistory oldCursor
+
+
+addCurrentToHistory oldCursor model =
+    if oldCursor /= model.cursor then
+        { model | history = Pivot.appendGoL model.cursor model.history }
+
+    else
+        model
 
 
 
@@ -193,7 +213,7 @@ update message model =
                 generateId model
                     |> Update.map
                         (\( id, newModel ) ->
-                            overCursor (ItemTree.appendNew id) newModel
+                            overCursorWithHistory (ItemTree.appendNew id) newModel
                         )
                     |> Update.andThen ensureEditingSelected
 
@@ -202,7 +222,7 @@ update message model =
                 |> Update.andThen cacheModel
 
         Delete ->
-            ( model |> overCursor ItemTree.delete, Cmd.none )
+            ( model |> overCursorWithHistory ItemTree.delete, Cmd.none )
                 |> Update.andThen cacheModel
 
         Edit ->
@@ -210,46 +230,46 @@ update message model =
                 |> Update.andThen cacheModel
 
         CollapseOrPrev ->
-            ( model |> overCursor ItemTree.collapseOrParent, Cmd.none )
+            ( model |> overCursorWithHistory ItemTree.collapseOrParent, Cmd.none )
                 |> Update.andThen cacheModel
 
         ExpandOrNext ->
-            ( model |> overCursor ItemTree.expandOrNext, Cmd.none )
+            ( model |> overCursorWithHistory ItemTree.expandOrNext, Cmd.none )
                 |> Update.andThen cacheModel
 
         Prev ->
-            Update.pure (overCursor ItemTree.backward model)
+            Update.pure (overCursorWithHistory ItemTree.backward model)
                 |> Update.andThen cacheModel
 
         Next ->
-            Update.pure (overCursor ItemTree.forward model)
+            Update.pure (overCursorWithHistory ItemTree.forward model)
                 |> Update.andThen cacheModel
 
         MoveUp ->
-            Update.pure (overCursor ItemTree.moveUp model)
+            Update.pure (overCursorWithHistory ItemTree.moveUp model)
                 |> Update.andThen cacheModel
 
         MoveDown ->
-            Update.pure (overCursor ItemTree.moveDown model)
+            Update.pure (overCursorWithHistory ItemTree.moveDown model)
                 |> Update.andThen cacheModel
 
         Outdent ->
-            overCursor ItemTree.outdent model
+            overCursorWithHistory ItemTree.outdent model
                 |> Update.pure
                 |> Update.andThen cacheModel
 
         Indent ->
-            overCursor ItemTree.indent model
+            overCursorWithHistory ItemTree.indent model
                 |> Update.pure
                 |> Update.andThen cacheModel
 
         LineChanged newContent ->
-            overCursor (ItemTree.setContent newContent) model
+            overCursorWithHistory (ItemTree.setContent newContent) model
                 |> Update.pure
                 |> Update.andThen cacheModel
 
         RotateActionable ->
-            overCursor ItemTree.rotateActionable model
+            overCursorWithHistory ItemTree.rotateActionable model
                 |> Update.pure
                 |> Update.andThen cacheModel
 
@@ -290,7 +310,7 @@ loadEncodedCursor encodedCursor model =
             ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
-            Update.pure (overCursor (always cursor) model)
+            Update.pure (overCursorWithHistory (always cursor) model)
                 |> Update.andThen cacheModel
     in
     encodedCursor
@@ -309,7 +329,7 @@ cacheModel model =
 
 stopEditing model =
     ( { model | viewMode = Navigating }
-        |> overCursor ItemTree.deleteIfEmptyAndLeaf
+        |> overCursorWithHistory ItemTree.deleteIfEmptyAndLeaf
     , Cmd.batch []
     )
 
@@ -403,26 +423,8 @@ fragmentEditorHotKeyDecoder ke =
 view : Model -> Html Msg
 view model =
     co [ sans_serif, "us-none", ma0, min_vh_100, flex, flex_column ]
-        [ div [ classes [ flex, bg_black, white ] ]
-            [ viewShortcutHint "Line Below" "Enter"
-
-            --            , viewShortcutHint "Line Above" "Shift+Enter"
-            , viewShortcutHint "Indent" "Tab"
-            , viewShortcutHint "Outdent" "Shift+Tab"
-            , viewShortcutHint "Move Up" "Cmd+Up"
-            , viewShortcutHint "Move Down" "Cmd+Down"
-            ]
-
-        --        , viewTreeContainer model
-        , viewTreeContainer model
+        [ viewTreeContainer model
         , Toasty.view toastyConfig Toasties.view ToastyMsg model.toasties
-        ]
-
-
-viewShortcutHint label shortcut =
-    div [ classes [ avenir, ph2, f6, lh_title, br1, ba, b__black_20 ] ]
-        [ div [ classes [] ] [ t label ]
-        , div [ classes [ light_red ] ] [ t shortcut ]
         ]
 
 
