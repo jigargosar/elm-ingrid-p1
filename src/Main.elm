@@ -90,21 +90,26 @@ init flags =
 
 overCursorWithHistory : (ItemZipper -> ItemZipper) -> Model -> Model
 overCursorWithHistory fn model =
-    let
-        oldCursor =
-            model.cursor
-    in
     { model | cursor = fn model.cursor }
-        |> when (.cursor >> neq oldCursor) addCurrentToHistory
+        |> addCurrentToHistory
 
 
 addCurrentToHistory : Model -> Model
 addCurrentToHistory model =
-    { model
-        | history =
-            Pivot.setL [] model.history
-                |> Pivot.appendGoL model.cursor
-    }
+    when (getCursorFromHistory >> neq model.cursor)
+        (always
+            { model
+                | history =
+                    Pivot.setL [] model.history
+                        |> Pivot.appendGoL model.cursor
+            }
+        )
+        model
+
+
+getCursorFromHistory : Model -> ItemZipper
+getCursorFromHistory =
+    .history >> Pivot.getC
 
 
 

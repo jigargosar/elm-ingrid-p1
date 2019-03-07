@@ -36,3 +36,8 @@
 }
 
 @import './toasties.css';
+
+#__parcel__error__overlay__ > div {
+  position: absolute !important;
+  height: unset !important;
+}
