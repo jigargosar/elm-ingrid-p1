@@ -96,7 +96,7 @@ function send(value, portName) {
   }
 }
 
-function sendError(title, desc) {
+function sendErrorWithTitleDesc(title, desc) {
   validate('SS', arguments)
   send([title, desc], 'onJsError')
 }
@@ -117,7 +117,7 @@ function sendError(title, desc) {
 //       app.ports.pouchItemChanged.send(pouchDocToItem(change.doc))
 //     }
 //   })
-//   .on('error', error => logAndSendError('item changes error', error))
+//   .on('error', error => sendErrorWithTitle('item changes error', error))
 //
 // app.ports.newItemDoc.subscribe(function([parent, idx]) {
 //   validate('A', arguments)
@@ -131,28 +131,21 @@ function sendError(title, desc) {
 //     }),
 //   )
 //     .then(() => db.put(itemToPouchDoc(newItem)))
-//     .catch(logAndSendError)
+//     .catch(sendErrorWithTitle)
 // })
 
-function logAndSendError(...args) {
-  console.error(...args)
-
-  const whenErrorGetMessage = R.when(R.is(Error))(R.prop('message'))
-  sendError(
-    'JS ERROR',
-    R.compose(
-      R.join(''),
-      R.filter(R.is(String)),
-      R.map(whenErrorGetMessage),
-    )(args),
-  )
+function sendErrorWithTitle(title) {
+  return function(error) {
+    console.error(title, error)
+    sendErrorWithTitleDesc(title, error.message)
+  }
 }
 
 function backup(model) {
   const cAt = Date.now()
   db.put({ _id: `${cAt}`, model, cAt })
     .then(console.log)
-    .catch(err => logAndSendError('Pouch Backup: ', err))
+    .catch(sendErrorWithTitle('Pouch Backup Failed'))
 }
 
 const debouncedBackup = debounce(backup, ms('5s'), {
@@ -190,7 +183,7 @@ app.ports.toJsError.subscribe(errorArgs => {
 //     console.log('bulkItemDocs: docs', docs)
 //     db.bulkDocs(docs)
 //       .then(res => console.log('ports.bulkItemDocs res', res))
-//       .catch(logAndSendError)
+//       .catch(sendErrorWithTitle)
 //   }
 // }
 //
