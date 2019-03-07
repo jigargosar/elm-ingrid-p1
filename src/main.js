@@ -9,6 +9,8 @@ import ms from 'ms'
 import validate from 'aproba'
 import nanoid from 'nanoid'
 
+PouchDB.plugin(require('pouchdb-find'))
+
 /* ITEM */
 
 // const rootItemId = 'i_root_item_id'
@@ -80,10 +82,16 @@ const app = Elm.Main.init({
   flags: { now: Date.now(), cache: mainCache },
 })
 
-const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
-const historyDb = new PouchDB('http://127.0.0.1:5984/elm-ingrid-history')
+const couchDbServerUrl = `http://127.0.0.1:5984`
+const db = new PouchDB(`${couchDbServerUrl}/elm-ingrid-backup`)
+const historyDb = new PouchDB(`${couchDbServerUrl}/elm-ingrid-history`)
 
-db.info().catch(sendErrorWithTitle('PouchDB info failed'))
+fetch(couchDbServerUrl)
+  .then(R.invoker(0, 'json'))
+  // .then(console.log)
+  .catch(sendErrorWithTitle('CouchDB Fetch Error'))
+
+// db.info().catch(sendErrorWithTitle('PouchDB info failed'))
 
 function canSendToPort(portName) {
   validate('S', arguments)
