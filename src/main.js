@@ -6,6 +6,7 @@ import * as R from 'ramda'
 import PouchDB from 'pouchdb-browser'
 import debounce from 'lodash.debounce'
 import ms from 'ms'
+import validate from 'aproba'
 
 /* ITEM */
 
@@ -79,6 +80,27 @@ const app = Elm.Main.init({
 
 const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
 
+function canSendToPort(portName) {
+  validate('S', arguments)
+  return R.hasPath(['ports', portName, 'send'])(app)
+}
+
+function send(value, portName) {
+  validate('*S', arguments)
+
+  const port = app.ports[portName]
+  if (canSendToPort(portName)) {
+    port.send(value)
+  } else {
+    console.error('Port Not Found', portName, value)
+  }
+}
+
+function sendError(title, desc) {
+  validate('SS', arguments)
+  send([title, desc], 'onError')
+}
+
 // db.allDocs({ include_docs: true }).then(({ rows }) => {
 //   if (rows.length === 0) {
 //     db.put(itemToPouchDoc(initialRootItem))
@@ -95,7 +117,7 @@ const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
 //       app.ports.pouchItemChanged.send(pouchDocToItem(change.doc))
 //     }
 //   })
-//   .on('error', error => console.error('item changes error', error))
+//   .on('error', error => handleError('item changes error', error))
 //
 // app.ports.newItemDoc.subscribe(function([parent, idx]) {
 //   validate('A', arguments)
@@ -109,14 +131,26 @@ const db = new PouchDB('http://127.0.0.1:5984/elm-ingrid-backup')
 //     }),
 //   )
 //     .then(() => db.put(itemToPouchDoc(newItem)))
-//     .catch(console.error)
+//     .catch(handleError)
 // })
+
+function handleError(...args) {
+  console.error(...args)
+
+  sendError(
+    'JS ERROR',
+    R.compose(
+      R.join(''),
+      R.filter(R.is(String)),
+    )(args),
+  )
+}
 
 function backup(model) {
   const cAt = Date.now()
   db.put({ _id: `${cAt}`, model, cAt })
     .then(console.log)
-    .catch(console.error)
+    .catch(handleError)
 }
 
 let waitMs = ms('5s')
@@ -132,7 +166,7 @@ app.ports.toJsCache.subscribe(model => {
 })
 
 app.ports.toJsError.subscribe(errorArgs => {
-  console.error(...errorArgs)
+  handleError(...errorArgs)
 })
 
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)
@@ -156,7 +190,7 @@ app.ports.toJsError.subscribe(errorArgs => {
 //     console.log('bulkItemDocs: docs', docs)
 //     db.bulkDocs(docs)
 //       .then(res => console.log('ports.bulkItemDocs res', res))
-//       .catch(console.error)
+//       .catch(handleError)
 //   }
 // }
 //
