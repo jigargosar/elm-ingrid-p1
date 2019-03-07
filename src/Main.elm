@@ -250,7 +250,7 @@ update message model =
                 generateId model
                     |> Update.map
                         (\( id, newModel ) ->
-                            overCursorWithHistory (ItemTree.appendNew id) newModel
+                            overCursorWithoutHistory (ItemTree.appendNew id) newModel
                         )
                     |> Update.andThen ensureEditingSelected
 
