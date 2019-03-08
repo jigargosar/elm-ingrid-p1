@@ -96,12 +96,23 @@ function dbGet(id, db) {
   return db.get(id)
 }
 
-fetch(couchDbServerUrl)
-  .then(R.invoker(0, 'json'))
-  // .then(console.log)
-  .catch(sendErrorWithTitle('CouchDB Fetch Error'))
+const tapLog = msg => R.tap(R.partial(console.log, [msg]))
 
-// db.info().catch(sendErrorWithTitle('PouchDB info failed'))
+const checkCouchDbAvailability = R.pipe(
+  fetch,
+  R.then(R.invoker(0, 'json')),
+  R.then(tapLog('CouchDb Fetch:')),
+  R.otherwise(sendErrorWithTitle('CouchDB Fetch Error')),
+)
+
+checkCouchDbAvailability(couchDbServerUrl)
+
+// fetch(couchDbServerUrl)
+//   .then(R.invoker(0, 'json'))
+//   // .then(console.log)
+//   .catch(sendErrorWithTitle('CouchDB Fetch Error'))
+//
+// // db.info().catch(sendErrorWithTitle('PouchDB info failed'))
 
 function cachedRedoHistoryIds() {
   return R.pipe(
