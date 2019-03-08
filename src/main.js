@@ -77,17 +77,6 @@ window.addEventListener('keydown', function(event) {
 
 /* ELM APP */
 
-const mainCache = getMainCache()
-const app = Elm.Main.init({
-  node:
-    document.querySelector('#main') || document.querySelector('body > *'),
-  flags: { now: Date.now(), cache: mainCache },
-})
-
-const couchDbServerUrl = `http://127.0.0.1:5984`
-const db = new PouchDB(`${couchDbServerUrl}/elm-ingrid-backup`)
-const historyDb = new PouchDB(`${couchDbServerUrl}/elm-ingrid-history`)
-
 function dbGet(id, db) {
   validate('SO', arguments)
   if (!id) {
@@ -112,15 +101,30 @@ function cachedRedoHistoryIds() {
   )('redoHistoryIds')
 }
 
+const mainCache = getMainCache()
+const app = Elm.Main.init({
+  node:
+    document.querySelector('#main') || document.querySelector('body > *'),
+  flags: { now: Date.now(), cache: mainCache },
+})
+
+const couchDbServerUrl = `http://127.0.0.1:5984`
+const db = new PouchDB(`${couchDbServerUrl}/elm-ingrid-backup`)
+const historyDb = new PouchDB(`${couchDbServerUrl}/elm-ingrid-history`)
+
 checkCouchDbAvailability(couchDbServerUrl)
 
-const redoHistoryIds = cachedRedoHistoryIds()
+function initHistory() {
+  const redoHistoryIds = cachedRedoHistoryIds()
 
-if (redoHistoryIds.length > 0) {
-  dbGet(R.last(redoHistoryIds), historyDb).then(
-    R.tap(R.partial(console.log, ['fetched last history doc'])),
-  )
+  if (redoHistoryIds.length > 0) {
+    dbGet(R.last(redoHistoryIds), historyDb).then(
+      tapLog('fetched last history doc'),
+    )
+  }
 }
+
+initHistory()
 
 function canSendToPort(portName) {
   validate('S', arguments)
