@@ -255,7 +255,7 @@ app.ports.toJsPersistToHistory.subscribe(cursor => {
       _id: newId,
       cursor,
       pid: R.compose(
-        R.defaultTo(''),
+        R.defaultTo(null),
         R.last,
       )(cachedRedoHistoryIds()),
       cAt,
