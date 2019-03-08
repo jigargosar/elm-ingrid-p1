@@ -113,7 +113,9 @@ function cachedRedoHistoryIds() {
 const redoHistoryIds = cachedRedoHistoryIds()
 
 if (redoHistoryIds.length > 0) {
-  dbGet(R.last(redoHistoryIds), historyDb).then(console.log)
+  dbGet(R.last(redoHistoryIds), historyDb).then(
+    R.tap(R.partial(console.log, ['fetched last history doc'])),
+  )
 }
 
 function canSendToPort(portName) {
@@ -180,7 +182,7 @@ function sendErrorWithTitle(title) {
 function backup(model) {
   const cAt = Date.now()
   db.put({ _id: `${cAt}`, model, cAt })
-    .then(console.log)
+    .then(R.tap(R.partial(console.log, ['backup put res'])))
     .catch(sendErrorWithTitle('Pouch Backup Failed'))
 }
 
@@ -273,10 +275,10 @@ app.ports.toJsPersistToHistory.subscribe(cursor => {
           .then(() => setCache('redoHistoryIds', [newId]))
           .catch(sendErrorWithTitle('HistoryDb Error'))
       } else {
-        onJsError([
+        onJsError(
           'HistoryDb Persist',
           'Ignoring duplicate cursor history ',
-        ])
+        )
       }
     })
   } else {
