@@ -164,6 +164,7 @@ type Msg
     | DomFocusResultReceived (Result String ())
     | GlobalKeyDown KeyEvent
     | Init Flags
+    | LoadFromCouchHistory ItemZipper
     | LineChanged String
     | New
     | Save
@@ -208,20 +209,34 @@ update message model =
         NOP ->
             ( model, Cmd.none )
 
-        Undo ->
-            ( { model | history = Pivot.withRollback Pivot.goR model.history }
-                |> setCursorFromHistory
-            , Cmd.none
-            )
+        Init flags ->
+            loadEncodedCursor flags.cache.cursor model
+                |> Update.andThen ensureFocus
+
+        LoadFromCouchHistory cursor ->
+            reInitCursorAndHistory cursor model
+                |> Update.pure
                 |> Update.andThen cacheModel
+
+        Undo ->
+            --            ( { model | history = Pivot.withRollback Pivot.goR model.history }
+            --                |> setCursorFromHistory
+            --            , Cmd.none
+            --            )
+            --
+            --                |> Update.andThen cacheModel
+            model
+                |> Update.pure
                 |> Update.do (toJsUndo ())
 
         Redo ->
-            ( { model | history = Pivot.withRollback Pivot.goL model.history }
-                |> setCursorFromHistory
-            , Cmd.none
-            )
-                |> Update.andThen cacheModel
+            --            ( { model | history = Pivot.withRollback Pivot.goL model.history }
+            --                |> setCursorFromHistory
+            --            , Cmd.none
+            --            )
+            --                |> Update.andThen cacheModel
+            model
+                |> Update.pure
                 |> Update.do (toJsRedo ())
 
         ToastyMsg subMsg ->
@@ -237,10 +252,6 @@ update message model =
 
         DomFocusResultReceived (Ok ()) ->
             ( model, Cmd.none )
-
-        Init flags ->
-            loadEncodedCursor flags.cache.cursor model
-                |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
             ensureFocus model
