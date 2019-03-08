@@ -222,6 +222,7 @@ update message model =
             --                |> Update.pure
             --                |> Update.andThen cacheModel
             loadEncodedCursor encodedCursor model
+                |> Update.andThen ensureFocus
 
         Undo ->
             --            ( { model | history = Pivot.withRollback Pivot.goR model.history }
