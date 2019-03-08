@@ -107,13 +107,6 @@ const checkCouchDbAvailability = R.pipe(
 
 checkCouchDbAvailability(couchDbServerUrl)
 
-// fetch(couchDbServerUrl)
-//   .then(R.invoker(0, 'json'))
-//   // .then(console.log)
-//   .catch(sendErrorWithTitle('CouchDB Fetch Error'))
-//
-// // db.info().catch(sendErrorWithTitle('PouchDB info failed'))
-
 function cachedRedoHistoryIds() {
   return R.pipe(
     getCached,
