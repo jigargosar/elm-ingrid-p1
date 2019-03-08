@@ -199,6 +199,9 @@ app.ports.toJsError.subscribe(errorArgs => {
 })
 
 app.ports.toJsUndo.subscribe(() => {
+  const ids = cachedRedoHistoryIds()
+  if (ids.length === 0) return
+
   dbGet(R.last(cachedRedoHistoryIds()), historyDb)
     // historyDb
     //   .find({
