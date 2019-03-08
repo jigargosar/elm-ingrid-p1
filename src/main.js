@@ -204,7 +204,7 @@ app.ports.toJsUndo.subscribe(() => {
     //   .find({
     //     selector: {
     //       pid: R.compose(
-    //         R.defaultTo(''),
+    //         R.defaultTo(null),
     //         R.last,
     //       )(redoHistoryIds),
     //       limit: 1,
@@ -226,7 +226,7 @@ app.ports.toJsRedo.subscribe(() => {
   const newRedoHistoryIds = R.compose(R.init)(ids)
 
   const historyId = R.compose(
-    R.defaultTo(''),
+    R.defaultTo(null),
     R.last,
   )(newRedoHistoryIds)
 
