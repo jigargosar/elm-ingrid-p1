@@ -118,9 +118,10 @@ function initHistory() {
   const redoHistoryIds = cachedRedoHistoryIds()
 
   if (redoHistoryIds.length > 0) {
-    dbGet(R.last(redoHistoryIds), historyDb).then(
-      tapLog('fetched last history doc'),
-    )
+    dbGet(R.last(redoHistoryIds), historyDb)
+      .then(tapLog('fetched last history doc'))
+      .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
+      .catch(sendErrorWithTitle('Init History Error'))
   }
 }
 
@@ -212,13 +213,14 @@ app.ports.toJsUndo.subscribe(() => {
   const ids = cachedRedoHistoryIds()
   if (ids.length === 0) return
 
-  dbGet(R.last(cachedRedoHistoryIds()), historyDb)
+  dbGet(R.last(ids), historyDb)
     .then(R.tap(console.log))
     .then(({ pid }) => {
       if (pid) {
         dbGet(pid, historyDb)
           .then(R.tap(console.log))
           .then(doc => {
+            send(doc.cursor, 'onJsLoadFromCouchHistory')
             setCache(
               'redoHistoryIds',
               R.append(doc._id)(cachedRedoHistoryIds()),
@@ -254,7 +256,8 @@ app.ports.toJsRedo.subscribe(() => {
     //     },
     //   })
     .then(R.tap(console.log))
-    .then(doc => setCache('redoHistoryIds', newRedoHistoryIds))
+    .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
+    .then(() => setCache('redoHistoryIds', newRedoHistoryIds))
     .catch(sendErrorWithTitle('HistoryDb Undo Error'))
 })
 
