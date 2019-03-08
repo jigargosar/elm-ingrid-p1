@@ -213,24 +213,22 @@ app.ports.toJsUndo.subscribe(() => {
   if (ids.length === 0) return
 
   dbGet(R.last(cachedRedoHistoryIds()), historyDb)
-    // historyDb
-    //   .find({
-    //     selector: {
-    //       pid: R.compose(
-    //         R.defaultTo(null),
-    //         R.last,
-    //       )(redoHistoryIds),
-    //       limit: 1,
-    //       sort: [{ _id: 'desc' }],
-    //     },
-    //   })
     .then(R.tap(console.log))
-    .then(({ pid }) => dbGet(pid, historyDb))
-    .then(R.tap(console.log))
-    .then(doc => {
-      setCache('redoHistoryIds', R.append(doc._id)(cachedRedoHistoryIds()))
+    .then(({ pid }) => {
+      if (pid) {
+        dbGet(pid, historyDb)
+          .then(R.tap(console.log))
+          .then(doc => {
+            setCache(
+              'redoHistoryIds',
+              R.append(doc._id)(cachedRedoHistoryIds()),
+            )
+          })
+          .catch(sendErrorWithTitle('HistoryDb Undo Error'))
+      } else {
+        console.log('reachedRootUndoState')
+      }
     })
-    .catch(sendErrorWithTitle('HistoryDb Undo Error'))
 })
 
 app.ports.toJsRedo.subscribe(() => {

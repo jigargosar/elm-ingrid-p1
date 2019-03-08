@@ -51,6 +51,9 @@ port toJsError : List String -> Cmd msg
 port onJsError : (Err -> msg) -> Sub msg
 
 
+port onJsLoadFromCouchHistory : (Json.Encode.Value -> msg) -> Sub msg
+
+
 main =
     Browser.element
         { init = init
@@ -152,6 +155,7 @@ subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
         , onJsError OnJsError
+        , onJsLoadFromCouchHistory LoadFromCouchHistory
         ]
 
 
@@ -164,7 +168,7 @@ type Msg
     | DomFocusResultReceived (Result String ())
     | GlobalKeyDown KeyEvent
     | Init Flags
-    | LoadFromCouchHistory ItemZipper
+    | LoadFromCouchHistory Json.Decode.Value
     | LineChanged String
     | New
     | Save
@@ -213,10 +217,11 @@ update message model =
             loadEncodedCursor flags.cache.cursor model
                 |> Update.andThen ensureFocus
 
-        LoadFromCouchHistory cursor ->
-            reInitCursorAndHistory cursor model
-                |> Update.pure
-                |> Update.andThen cacheModel
+        LoadFromCouchHistory encodedCursor ->
+            --            reInitCursorAndHistory cursor model
+            --                |> Update.pure
+            --                |> Update.andThen cacheModel
+            loadEncodedCursor encodedCursor model
 
         Undo ->
             --            ( { model | history = Pivot.withRollback Pivot.goR model.history }
