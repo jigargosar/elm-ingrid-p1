@@ -258,16 +258,32 @@ app.ports.toJsPersistToHistory.subscribe(cursor => {
     R.last,
   )(cachedRedoHistoryIds())
 
-  historyDb
-    .put({
-      _id: newId,
-      cursor,
-      pid,
-      cAt,
+  const newHistoryItem = {
+    _id: newId,
+    cursor,
+    pid,
+    cAt,
+  }
+
+  if (pid) {
+    historyDb.get(pid).then(doc => {
+      if (!R.equals(doc.cursor, cursor)) {
+        return historyDb
+          .put(newHistoryItem)
+          .then(() => setCache('redoHistoryIds', [newId]))
+          .catch(sendErrorWithTitle('HistoryDb Error'))
+      } else {
+        sendErrorWithTitle('Ignoring duplicate cursor history ')
+      }
     })
-    .then(R.tap(console.log))
-    .then(setCache('redoHistoryIds', [newId]))
-    .catch(sendErrorWithTitle('HistoryDb Error'))
+  } else {
+    console.log('Creating first history item')
+    historyDb
+      .put(newHistoryItem)
+      .then(R.tap(console.log))
+      .then(() => setCache('redoHistoryIds', [newId]))
+      .catch(sendErrorWithTitle('HistoryDb Error'))
+  }
 })
 
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)
