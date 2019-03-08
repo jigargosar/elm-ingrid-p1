@@ -8,6 +8,10 @@
     "start": "parcel src/index.html",
     "sb": "parcel src/story-book.html -p 1235"
   },
+  "browserslist": [
+    "last 1 Chrome version",
+    "not dead"
+  ],
   "dependencies": {
     "aproba": "latest",
     "faker": "^4.1.0",
