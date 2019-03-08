@@ -273,7 +273,10 @@ app.ports.toJsPersistToHistory.subscribe(cursor => {
           .then(() => setCache('redoHistoryIds', [newId]))
           .catch(sendErrorWithTitle('HistoryDb Error'))
       } else {
-        sendErrorWithTitle('Ignoring duplicate cursor history ')
+        onJsError([
+          'HistoryDb Persist',
+          'Ignoring duplicate cursor history ',
+        ])
       }
     })
   } else {
