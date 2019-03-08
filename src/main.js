@@ -253,14 +253,16 @@ app.ports.toJsRedo.subscribe(() => {
 app.ports.toJsPersistToHistory.subscribe(cursor => {
   const cAt = Date.now()
   const newId = `${cAt}_${nanoid()}`
+  const pid = R.compose(
+    R.defaultTo(null),
+    R.last,
+  )(cachedRedoHistoryIds())
+
   historyDb
     .put({
       _id: newId,
       cursor,
-      pid: R.compose(
-        R.defaultTo(null),
-        R.last,
-      )(cachedRedoHistoryIds()),
+      pid,
       cAt,
     })
     .then(R.tap(console.log))
