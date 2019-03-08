@@ -105,14 +105,14 @@ const checkCouchDbAvailability = R.pipe(
   R.otherwise(sendErrorWithTitle('CouchDB Fetch Error')),
 )
 
-checkCouchDbAvailability(couchDbServerUrl)
-
 function cachedRedoHistoryIds() {
   return R.pipe(
     getCached,
     R.defaultTo([]),
   )('redoHistoryIds')
 }
+
+checkCouchDbAvailability(couchDbServerUrl)
 
 const redoHistoryIds = cachedRedoHistoryIds()
 
