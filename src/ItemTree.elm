@@ -6,7 +6,7 @@ module ItemTree exposing
     , canTreeExpand
     , collapseOrParent
     , delete
-    , deleteIfEmptyAndLeaf
+    , deleteIfBlankAndLeaf
     , expandOrNext
     , forward
     , getSelectedTree
@@ -283,7 +283,7 @@ isLeaf =
     Zipper.children >> List.length >> eqs 0
 
 
-deleteIfEmptyAndLeaf zipper =
+deleteIfBlankAndLeaf zipper =
     if isLeaf zipper && isFragmentBlank zipper then
         delete zipper
 
