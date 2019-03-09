@@ -241,7 +241,8 @@ update message model =
         New ->
             if isEditingNew model && isSelectedBlank model then
                 { model | viewMode = Navigating }
-                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
+                    |> overCursorWithoutHistory ItemTree.deleteIfEmptyAndLeaf
+                    |> Update.pure
 
             else
                 generateId model
