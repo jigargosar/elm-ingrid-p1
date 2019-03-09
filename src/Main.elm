@@ -98,16 +98,12 @@ init flags =
         }
 
 
-overCursorWithHistory : (ItemZipper -> ItemZipper) -> Model -> Model
-overCursorWithHistory fn model =
-    overCursorWithoutHistory fn model
-
-
-overCursorWithoutHistory : (ItemZipper -> ItemZipper) -> Model -> Model
-overCursorWithoutHistory fn model =
+overCursor : (ItemZipper -> ItemZipper) -> Model -> Model
+overCursor fn model =
     { model | cursor = fn model.cursor }
 
 
+setCursor : ItemZipper -> Model -> Model
 setCursor cursor model =
     { model | cursor = cursor }
 
@@ -241,14 +237,14 @@ update message model =
         New ->
             if isEditingNew model && isSelectedBlank model then
                 { model | viewMode = Navigating }
-                    |> overCursorWithoutHistory ItemTree.deleteIfEmptyAndLeaf
+                    |> overCursor ItemTree.deleteIfEmptyAndLeaf
                     |> Update.pure
 
             else
                 generateId model
                     |> Update.map
                         (\( id, newModel ) ->
-                            overCursorWithoutHistory (ItemTree.appendNew id) newModel
+                            overCursor (ItemTree.appendNew id) newModel
                                 |> setEditingNew
                         )
                     |> Update.andThen ensureFocus
@@ -260,7 +256,7 @@ update message model =
         Save ->
             if isEditingNew model && isSelectedBlank model then
                 { model | viewMode = Navigating }
-                    |> overCursorWithoutHistory ItemTree.deleteIfEmptyAndLeaf
+                    |> overCursor ItemTree.deleteIfEmptyAndLeaf
                     |> Update.pure
 
             else
@@ -354,13 +350,13 @@ type Persistence
 
 updateCursorAndCache : (ItemZipper -> ItemZipper) -> Model -> ( Model, Cmd Msg )
 updateCursorAndCache fn model =
-    overCursorWithoutHistory fn model
+    overCursor fn model
         |> persistIfChanged OnlyCache model
 
 
 updateCursorAndCacheWithHistory : (ItemZipper -> ItemZipper) -> Model -> ( Model, Cmd Msg )
 updateCursorAndCacheWithHistory fn model =
-    overCursorWithoutHistory fn model
+    overCursor fn model
         |> persistIfChanged CacheAndHistory model
 
 
