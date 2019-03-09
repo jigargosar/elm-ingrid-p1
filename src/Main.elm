@@ -220,11 +220,6 @@ update message model =
 
         New ->
             if isEditingMode model && isSelectedBlank model then
-                --                ( { model | viewMode = Navigating }
-                --                    |> overCursorWithHistory ItemTree.deleteIfEmptyAndLeaf
-                --                , Cmd.batch []
-                --                )
-                --                    |> Update.andThen cacheModelAndPersistToHistory
                 { model | viewMode = Navigating }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
@@ -240,11 +235,6 @@ update message model =
             { model | viewMode = Navigating }
                 |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
-        --            ( { model | viewMode = Navigating }
-        --                |> overCursorWithHistory ItemTree.deleteIfEmptyAndLeaf
-        --            , Cmd.batch []
-        --            )
-        --                |> Update.andThen cacheModelAndPersistToHistory
         Delete ->
             ( model |> overCursorWithHistory ItemTree.delete, Cmd.none )
                 |> Update.andThen cacheModelAndPersistToHistory
