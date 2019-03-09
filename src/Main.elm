@@ -188,6 +188,11 @@ isEditingSelected model =
             False
 
 
+isEditingNew : Model -> Bool
+isEditingNew model =
+    model.viewMode == EditingSelected E_New
+
+
 isSelectedBlank model =
     ItemTree.isFragmentBlank model.cursor
 
@@ -234,7 +239,7 @@ update message model =
             ensureFocus model
 
         New ->
-            if isEditingSelected model && isSelectedBlank model then
+            if isEditingNew model && isSelectedBlank model then
                 { model | viewMode = Navigating }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
