@@ -1,4 +1,4 @@
-module V exposing (btn, cc, co, cx, noHtml, rr, t, tInt, viewIf)
+module V exposing (attrIf, btn, cc, co, cx, rr, t, tInt, viewIf)
 
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (style)
@@ -36,6 +36,18 @@ cx =
 
 noHtml =
     t ""
+
+
+noAttr =
+    Html.Attributes.attribute "noAttr" ""
+
+
+attrIf bool a =
+    if bool then
+        a
+
+    else
+        noAttr
 
 
 viewIf bool v =

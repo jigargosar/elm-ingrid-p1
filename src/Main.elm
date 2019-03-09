@@ -25,7 +25,7 @@ import Toasties
 import Toasty
 import UI.Tree
 import Update
-import V exposing (co, cx, t, viewIf)
+import V exposing (attrIf, co, cx, t, viewIf)
 
 
 
@@ -599,18 +599,18 @@ viewLine vm tree =
 
 viewFragment vm tree =
     let
-        _ =
-            1
+        isSel =
+            isSelectedTree tree vm
     in
     Html.Styled.toUnstyled <|
         UI.Tree.viewFragment
             { text = ItemTree.treeFragment tree
             , isRoot = isRootTree tree vm
-            , isSelected = isSelectedTree tree vm
+            , isSelected = isSel
             , attrs =
                 List.map Html.Styled.Attributes.fromUnstyled
                     [ id <| fragDomId <| Item.Tree.id tree
-                    , tabindex 0
+                    , attrIf isSel (tabindex 0)
                     , HotKey.preventDefaultOnKeyDownEvent fragmentHotKeyDecoder
                     ]
             }
