@@ -348,10 +348,6 @@ loadEncodedCursor encodedCursor model =
             loadCursor
 
 
-cacheModelAndPersistToHistory =
-    cacheModel >> Update.andThen persistToHistory
-
-
 cacheModel model =
     ( model
     , toJsCache <|
@@ -359,8 +355,12 @@ cacheModel model =
     )
 
 
-persistToHistory model =
-    ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
+cacheModelAndPersistToHistory =
+    let
+        persistToHistory model =
+            ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
+    in
+    cacheModel >> Update.andThen persistToHistory
 
 
 stopEditing model =
