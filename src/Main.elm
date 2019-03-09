@@ -198,11 +198,11 @@ update message model =
             ( model, Cmd.none )
 
         Init flags ->
-            loadEncodedCursor flags.cache.cursor model
+            loadEncodedCursorAndCache flags.cache.cursor model
                 |> Update.andThen ensureFocus
 
         LoadFromCouchHistory encodedCursor ->
-            loadEncodedCursor encodedCursor model
+            loadEncodedCursorAndCache encodedCursor model
                 |> Update.andThen ensureFocus
 
         Undo ->
@@ -220,8 +220,13 @@ update message model =
 
         New ->
             if isEditingMode model && isSelectedBlank model then
-                stopEditing model
-                    |> Update.andThen cacheModelAndPersistToHistory
+                --                ( { model | viewMode = Navigating }
+                --                    |> overCursorWithHistory ItemTree.deleteIfEmptyAndLeaf
+                --                , Cmd.batch []
+                --                )
+                --                    |> Update.andThen cacheModelAndPersistToHistory
+                { model | viewMode = Navigating }
+                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
             else
                 generateId model
@@ -232,9 +237,14 @@ update message model =
                     |> Update.andThen ensureEditingSelected
 
         Save ->
-            stopEditing model
-                |> Update.andThen cacheModelAndPersistToHistory
+            { model | viewMode = Navigating }
+                |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
+        --            ( { model | viewMode = Navigating }
+        --                |> overCursorWithHistory ItemTree.deleteIfEmptyAndLeaf
+        --            , Cmd.batch []
+        --            )
+        --                |> Update.andThen cacheModelAndPersistToHistory
         Delete ->
             ( model |> overCursorWithHistory ItemTree.delete, Cmd.none )
                 |> Update.andThen cacheModelAndPersistToHistory
@@ -318,14 +328,14 @@ andThenHandleError errorTuple =
         >> Update.andThen (sendErrorToJS errorTuple)
 
 
-loadEncodedCursor encodedCursor model =
+loadEncodedCursorAndCache encodedCursor model =
     let
         handleCursorDecodeError error =
             ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
             Update.pure (setCursor cursor model)
-                |> Update.andThen cacheModel
+                |> Update.andThen (persistIfChanged OnlyCache model)
     in
     encodedCursor
         |> decodeValue Item.Zipper.decoder
@@ -384,13 +394,6 @@ persistToHistory model =
 
 cacheModelAndPersistToHistory =
     cacheModel >> Update.andThen persistToHistory
-
-
-stopEditing model =
-    ( { model | viewMode = Navigating }
-        |> overCursorWithHistory ItemTree.deleteIfEmptyAndLeaf
-    , Cmd.batch []
-    )
 
 
 generateId model =
