@@ -104,8 +104,8 @@ overCursor fn model =
 
 
 setCursor : ItemZipper -> Model -> Model
-setCursor cursor model =
-    { model | cursor = cursor }
+setCursor =
+    always >> overCursor
 
 
 setEditingNew model =
