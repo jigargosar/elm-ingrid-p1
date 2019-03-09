@@ -303,8 +303,7 @@ update message model =
 
         RotateActionable ->
             overCursorWithHistory ItemTree.rotateActionable model
-                |> Update.pure
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> cacheModelAndPersistToHistory
 
 
 type alias Err =
