@@ -66,9 +66,14 @@ main =
 -- MODEL
 
 
+type EditType
+    = E_New
+    | E_Existing
+
+
 type ViewMode
     = Navigating
-    | EditingSelected
+    | EditingSelected EditType
 
 
 type alias Model =
@@ -105,6 +110,10 @@ overCursorWithoutHistory fn model =
 
 setCursor cursor model =
     { model | cursor = cursor }
+
+
+setEditingNew model =
+    { model | viewMode = EditingSelected E_New }
 
 
 
@@ -169,8 +178,14 @@ fragInputDomId itemId =
     "item-input-dom-id-" ++ itemId
 
 
-isEditingMode model =
-    model.viewMode == EditingSelected
+isEditingSelected : Model -> Bool
+isEditingSelected model =
+    case model.viewMode of
+        EditingSelected _ ->
+            True
+
+        Navigating ->
+            False
 
 
 isSelectedBlank model =
@@ -219,7 +234,7 @@ update message model =
             ensureFocus model
 
         New ->
-            if isEditingMode model && isSelectedBlank model then
+            if isEditingSelected model && isSelectedBlank model then
                 { model | viewMode = Navigating }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
@@ -228,8 +243,9 @@ update message model =
                     |> Update.map
                         (\( id, newModel ) ->
                             overCursorWithoutHistory (ItemTree.appendNew id) newModel
+                                |> setEditingNew
                         )
-                    |> Update.andThen ensureEditingSelected
+                    |> Update.andThen ensureFocus
 
         Save ->
             { model | viewMode = Navigating }
@@ -240,47 +256,44 @@ update message model =
                 |> Update.andThen cacheModelAndPersistToHistory
 
         Edit ->
-            ensureEditingSelected model
-                |> Update.andThen cacheModelAndPersistToHistory
+            { model | viewMode = EditingSelected E_Existing }
+                |> cacheModelAndPersistToHistory
 
         CollapseOrPrev ->
-            ( model |> overCursorWithHistory ItemTree.collapseOrParent, Cmd.none )
-                |> Update.andThen cacheModelAndPersistToHistory
+            (model |> overCursorWithHistory ItemTree.collapseOrParent)
+                |> cacheModelAndPersistToHistory
 
         ExpandOrNext ->
-            ( model |> overCursorWithHistory ItemTree.expandOrNext, Cmd.none )
-                |> Update.andThen cacheModelAndPersistToHistory
+            (model |> overCursorWithHistory ItemTree.expandOrNext)
+                |> cacheModelAndPersistToHistory
 
         Prev ->
-            Update.pure (overCursorWithoutHistory ItemTree.backward model)
-                |> Update.andThen cacheModel
+            overCursorWithoutHistory ItemTree.backward model
+                |> cacheModel
 
         Next ->
-            Update.pure (overCursorWithoutHistory ItemTree.forward model)
-                |> Update.andThen cacheModel
+            overCursorWithoutHistory ItemTree.forward model
+                |> cacheModel
 
         MoveUp ->
-            Update.pure (overCursorWithHistory ItemTree.moveUp model)
-                |> Update.andThen cacheModelAndPersistToHistory
+            overCursorWithHistory ItemTree.moveUp model
+                |> cacheModelAndPersistToHistory
 
         MoveDown ->
-            Update.pure (overCursorWithHistory ItemTree.moveDown model)
-                |> Update.andThen cacheModelAndPersistToHistory
+            overCursorWithHistory ItemTree.moveDown model
+                |> cacheModelAndPersistToHistory
 
         Outdent ->
             overCursorWithHistory ItemTree.outdent model
-                |> Update.pure
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> cacheModelAndPersistToHistory
 
         Indent ->
             overCursorWithHistory ItemTree.indent model
-                |> Update.pure
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> cacheModelAndPersistToHistory
 
         LineChanged newContent ->
             overCursorWithHistory (ItemTree.setContent newContent) model
-                |> Update.pure
-                |> Update.andThen cacheModelAndPersistToHistory
+                |> cacheModelAndPersistToHistory
 
         RotateActionable ->
             overCursorWithHistory ItemTree.rotateActionable model
@@ -402,16 +415,11 @@ generateId model =
     Update.pure ( randomId, newModel )
 
 
-ensureEditingSelected model =
-    Update.pure { model | viewMode = EditingSelected }
-        |> Update.andThen ensureFocus
-
-
 ensureFocus model =
     let
         domIdFn =
             case model.viewMode of
-                EditingSelected ->
+                EditingSelected _ ->
                     fragInputDomId
 
                 Navigating ->
@@ -490,7 +498,7 @@ viewTreeContainer model =
             ItemTree.rootTree model.cursor
 
         isEditing =
-            isEditingMode model
+            isEditingSelected model
 
         containerClasses =
             let
