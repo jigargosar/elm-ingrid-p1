@@ -16,7 +16,6 @@ import ItemTree exposing (ItemTree)
 import Json.Decode exposing (Decoder, decodeValue, errorToString)
 import Json.Encode
 import List.Extra
-import Pivot exposing (Pivot)
 import Random exposing (Generator)
 import Result.Extra
 import Tachyons exposing (classes)
@@ -77,7 +76,6 @@ type alias Model =
     , viewMode : ViewMode
     , seed : Random.Seed
     , toasties : Toasty.Stack Toasties.Toast
-    , history : Pivot ItemZipper
     }
 
 
@@ -87,22 +85,17 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    let
-        cursor =
-            ItemTree.initialCursor
-    in
     update (Init flags)
         { cursor = ItemTree.initialCursor
         , viewMode = Navigating
         , seed = Random.initialSeed flags.now
         , toasties = Toasty.initialState
-        , history = Pivot.singleton cursor
         }
 
 
 overCursorWithHistory : (ItemZipper -> ItemZipper) -> Model -> Model
 overCursorWithHistory fn model =
-    overCursorWithoutHistory fn model |> addCurrentToHistory
+    overCursorWithoutHistory fn model
 
 
 overCursorWithoutHistory : (ItemZipper -> ItemZipper) -> Model -> Model
@@ -111,30 +104,7 @@ overCursorWithoutHistory fn model =
 
 
 reInitCursorAndHistory cursor model =
-    { model | cursor = cursor, history = Pivot.singleton cursor }
-
-
-addCurrentToHistory : Model -> Model
-addCurrentToHistory model =
-    when (getCursorFromHistory >> neq model.cursor)
-        (always
-            { model
-                | history =
-                    Pivot.setL [] model.history
-                        |> Pivot.appendGoL model.cursor
-            }
-        )
-        model
-
-
-getCursorFromHistory : Model -> ItemZipper
-getCursorFromHistory =
-    .history >> Pivot.getC
-
-
-setCursorFromHistory : Model -> Model
-setCursorFromHistory model =
-    { model | cursor = Pivot.getC model.history }
+    { model | cursor = cursor }
 
 
 
