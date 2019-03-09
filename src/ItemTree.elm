@@ -296,7 +296,7 @@ delete zipper =
         maybeNext : Maybe Item
         maybeNext =
             Zipper.nextSibling zipper
-                |> orl (\_ -> Zipper.backward zipper)
+                |> orl (\_ -> Just <| backward zipper)
                 |> Maybe.map Zipper.label
     in
     maybeNext
