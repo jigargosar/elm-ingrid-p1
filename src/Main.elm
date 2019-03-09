@@ -195,22 +195,11 @@ update message model =
                 |> Update.andThen ensureFocus
 
         Undo ->
-            --            ( { model | history = Pivot.withRollback Pivot.goR model.history }
-            --                |> setCursorFromHistory
-            --            , Cmd.none
-            --            )
-            --
-            --                |> Update.andThen cacheModel
             model
                 |> Update.pure
                 |> Update.do (toJsUndo ())
 
         Redo ->
-            --            ( { model | history = Pivot.withRollback Pivot.goL model.history }
-            --                |> setCursorFromHistory
-            --            , Cmd.none
-            --            )
-            --                |> Update.andThen cacheModel
             model
                 |> Update.pure
                 |> Update.do (toJsRedo ())
