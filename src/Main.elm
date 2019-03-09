@@ -253,25 +253,22 @@ update message model =
                         )
                     |> Update.andThen ensureFocus
 
+        Edit ->
+            { model | viewMode = EditingSelected E_Existing }
+                |> Update.pure
+
         Save ->
             { model | viewMode = Navigating }
                 |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
         Delete ->
-            (model |> overCursorWithHistory ItemTree.delete)
-                |> cacheModelAndPersistToHistory
-
-        Edit ->
-            { model | viewMode = EditingSelected E_Existing }
-                |> cacheModelAndPersistToHistory
+            model |> updateCursorAndCacheWithHistory ItemTree.delete
 
         CollapseOrPrev ->
-            (model |> overCursorWithHistory ItemTree.collapseOrParent)
-                |> cacheModelAndPersistToHistory
+            model |> updateCursorAndCacheWithHistory ItemTree.collapseOrParent
 
         ExpandOrNext ->
-            (model |> overCursorWithHistory ItemTree.expandOrNext)
-                |> cacheModelAndPersistToHistory
+            model |> updateCursorAndCacheWithHistory ItemTree.expandOrNext
 
         Prev ->
             overCursorWithoutHistory ItemTree.backward model
@@ -282,28 +279,22 @@ update message model =
                 |> cacheModel
 
         MoveUp ->
-            overCursorWithHistory ItemTree.moveUp model
-                |> cacheModelAndPersistToHistory
+            updateCursorAndCacheWithHistory ItemTree.moveUp model
 
         MoveDown ->
-            overCursorWithHistory ItemTree.moveDown model
-                |> cacheModelAndPersistToHistory
+            updateCursorAndCacheWithHistory ItemTree.moveDown model
 
         Outdent ->
-            overCursorWithHistory ItemTree.outdent model
-                |> cacheModelAndPersistToHistory
+            updateCursorAndCacheWithHistory ItemTree.outdent model
 
         Indent ->
-            overCursorWithHistory ItemTree.indent model
-                |> cacheModelAndPersistToHistory
+            updateCursorAndCacheWithHistory ItemTree.indent model
 
         LineChanged newContent ->
-            overCursorWithHistory (ItemTree.setContent newContent) model
-                |> cacheModelAndPersistToHistory
+            updateCursorAndCacheWithHistory (ItemTree.setContent newContent) model
 
         RotateActionable ->
-            overCursorWithHistory ItemTree.rotateActionable model
-                |> cacheModelAndPersistToHistory
+            updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
 type alias Err =
