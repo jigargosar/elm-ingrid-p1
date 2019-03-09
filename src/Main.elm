@@ -103,7 +103,7 @@ overCursorWithoutHistory fn model =
     { model | cursor = fn model.cursor }
 
 
-reInitCursorAndHistory cursor model =
+setCursor cursor model =
     { model | cursor = cursor }
 
 
@@ -183,27 +183,6 @@ update message model =
         NOP ->
             ( model, Cmd.none )
 
-        Init flags ->
-            loadEncodedCursor flags.cache.cursor model
-                |> Update.andThen ensureFocus
-
-        LoadFromCouchHistory encodedCursor ->
-            --            reInitCursorAndHistory cursor model
-            --                |> Update.pure
-            --                |> Update.andThen cacheModel
-            loadEncodedCursor encodedCursor model
-                |> Update.andThen ensureFocus
-
-        Undo ->
-            model
-                |> Update.pure
-                |> Update.do (toJsUndo ())
-
-        Redo ->
-            model
-                |> Update.pure
-                |> Update.do (toJsRedo ())
-
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
 
@@ -217,6 +196,24 @@ update message model =
 
         DomFocusResultReceived (Ok ()) ->
             ( model, Cmd.none )
+
+        Init flags ->
+            loadEncodedCursor flags.cache.cursor model
+                |> Update.andThen ensureFocus
+
+        LoadFromCouchHistory encodedCursor ->
+            loadEncodedCursor encodedCursor model
+                |> Update.andThen ensureFocus
+
+        Undo ->
+            model
+                |> Update.pure
+                |> Update.do (toJsUndo ())
+
+        Redo ->
+            model
+                |> Update.pure
+                |> Update.do (toJsRedo ())
 
         GlobalKeyDown _ ->
             ensureFocus model
@@ -327,7 +324,7 @@ loadEncodedCursor encodedCursor model =
             ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
-            Update.pure (reInitCursorAndHistory cursor model)
+            Update.pure (setCursor cursor model)
                 |> Update.andThen cacheModel
     in
     encodedCursor
