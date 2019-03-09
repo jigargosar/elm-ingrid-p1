@@ -334,6 +334,43 @@ loadEncodedCursor encodedCursor model =
             loadCursor
 
 
+type Persistence
+    = OnlyCache
+    | CacheAndHistory
+
+
+updateCursorAndCache fn model =
+    overCursorWithoutHistory fn model
+        |> persistIfChanged OnlyCache model
+
+
+updateCursorAndCacheWithHistory fn model =
+    overCursorWithoutHistory fn model
+        |> persistIfChanged CacheAndHistory model
+
+
+persistIfChanged persistenceType oldModel newModel =
+    if oldModel.cursor /= newModel.cursor then
+        let
+            encodedCursor =
+                Item.Zipper.encoder newModel.cursor
+
+            cacheCmd =
+                toJsCache { cursor = encodedCursor }
+        in
+        ( newModel
+        , case persistenceType of
+            OnlyCache ->
+                cacheCmd
+
+            CacheAndHistory ->
+                Cmd.batch [ cacheCmd, toJsPersistToHistory encodedCursor ]
+        )
+
+    else
+        ( newModel, Cmd.none )
+
+
 cacheModel model =
     ( model
     , toJsCache <|
@@ -341,11 +378,11 @@ cacheModel model =
     )
 
 
+persistToHistory model =
+    ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
+
+
 cacheModelAndPersistToHistory =
-    let
-        persistToHistory model =
-            ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
-    in
     cacheModel >> Update.andThen persistToHistory
 
 

@@ -1,4 +1,4 @@
-module BasicsX exposing (addSecond, applyTo, concatIf, defaultEmptyStringTo, eqs, ifElse, neq, overSecond, tap, ter, when)
+module BasicsX exposing (addSecond, applyTo, cmdIf, concatIf, defaultEmptyStringTo, eqs, ifElse, neq, overSecond, tap, ter, when)
 
 
 eqs =
@@ -67,3 +67,11 @@ tap fn v =
             fn v
     in
     v
+
+
+cmdIf bool cmd =
+    if bool then
+        cmd
+
+    else
+        Cmd.none
