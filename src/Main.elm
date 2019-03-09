@@ -271,12 +271,10 @@ update message model =
             model |> updateCursorAndCacheWithHistory ItemTree.expandOrNext
 
         Prev ->
-            overCursorWithoutHistory ItemTree.backward model
-                |> cacheModel
+            updateCursorAndCache ItemTree.backward model
 
         Next ->
-            overCursorWithoutHistory ItemTree.forward model
-                |> cacheModel
+            updateCursorAndCache ItemTree.forward model
 
         MoveUp ->
             updateCursorAndCacheWithHistory ItemTree.moveUp model
@@ -378,21 +376,6 @@ persistIfChanged persistenceType oldModel newModel =
 
     else
         ( newModel, Cmd.none )
-
-
-cacheModel model =
-    ( model
-    , toJsCache <|
-        { cursor = Item.Zipper.encoder model.cursor }
-    )
-
-
-persistToHistory model =
-    ( model, toJsPersistToHistory <| Item.Zipper.encoder model.cursor )
-
-
-cacheModelAndPersistToHistory =
-    cacheModel >> Update.andThen persistToHistory
 
 
 generateId model =
