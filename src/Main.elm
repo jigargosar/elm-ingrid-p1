@@ -352,6 +352,7 @@ type Persistence
     | CacheAndHistory
 
 
+updateCursorAndCache : (ItemZipper -> ItemZipper) -> Model -> ( Model, Cmd Msg )
 updateCursorAndCache fn model =
     overCursorWithoutHistory fn model
         |> persistIfChanged OnlyCache model
