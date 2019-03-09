@@ -258,8 +258,8 @@ update message model =
                 |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
         Delete ->
-            ( model |> overCursorWithHistory ItemTree.delete, Cmd.none )
-                |> Update.andThen cacheModelAndPersistToHistory
+            (model |> overCursorWithHistory ItemTree.delete)
+                |> cacheModelAndPersistToHistory
 
         Edit ->
             { model | viewMode = EditingSelected E_Existing }
