@@ -258,8 +258,14 @@ update message model =
                 |> Update.pure
 
         Save ->
-            { model | viewMode = Navigating }
-                |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
+            if isEditingNew model && isSelectedBlank model then
+                { model | viewMode = Navigating }
+                    |> overCursorWithoutHistory ItemTree.deleteIfEmptyAndLeaf
+                    |> Update.pure
+
+            else
+                { model | viewMode = Navigating }
+                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfEmptyAndLeaf
 
         Delete ->
             model |> updateCursorAndCacheWithHistory ItemTree.delete
@@ -351,6 +357,7 @@ updateCursorAndCache fn model =
         |> persistIfChanged OnlyCache model
 
 
+updateCursorAndCacheWithHistory : (ItemZipper -> ItemZipper) -> Model -> ( Model, Cmd Msg )
 updateCursorAndCacheWithHistory fn model =
     overCursorWithoutHistory fn model
         |> persistIfChanged CacheAndHistory model
