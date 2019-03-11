@@ -46,6 +46,26 @@ type ToJs
     | Error (List String)
 
 
+sendToJs : ToJs -> Cmd msg
+sendToJs msg =
+    let
+        encodeAndSend name payload =
+            Json.Encode.object [ ( name, payload ) ] |> toJs
+    in
+    case msg of
+        Cache val ->
+            encodeAndSend "cache" <| Json.Encode.object [ ( "cursor", val.cursor ) ]
+
+        Undo ->
+            encodeAndSend "undo" <| Json.Encode.null
+
+        Redo ->
+            encodeAndSend "redo" <| Json.Encode.null
+
+        Error strings ->
+            encodeAndSend "error" <| Json.Encode.list Json.Encode.string strings
+
+
 type FromJs
     = F_Error Err
     | F_LoadHistory Json.Encode.Value
