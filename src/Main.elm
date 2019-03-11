@@ -33,9 +33,6 @@ import V exposing (attrIf, co, cx, t, viewIf)
 port toJs : Json.Encode.Value -> Cmd msg
 
 
-port fromJs : (Json.Encode.Value -> msg) -> Sub msg
-
-
 type ToJs
     = CacheCursor Json.Encode.Value
     | Undo
@@ -75,9 +72,11 @@ sendErrorToJs strList =
     sendToJs <| Error strList
 
 
-type FromJs
-    = F_Error Err
-    | F_LoadHistory Json.Encode.Value
+
+--port fromJs : (Json.Encode.Value -> msg) -> Sub msg
+--type FromJs
+--    = F_Error Err
+--    | F_LoadHistory Json.Encode.Value
 
 
 port onJsError : (Err -> msg) -> Sub msg
