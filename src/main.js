@@ -200,9 +200,20 @@ const debouncedBackup = debounce(backup, ms('5s'), {
   trailing: true,
 })
 
-app.ports.toJsCache.subscribe(model => {
-  setCache('elm-main', model)
-  debouncedBackup(model)
+app.ports.toJs.subscribe(({ msg, payload }) => {
+  console.log(`msg,payload`, msg, payload)
+  switch (msg) {
+    case 'cache':
+      setCache('elm-main', payload)
+      debouncedBackup(payload)
+      break
+    case 'error':
+      console.error(...payload)
+      break
+    default:
+      console.error('Invalid msg', msg, payload)
+      break
+  }
 })
 
 app.ports.toJsError.subscribe(errorArgs => {

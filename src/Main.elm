@@ -36,11 +36,8 @@ port toJs : Json.Encode.Value -> Cmd msg
 port fromJs : (Json.Encode.Value -> msg) -> Sub msg
 
 
-port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
-
-
 type ToJs
-    = Cache { cursor : Json.Encode.Value }
+    = CacheCursor Json.Encode.Value
     | Undo
     | Redo
     | Error (List String)
@@ -49,12 +46,16 @@ type ToJs
 sendToJs : ToJs -> Cmd msg
 sendToJs msg =
     let
-        encodeAndSend name payload =
-            Json.Encode.object [ ( name, payload ) ] |> toJs
+        encodeAndSend msgName payload =
+            Json.Encode.object
+                [ ( "msg", Json.Encode.string msgName )
+                , ( "payload", payload )
+                ]
+                |> toJs
     in
     case msg of
-        Cache val ->
-            encodeAndSend "cache" <| Json.Encode.object [ ( "cursor", val.cursor ) ]
+        CacheCursor cursor ->
+            encodeAndSend "cache" <| Json.Encode.object [ ( "cursor", cursor ) ]
 
         Undo ->
             encodeAndSend "undo" <| Json.Encode.null
@@ -427,7 +428,7 @@ persistIfChanged persistenceType oldModel newModel =
                 Item.Zipper.encoder newModel.cursor
 
             cacheCmd =
-                toJsCache { cursor = encodedCursor }
+                sendToJs <| CacheCursor encodedCursor
         in
         ( newModel
         , case persistenceType of
