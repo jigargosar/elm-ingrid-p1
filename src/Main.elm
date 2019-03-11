@@ -250,16 +250,6 @@ handleCMMsg req model =
             { model | editorMode = EditSelected E_Existing }
                 |> Update.pure
 
-        CM.Save ->
-            if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = CommandMode }
-                    |> overCursor ItemTree.deleteIfBlankAndLeaf
-                    |> Update.pure
-
-            else
-                { model | editorMode = CommandMode }
-                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
-
         CM.Delete ->
             model |> updateCursorAndCacheWithHistory ItemTree.delete
 
@@ -286,9 +276,6 @@ handleCMMsg req model =
 
         CM.Indent ->
             updateCursorAndCacheWithHistory ItemTree.indent model
-
-        CM.LineChanged newContent ->
-            updateCursorAndCacheWithHistory (ItemTree.setContent newContent) model
 
         CM.RotateActionable ->
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model

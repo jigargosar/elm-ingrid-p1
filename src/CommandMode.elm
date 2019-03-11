@@ -2,9 +2,7 @@ module CommandMode exposing (CommandModeMsg(..))
 
 
 type CommandModeMsg
-    = LineChanged String
-    | New
-    | Save
+    = New
     | Prev
     | Edit
     | Next
