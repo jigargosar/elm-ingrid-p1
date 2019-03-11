@@ -227,12 +227,10 @@ update message model =
             Toasty.update toastyConfig ToastyMsg subMsg model
 
         OnJsError err ->
-            Update.pure model
-                |> andThenHandleError err
+            model |> handleError err
 
         DomFocusResultReceived (Err msg) ->
-            Update.pure model
-                |> andThenHandleError ( "DomFocusError", msg )
+            model |> handleError ( "DomFocusError", msg )
 
         DomFocusResultReceived (Ok ()) ->
             ( model, Cmd.none )
@@ -363,36 +361,44 @@ type alias Err =
     ( String, String )
 
 
-addToast : Toasties.Toast -> ModelCmd -> ModelCmd
-addToast =
-    Toasty.addToast toastyConfig ToastyMsg
+addToast : Toasties.Toast -> Model -> ModelCmd
+addToast toast model =
+    Update.pure model
+        |> Toasty.addToast toastyConfig ToastyMsg toast
 
 
-addErrorToast : Err -> ModelCmd -> ModelCmd
+addErrorToast : Err -> Model -> ModelCmd
 addErrorToast ( title, detail ) =
-    Toasties.Error title detail
-        |> addToast
+    Toasties.Error title detail |> addToast
 
 
 type alias ModelCmd =
     ( Model, Cmd Msg )
 
 
-andThenHandleError : Err -> ModelCmd -> ModelCmd
-andThenHandleError errorTuple =
+handleError : Err -> Model -> ModelCmd
+handleError errorTuple =
     let
-        sendErrorToJS : Err -> Model -> ModelCmd
-        sendErrorToJS ( title, detail ) model =
-            ( model, sendErrorToJs [ title, detail ] )
+        ( title, detail ) =
+            errorTuple
     in
     addErrorToast errorTuple
-        >> Update.andThen (sendErrorToJS errorTuple)
+        >> Update.do (sendErrorToJs [ title, detail ])
 
 
+loadEncodedCursorAndCache : Json.Encode.Value -> Model -> ( Model, Cmd Msg )
 loadEncodedCursorAndCache encodedCursor model =
     let
         handleCursorDecodeError error =
-            ( model, sendErrorToJs [ "Cursor Decode Error", errorToString error ] )
+            let
+                title =
+                    "Cursor Decode Error"
+
+                desc =
+                    errorToString error
+            in
+            addErrorToast ( title, desc ) model
+                |> Update.do (sendErrorToJs [ title, desc ])
 
         loadCursor cursor =
             Update.pure (setCursor cursor model)
