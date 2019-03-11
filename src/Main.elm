@@ -138,7 +138,7 @@ subscriptions _ =
 -- UPDATE
 
 
-type UserRequest
+type CommandModeCommands
     = LineChanged String
     | New
     | Save
@@ -165,7 +165,7 @@ type Msg
     | LoadFromCouchHistory Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | OnJsError Err
-    | UserRequestReceived UserRequest
+    | UserRequestReceived CommandModeCommands
 
 
 fragDomId : String -> String
