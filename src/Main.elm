@@ -4,6 +4,8 @@ import BasicsX exposing (..)
 import Browser
 import Browser.DomX as Dom
 import Browser.Events
+import CommandMode as CM exposing (CommandModeMsg)
+import EditMode as EM exposing (EditModeMsg)
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
 import Html.Attributes exposing (id, tabindex, value)
@@ -138,25 +140,6 @@ subscriptions _ =
 -- UPDATE
 
 
-type CommandModeCommands
-    = LineChanged String
-    | New
-    | Save
-    | Prev
-    | Edit
-    | Next
-    | MoveUp
-    | MoveDown
-    | Outdent
-    | Indent
-    | CollapseOrPrev
-    | ExpandOrNext
-    | Delete
-    | RotateActionable
-    | Undo
-    | Redo
-
-
 type Msg
     = NOP
     | DomFocusResultReceived (Result String ())
@@ -165,7 +148,8 @@ type Msg
     | LoadFromCouchHistory Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | OnJsError Err
-    | UserRequestReceived CommandModeCommands
+    | EMMsgReceived EditModeMsg
+    | CMMsgReceived CommandModeMsg
 
 
 fragDomId : String -> String
@@ -228,23 +212,26 @@ update message model =
         GlobalKeyDown _ ->
             ensureFocus model
 
-        UserRequestReceived req ->
-            handleUserReq req model
+        CMMsgReceived msg ->
+            handleCMMsg msg model
+
+        EMMsgReceived msg ->
+            handleEMMsg msg model
 
 
-handleUserReq req model =
+handleCMMsg req model =
     case req of
-        Undo ->
+        CM.Undo ->
             model
                 |> Update.pure
                 |> Update.do (toJsUndo ())
 
-        Redo ->
+        CM.Redo ->
             model
                 |> Update.pure
                 |> Update.do (toJsRedo ())
 
-        New ->
+        CM.New ->
             if isEditingNew model && isSelectedBlank model then
                 { model | editorMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
@@ -259,11 +246,11 @@ handleUserReq req model =
                         )
                     |> Update.andThen ensureFocus
 
-        Edit ->
+        CM.Edit ->
             { model | editorMode = EditSelected E_Existing }
                 |> Update.pure
 
-        Save ->
+        CM.Save ->
             if isEditingNew model && isSelectedBlank model then
                 { model | editorMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
@@ -273,37 +260,112 @@ handleUserReq req model =
                 { model | editorMode = CommandMode }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
-        Delete ->
+        CM.Delete ->
             model |> updateCursorAndCacheWithHistory ItemTree.delete
 
-        CollapseOrPrev ->
+        CM.CollapseOrPrev ->
             model |> updateCursorAndCacheWithHistory ItemTree.collapseOrParent
 
-        ExpandOrNext ->
+        CM.ExpandOrNext ->
             model |> updateCursorAndCacheWithHistory ItemTree.expandOrNext
 
-        Prev ->
+        CM.Prev ->
             updateCursorAndCache ItemTree.backward model
 
-        Next ->
+        CM.Next ->
             updateCursorAndCache ItemTree.forward model
 
-        MoveUp ->
+        CM.MoveUp ->
             updateCursorAndCacheWithHistory ItemTree.moveUp model
 
-        MoveDown ->
+        CM.MoveDown ->
             updateCursorAndCacheWithHistory ItemTree.moveDown model
 
-        Outdent ->
+        CM.Outdent ->
             updateCursorAndCacheWithHistory ItemTree.outdent model
 
-        Indent ->
+        CM.Indent ->
             updateCursorAndCacheWithHistory ItemTree.indent model
 
-        LineChanged newContent ->
+        CM.LineChanged newContent ->
             updateCursorAndCacheWithHistory (ItemTree.setContent newContent) model
 
-        RotateActionable ->
+        CM.RotateActionable ->
+            updateCursorAndCacheWithHistory ItemTree.rotateActionable model
+
+
+handleEMMsg req model =
+    case req of
+        EM.Undo ->
+            model
+                |> Update.pure
+                |> Update.do (toJsUndo ())
+
+        EM.Redo ->
+            model
+                |> Update.pure
+                |> Update.do (toJsRedo ())
+
+        EM.New ->
+            if isEditingNew model && isSelectedBlank model then
+                { model | editorMode = CommandMode }
+                    |> overCursor ItemTree.deleteIfBlankAndLeaf
+                    |> Update.pure
+
+            else
+                generateId model
+                    |> Update.map
+                        (\( id, newModel ) ->
+                            overCursor (ItemTree.appendNew id) newModel
+                                |> setEditingNew
+                        )
+                    |> Update.andThen ensureFocus
+
+        EM.Edit ->
+            { model | editorMode = EditSelected E_Existing }
+                |> Update.pure
+
+        EM.Save ->
+            if isEditingNew model && isSelectedBlank model then
+                { model | editorMode = CommandMode }
+                    |> overCursor ItemTree.deleteIfBlankAndLeaf
+                    |> Update.pure
+
+            else
+                { model | editorMode = CommandMode }
+                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
+
+        EM.Delete ->
+            model |> updateCursorAndCacheWithHistory ItemTree.delete
+
+        EM.CollapseOrPrev ->
+            model |> updateCursorAndCacheWithHistory ItemTree.collapseOrParent
+
+        EM.ExpandOrNext ->
+            model |> updateCursorAndCacheWithHistory ItemTree.expandOrNext
+
+        EM.Prev ->
+            updateCursorAndCache ItemTree.backward model
+
+        EM.Next ->
+            updateCursorAndCache ItemTree.forward model
+
+        EM.MoveUp ->
+            updateCursorAndCacheWithHistory ItemTree.moveUp model
+
+        EM.MoveDown ->
+            updateCursorAndCacheWithHistory ItemTree.moveDown model
+
+        EM.Outdent ->
+            updateCursorAndCacheWithHistory ItemTree.outdent model
+
+        EM.Indent ->
+            updateCursorAndCacheWithHistory ItemTree.indent model
+
+        EM.LineChanged newContent ->
+            updateCursorAndCacheWithHistory (ItemTree.setContent newContent) model
+
+        EM.RotateActionable ->
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
@@ -435,24 +497,24 @@ fragmentHotKeyDecoder ke =
     let
         labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         labelKeyMap =
-            [ ( HotKey.is "Enter", New )
-            , ( HotKey.is " ", Edit )
-            , ( HotKey.isCtrl " ", RotateActionable )
+            [ ( HotKey.is "Enter", CM.New )
+            , ( HotKey.is " ", CM.Edit )
+            , ( HotKey.isCtrl " ", CM.RotateActionable )
 
             --            , ( HotKey.isShift "Enter", NOP )
-            , ( HotKey.is "ArrowUp", Prev )
-            , ( HotKey.is "ArrowDown", Next )
-            , ( HotKey.isMeta "ArrowUp", MoveUp )
-            , ( HotKey.isMeta "ArrowDown", MoveDown )
-            , ( HotKey.isShift "Tab", Outdent )
-            , ( HotKey.is "Tab", Indent )
-            , ( HotKey.is "ArrowLeft", CollapseOrPrev )
-            , ( HotKey.is "ArrowRight", ExpandOrNext )
-            , ( HotKey.is "Delete", Delete )
-            , ( HotKey.isMeta "z", Undo )
-            , ( HotKey.isKeyMetaShift "z", Redo )
+            , ( HotKey.is "ArrowUp", CM.Prev )
+            , ( HotKey.is "ArrowDown", CM.Next )
+            , ( HotKey.isMeta "ArrowUp", CM.MoveUp )
+            , ( HotKey.isMeta "ArrowDown", CM.MoveDown )
+            , ( HotKey.isShift "Tab", CM.Outdent )
+            , ( HotKey.is "Tab", CM.Indent )
+            , ( HotKey.is "ArrowLeft", CM.CollapseOrPrev )
+            , ( HotKey.is "ArrowRight", CM.ExpandOrNext )
+            , ( HotKey.is "Delete", CM.Delete )
+            , ( HotKey.isMeta "z", CM.Undo )
+            , ( HotKey.isKeyMetaShift "z", CM.Redo )
             ]
-                |> List.map (overSecond (UserRequestReceived >> addSecond True))
+                |> List.map (overSecond (CMMsgReceived >> addSecond True))
     in
     labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
@@ -464,15 +526,15 @@ fragmentEditorHotKeyDecoder ke =
     let
         inputKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         inputKeyMap =
-            [ ( HotKey.is "Enter", New )
-            , ( HotKey.isMeta "Enter", Save )
-            , ( HotKey.is "Escape", Save )
+            [ ( HotKey.is "Enter", EM.New )
+            , ( HotKey.isMeta "Enter", EM.Save )
+            , ( HotKey.is "Escape", EM.Save )
 
             --            , ( HotKey.isShift "Enter", NOP )
-            , ( HotKey.isShift "Tab", Outdent )
-            , ( HotKey.is "Tab", Indent )
+            , ( HotKey.isShift "Tab", EM.Outdent )
+            , ( HotKey.is "Tab", EM.Indent )
             ]
-                |> List.map (overSecond (UserRequestReceived >> addSecond True))
+                |> List.map (overSecond (EMMsgReceived >> addSecond True))
     in
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
@@ -636,7 +698,7 @@ viewFragmentEditor _ tree =
         [ id <| fragInputDomId <| Item.Tree.id tree
         , cx [ ph1, mr1, w_100, bn ]
         , value <| ItemTree.treeFragment tree
-        , onInput <| UserRequestReceived << LineChanged
+        , onInput <| EMMsgReceived << EM.LineChanged
         , HotKey.preventDefaultOnKeyDownEvent fragmentEditorHotKeyDecoder
         ]
         []
