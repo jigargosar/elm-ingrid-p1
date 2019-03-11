@@ -319,12 +319,6 @@ handleEMMsg req model =
                 { model | editorMode = CommandMode }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
-        {- EM.Outdent ->
-               updateCursorAndCacheWithHistory ItemTree.outdent model
-
-           EM.Indent ->
-               updateCursorAndCacheWithHistory ItemTree.indent model
-        -}
         EM.LineChanged newContent ->
             updateCursorAndCacheWithHistory (ItemTree.setContent newContent) model
 
