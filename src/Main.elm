@@ -30,8 +30,10 @@ import Update
 import V exposing (attrIf, co, cx, t, viewIf)
 
 
+port toJs : Json.Encode.Value -> Cmd msg
 
---port toJsCache : { items : List Item, maybeFocusedItemId : Maybe String } -> Cmd msg
+
+port fromJs : (Json.Encode.Value -> msg) -> Sub msg
 
 
 port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
