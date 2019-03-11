@@ -72,8 +72,8 @@ type EditType
 
 
 type EditorMode
-    = Navigating
-    | EditingSelected EditType
+    = CommandMode
+    | EditSelected EditType
 
 
 type alias Model =
@@ -92,7 +92,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     update (Init flags)
         { cursor = ItemTree.initialCursor
-        , editorMode = Navigating
+        , editorMode = CommandMode
         , seed = Random.initialSeed flags.now
         , toasties = Toasty.initialState
         }
@@ -109,7 +109,7 @@ setCursor =
 
 
 setEditingNew model =
-    { model | editorMode = EditingSelected E_New }
+    { model | editorMode = EditSelected E_New }
 
 
 
@@ -181,16 +181,16 @@ fragInputDomId itemId =
 isEditingSelected : Model -> Bool
 isEditingSelected model =
     case model.editorMode of
-        EditingSelected _ ->
+        EditSelected _ ->
             True
 
-        Navigating ->
+        CommandMode ->
             False
 
 
 isEditingNew : Model -> Bool
 isEditingNew model =
-    model.editorMode == EditingSelected E_New
+    model.editorMode == EditSelected E_New
 
 
 isSelectedBlank model =
@@ -246,7 +246,7 @@ handleUserReq req model =
 
         New ->
             if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = Navigating }
+                { model | editorMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
                     |> Update.pure
 
@@ -260,17 +260,17 @@ handleUserReq req model =
                     |> Update.andThen ensureFocus
 
         Edit ->
-            { model | editorMode = EditingSelected E_Existing }
+            { model | editorMode = EditSelected E_Existing }
                 |> Update.pure
 
         Save ->
             if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = Navigating }
+                { model | editorMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
                     |> Update.pure
 
             else
-                { model | editorMode = Navigating }
+                { model | editorMode = CommandMode }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
         Delete ->
@@ -412,10 +412,10 @@ ensureFocus model =
     let
         domIdFn =
             case model.editorMode of
-                EditingSelected _ ->
+                EditSelected _ ->
                     fragInputDomId
 
-                Navigating ->
+                CommandMode ->
                     fragDomId
 
         domId =
