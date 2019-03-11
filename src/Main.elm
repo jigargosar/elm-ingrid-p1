@@ -138,13 +138,8 @@ subscriptions _ =
 -- UPDATE
 
 
-type Msg
-    = NOP
-    | DomFocusResultReceived (Result String ())
-    | GlobalKeyDown KeyEvent
-    | Init Flags
-    | LoadFromCouchHistory Json.Decode.Value
-    | LineChanged String
+type UserRequest
+    = LineChanged String
     | New
     | Save
     | Prev
@@ -157,11 +152,20 @@ type Msg
     | CollapseOrPrev
     | ExpandOrNext
     | Delete
-    | ToastyMsg (Toasty.Msg Toasties.Toast)
-    | OnJsError Err
     | RotateActionable
     | Undo
     | Redo
+
+
+type Msg
+    = NOP
+    | DomFocusResultReceived (Result String ())
+    | GlobalKeyDown KeyEvent
+    | Init Flags
+    | LoadFromCouchHistory Json.Decode.Value
+    | ToastyMsg (Toasty.Msg Toasties.Toast)
+    | OnJsError Err
+    | UserRequestReceived UserRequest
 
 
 fragDomId : String -> String
@@ -221,6 +225,15 @@ update message model =
             loadEncodedCursorAndCache encodedCursor model
                 |> Update.andThen ensureFocus
 
+        GlobalKeyDown _ ->
+            ensureFocus model
+
+        UserRequestReceived req ->
+            handleUserReq req model
+
+
+handleUserReq req model =
+    case req of
         Undo ->
             model
                 |> Update.pure
@@ -230,9 +243,6 @@ update message model =
             model
                 |> Update.pure
                 |> Update.do (toJsRedo ())
-
-        GlobalKeyDown _ ->
-            ensureFocus model
 
         New ->
             if isEditingNew model && isSelectedBlank model then
@@ -428,7 +438,8 @@ fragmentHotKeyDecoder ke =
             [ ( HotKey.is "Enter", New )
             , ( HotKey.is " ", Edit )
             , ( HotKey.isCtrl " ", RotateActionable )
-            , ( HotKey.isShift "Enter", NOP )
+
+            --            , ( HotKey.isShift "Enter", NOP )
             , ( HotKey.is "ArrowUp", Prev )
             , ( HotKey.is "ArrowDown", Next )
             , ( HotKey.isMeta "ArrowUp", MoveUp )
@@ -441,7 +452,7 @@ fragmentHotKeyDecoder ke =
             , ( HotKey.isMeta "z", Undo )
             , ( HotKey.isKeyMetaShift "z", Redo )
             ]
-                |> List.map (overSecond (addSecond True))
+                |> List.map (overSecond (UserRequestReceived >> addSecond True))
     in
     labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
@@ -456,11 +467,12 @@ fragmentEditorHotKeyDecoder ke =
             [ ( HotKey.is "Enter", New )
             , ( HotKey.isMeta "Enter", Save )
             , ( HotKey.is "Escape", Save )
-            , ( HotKey.isShift "Enter", NOP )
+
+            --            , ( HotKey.isShift "Enter", NOP )
             , ( HotKey.isShift "Tab", Outdent )
             , ( HotKey.is "Tab", Indent )
             ]
-                |> List.map (overSecond (addSecond True))
+                |> List.map (overSecond (UserRequestReceived >> addSecond True))
     in
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
@@ -532,7 +544,7 @@ viewAnyTree vm tree =
         ]
 
 
-type ChildrenAre
+type ChildCollapsedState
     = NoChildren
     | Expanded
     | Collapsed
@@ -549,6 +561,7 @@ getChildrenState tree =
     ter canExpand Expanded (ter canCollapse Collapsed NoChildren)
 
 
+viewLine : TreeViewModel -> ItemTree -> Html Msg
 viewLine vm tree =
     let
         childrenAre =
@@ -597,6 +610,7 @@ viewLine vm tree =
         ]
 
 
+viewFragment : TreeViewModel -> ItemTree -> Html Msg
 viewFragment vm tree =
     let
         isSel =
@@ -616,12 +630,13 @@ viewFragment vm tree =
             }
 
 
+viewFragmentEditor : TreeViewModel -> ItemTree -> Html Msg
 viewFragmentEditor _ tree =
     input
         [ id <| fragInputDomId <| Item.Tree.id tree
         , cx [ ph1, mr1, w_100, bn ]
         , value <| ItemTree.treeFragment tree
-        , onInput LineChanged
+        , onInput <| UserRequestReceived << LineChanged
         , HotKey.preventDefaultOnKeyDownEvent fragmentEditorHotKeyDecoder
         ]
         []
