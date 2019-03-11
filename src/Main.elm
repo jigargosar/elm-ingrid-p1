@@ -67,6 +67,10 @@ sendToJs msg =
             encodeAndSend "error" <| Json.Encode.list Json.Encode.string strings
 
 
+sendErrorToJs strList =
+    sendToJs <| Error strList
+
+
 type FromJs
     = F_Error Err
     | F_LoadHistory Json.Encode.Value
@@ -79,9 +83,6 @@ port toJsUndo : () -> Cmd msg
 
 
 port toJsRedo : () -> Cmd msg
-
-
-port toJsError : List String -> Cmd msg
 
 
 port onJsError : (Err -> msg) -> Sub msg
@@ -382,7 +383,7 @@ andThenHandleError errorTuple =
     let
         sendErrorToJS : Err -> Model -> ModelCmd
         sendErrorToJS ( title, detail ) model =
-            ( model, toJsError [ title, detail ] )
+            ( model, sendErrorToJs [ title, detail ] )
     in
     addErrorToast errorTuple
         >> Update.andThen (sendErrorToJS errorTuple)
@@ -391,7 +392,7 @@ andThenHandleError errorTuple =
 loadEncodedCursorAndCache encodedCursor model =
     let
         handleCursorDecodeError error =
-            ( model, toJsError [ "Cursor Decode Error", errorToString error ] )
+            ( model, sendErrorToJs [ "Cursor Decode Error", errorToString error ] )
 
         loadCursor cursor =
             Update.pure (setCursor cursor model)
