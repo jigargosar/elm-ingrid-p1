@@ -213,13 +213,13 @@ update message model =
             ensureFocus model
 
         CMMsgReceived msg ->
-            handleCMMsg msg model
+            handleCommandMsg msg model
 
         EMMsgReceived msg ->
-            handleEMMsg msg model
+            handleEditMsg msg model
 
 
-handleCMMsg req model =
+handleCommandMsg req model =
     case req of
         CM.Undo ->
             model
@@ -281,8 +281,8 @@ handleCMMsg req model =
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
-handleEMMsg : EditModeMsg -> Model -> ( Model, Cmd Msg )
-handleEMMsg req model =
+handleEditMsg : EditModeMsg -> Model -> ( Model, Cmd Msg )
+handleEditMsg req model =
     case req of
         EM.New ->
             if isEditingNew model && isSelectedBlank model then
