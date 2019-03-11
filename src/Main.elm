@@ -219,8 +219,8 @@ update message model =
             handleEditMsg msg model
 
 
-handleCommandMsg req model =
-    case req of
+handleCommandMsg msg model =
+    case msg of
         CM.Undo ->
             model
                 |> Update.pure
