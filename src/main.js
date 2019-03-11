@@ -216,6 +216,9 @@ app.ports.toJs.subscribe(({ msg, payload }) => {
     case 'redo':
       redo()
       break
+    case 'persistHistory':
+      persistHistory(payload)
+      break
     default:
       console.error('Invalid msg', msg, payload)
       break
@@ -274,7 +277,7 @@ function redo() {
     .catch(sendErrorWithTitle('HistoryDb Undo Error'))
 }
 
-app.ports.toJsPersistToHistory.subscribe(cursor => {
+function persistHistory(cursor) {
   const cAt = Date.now()
   const newId = `${cAt}_${nanoid()}`
   const pid = R.compose(
@@ -311,7 +314,7 @@ app.ports.toJsPersistToHistory.subscribe(cursor => {
       .then(() => setCache('redoHistoryIds', [newId]))
       .catch(sendErrorWithTitle('HistoryDb Error'))
   }
-})
+}
 
 // app.ports.bulkItemDocs.subscribe(bulkItemDocs)
 

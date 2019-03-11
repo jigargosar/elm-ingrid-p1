@@ -41,6 +41,7 @@ type ToJs
     | Undo
     | Redo
     | Error (List String)
+    | PersistHistory Json.Encode.Value
 
 
 sendToJs : ToJs -> Cmd msg
@@ -66,6 +67,9 @@ sendToJs msg =
         Error strings ->
             encodeAndSend "error" <| Json.Encode.list Json.Encode.string strings
 
+        PersistHistory val ->
+            encodeAndSend "persistHistory" val
+
 
 sendErrorToJs strList =
     sendToJs <| Error strList
@@ -74,9 +78,6 @@ sendErrorToJs strList =
 type FromJs
     = F_Error Err
     | F_LoadHistory Json.Encode.Value
-
-
-port toJsPersistToHistory : Json.Encode.Value -> Cmd msg
 
 
 port onJsError : (Err -> msg) -> Sub msg
@@ -433,7 +434,7 @@ persistIfChanged persistenceType oldModel newModel =
                 cacheCmd
 
             CacheAndHistory ->
-                Cmd.batch [ cacheCmd, toJsPersistToHistory encodedCursor ]
+                Cmd.batch [ cacheCmd, sendToJs <| PersistHistory encodedCursor ]
         )
 
     else
