@@ -39,6 +39,18 @@ port fromJs : (Json.Encode.Value -> msg) -> Sub msg
 port toJsCache : { cursor : Json.Encode.Value } -> Cmd msg
 
 
+type ToJs
+    = Cache { cursor : Json.Encode.Value }
+    | Undo
+    | Redo
+    | Error (List String)
+
+
+type FromJs
+    = F_Error Err
+    | F_LoadHistory Json.Encode.Value
+
+
 port toJsPersistToHistory : Json.Encode.Value -> Cmd msg
 
 
