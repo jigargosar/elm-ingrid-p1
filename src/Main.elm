@@ -282,8 +282,8 @@ handleCommandMsg req model =
 
 
 handleEditMsg : EditModeMsg -> Model -> ( Model, Cmd Msg )
-handleEditMsg req model =
-    case req of
+handleEditMsg msg model =
+    case msg of
         EM.New ->
             if isEditingNew model && isSelectedBlank model then
                 { model | editorMode = CommandMode }
