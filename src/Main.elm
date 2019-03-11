@@ -294,18 +294,9 @@ handleCMMsg req model =
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
+handleEMMsg : EditModeMsg -> Model -> ( Model, Cmd Msg )
 handleEMMsg req model =
     case req of
-        EM.Undo ->
-            model
-                |> Update.pure
-                |> Update.do (toJsUndo ())
-
-        EM.Redo ->
-            model
-                |> Update.pure
-                |> Update.do (toJsRedo ())
-
         EM.New ->
             if isEditingNew model && isSelectedBlank model then
                 { model | editorMode = CommandMode }
@@ -321,10 +312,6 @@ handleEMMsg req model =
                         )
                     |> Update.andThen ensureFocus
 
-        EM.Edit ->
-            { model | editorMode = EditSelected E_Existing }
-                |> Update.pure
-
         EM.Save ->
             if isEditingNew model && isSelectedBlank model then
                 { model | editorMode = CommandMode }
@@ -335,38 +322,24 @@ handleEMMsg req model =
                 { model | editorMode = CommandMode }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
-        EM.Delete ->
-            model |> updateCursorAndCacheWithHistory ItemTree.delete
+        EM.Cancel ->
+            if isEditingNew model && isSelectedBlank model then
+                { model | editorMode = CommandMode }
+                    |> overCursor ItemTree.deleteIfBlankAndLeaf
+                    |> Update.pure
 
-        EM.CollapseOrPrev ->
-            model |> updateCursorAndCacheWithHistory ItemTree.collapseOrParent
+            else
+                { model | editorMode = CommandMode }
+                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
-        EM.ExpandOrNext ->
-            model |> updateCursorAndCacheWithHistory ItemTree.expandOrNext
+        {- EM.Outdent ->
+               updateCursorAndCacheWithHistory ItemTree.outdent model
 
-        EM.Prev ->
-            updateCursorAndCache ItemTree.backward model
-
-        EM.Next ->
-            updateCursorAndCache ItemTree.forward model
-
-        EM.MoveUp ->
-            updateCursorAndCacheWithHistory ItemTree.moveUp model
-
-        EM.MoveDown ->
-            updateCursorAndCacheWithHistory ItemTree.moveDown model
-
-        EM.Outdent ->
-            updateCursorAndCacheWithHistory ItemTree.outdent model
-
-        EM.Indent ->
-            updateCursorAndCacheWithHistory ItemTree.indent model
-
+           EM.Indent ->
+               updateCursorAndCacheWithHistory ItemTree.indent model
+        -}
         EM.LineChanged newContent ->
             updateCursorAndCacheWithHistory (ItemTree.setContent newContent) model
-
-        EM.RotateActionable ->
-            updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
 type alias Err =
@@ -528,11 +501,11 @@ fragmentEditorHotKeyDecoder ke =
         inputKeyMap =
             [ ( HotKey.is "Enter", EM.New )
             , ( HotKey.isMeta "Enter", EM.Save )
-            , ( HotKey.is "Escape", EM.Save )
+            , ( HotKey.is "Escape", EM.Cancel )
 
             --            , ( HotKey.isShift "Enter", NOP )
-            , ( HotKey.isShift "Tab", EM.Outdent )
-            , ( HotKey.is "Tab", EM.Indent )
+            --            , ( HotKey.isShift "Tab", EM.Outdent )
+            --            , ( HotKey.is "Tab", EM.Indent )
             ]
                 |> List.map (overSecond (EMMsgReceived >> addSecond True))
     in
