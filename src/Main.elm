@@ -564,11 +564,11 @@ getChildrenState tree =
 viewLine : TreeViewModel -> ItemTree -> Html Msg
 viewLine vm tree =
     let
-        childrenAre =
+        childState =
             getChildrenState tree
 
         prefix =
-            case childrenAre of
+            case childState of
                 Expanded ->
                     "+"
 
@@ -579,7 +579,7 @@ viewLine vm tree =
                     "o"
 
         additionalStyles =
-            if childrenAre == NoChildren || isRootTree tree vm then
+            if childState == NoChildren || isRootTree tree vm then
                 [ o_0 ]
 
             else
