@@ -79,12 +79,6 @@ type FromJs
 port toJsPersistToHistory : Json.Encode.Value -> Cmd msg
 
 
-port toJsUndo : () -> Cmd msg
-
-
-port toJsRedo : () -> Cmd msg
-
-
 port onJsError : (Err -> msg) -> Sub msg
 
 
@@ -256,14 +250,10 @@ update message model =
 handleCommandMsg msg model =
     case msg of
         CM.Undo ->
-            model
-                |> Update.pure
-                |> Update.do (toJsUndo ())
+            ( model, sendToJs Undo )
 
         CM.Redo ->
-            model
-                |> Update.pure
-                |> Update.do (toJsRedo ())
+            ( model, sendToJs Redo )
 
         CM.New ->
             if isEditingNew model && isSelectedBlank model then

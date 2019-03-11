@@ -210,17 +210,19 @@ app.ports.toJs.subscribe(({ msg, payload }) => {
     case 'error':
       console.error(...payload)
       break
+    case 'undo':
+      undo()
+      break
+    case 'redo':
+      redo()
+      break
     default:
       console.error('Invalid msg', msg, payload)
       break
   }
 })
 
-app.ports.toJsError.subscribe(errorArgs => {
-  console.error(...errorArgs)
-})
-
-app.ports.toJsUndo.subscribe(() => {
+function undo() {
   const ids = cachedRedoHistoryIds()
   if (ids.length === 0) return
 
@@ -242,9 +244,9 @@ app.ports.toJsUndo.subscribe(() => {
         console.log('reachedRootUndoState')
       }
     })
-})
+}
 
-app.ports.toJsRedo.subscribe(() => {
+function redo() {
   const ids = cachedRedoHistoryIds()
   if (ids.length <= 1) return
   const newRedoHistoryIds = R.compose(R.init)(ids)
@@ -270,7 +272,7 @@ app.ports.toJsRedo.subscribe(() => {
     .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
     .then(() => setCache('redoHistoryIds', newRedoHistoryIds))
     .catch(sendErrorWithTitle('HistoryDb Undo Error'))
-})
+}
 
 app.ports.toJsPersistToHistory.subscribe(cursor => {
   const cAt = Date.now()
