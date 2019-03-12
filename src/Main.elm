@@ -302,12 +302,7 @@ handleCommandMsg msg model =
             ( model, sendToJs Redo )
 
         CM.New ->
-            generateId model
-                |> (\( id, newModel ) ->
-                        overCursor (ItemTree.appendNew id) newModel
-                            |> setEditingNew
-                   )
-                |> ensureFocus
+            addNewAndSetEditingSelected model |> ensureFocus
 
         CM.Edit ->
             ( { model | inputMode = EditSelected E_Existing }, Cmd.none )
@@ -353,12 +348,7 @@ handleEditMsg msg model =
                     |> Update.pure
 
             else
-                generateId model
-                    |> (\( id, newModel ) ->
-                            overCursor (ItemTree.appendNew id) newModel
-                                |> setEditingNew
-                       )
-                    |> ensureFocus
+                addNewAndSetEditingSelected model |> ensureFocus
 
         EM.Save ->
             if isEditingNew model && isSelectedBlank model then
@@ -473,6 +463,14 @@ generateId model =
             { model | seed = newSeed }
     in
     ( randomId, newModel )
+
+
+mapModelWithNewId fn =
+    generateId >> (\( id, model ) -> fn id model)
+
+
+addNewAndSetEditingSelected =
+    mapModelWithNewId (\id -> overCursor (ItemTree.appendNew id) >> setEditingNew)
 
 
 ensureFocus model =
