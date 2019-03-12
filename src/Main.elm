@@ -196,20 +196,6 @@ isEditingSelected model =
             False
 
 
-isEditingNew : Model -> Bool
-isEditingNew model =
-    model.inputMode == EditingSelected E_New
-
-
-isEditingNewBlank : Model -> Bool
-isEditingNewBlank model =
-    model.inputMode == EditingSelected E_New && isSelectedBlank model
-
-
-isSelectedBlank model =
-    ItemTree.isFragmentBlank model.cursor
-
-
 errDecoder : Decoder Err
 errDecoder =
     Json.Decode.list Json.Decode.string
@@ -347,6 +333,11 @@ handleCommandMsg msg model =
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
+isEditingNewAndBlank : Model -> Bool
+isEditingNewAndBlank model =
+    model.inputMode == EditingSelected E_New && ItemTree.isFragmentBlank model.cursor
+
+
 handleEditMsg : EditModeMsg -> Model -> ( Model, Cmd Msg )
 handleEditMsg msg model =
     let
@@ -357,13 +348,13 @@ handleEditMsg msg model =
     in
     case msg of
         EM.New ->
-            ifElse isEditingNewBlank
+            ifElse isEditingNewAndBlank
                 setNormalModeAndDeleteIfBlankAndLeaf
                 (addNewAndSetEditingSelected >> ensureFocus)
                 model
 
         EM.Save ->
-            if isEditingNewBlank model then
+            if isEditingNewAndBlank model then
                 setNormalModeAndDeleteIfBlankAndLeaf model
 
             else
