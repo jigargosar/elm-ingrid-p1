@@ -119,9 +119,14 @@ function initHistory() {
   if (redoHistoryIds.length > 0) {
     dbGet(R.last(redoHistoryIds), historyDb)
       .then(tapLog('fetched last history doc'))
-      .then(doc => sendMsg('history', doc.cursor))
+      .then(sendHistoryDocMsg)
       .catch(logAndsendErrorWithTitle('Init History Error'))
   }
+}
+
+function sendHistoryDocMsg(doc) {
+  validate('O', arguments)
+  sendMsg('history', doc.cursor)
 }
 
 initHistory()
@@ -239,7 +244,7 @@ function undo() {
         dbGet(pid, historyDb)
           .then(R.tap(console.log))
           .then(doc => {
-            send(doc.cursor, 'onJsLoadFromCouchHistory')
+            sendHistoryDocMsg(doc)
             setCache(
               'redoHistoryIds',
               R.append(doc._id)(cachedRedoHistoryIds()),
@@ -275,7 +280,7 @@ function redo() {
     //     },
     //   })
     .then(R.tap(console.log))
-    .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
+    .then(sendHistoryDocMsg)
     .then(() => setCache('redoHistoryIds', newRedoHistoryIds))
     .catch(logAndsendErrorWithTitle('HistoryDb Undo Error'))
 }
