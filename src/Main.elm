@@ -64,11 +64,12 @@ sendToJs msg =
             encodeAndSend "persistHistory" val
 
 
+port fromJs : (Json.Encode.Value -> msg) -> Sub msg
 
---port fromJs : (Json.Encode.Value -> msg) -> Sub msg
---type FromJs
---    = F_Error Err
---    | F_LoadHistory Json.Encode.Value
+
+type FromJs
+    = F_Error Err
+    | F_LoadHistory Json.Encode.Value
 
 
 port onJsError : (Err -> msg) -> Sub msg
@@ -155,6 +156,7 @@ subscriptions _ =
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
         , onJsError OnJsError
         , onJsLoadFromCouchHistory LoadFromCouchHistory
+        , fromJs JsMsgReceived
         ]
 
 
@@ -168,6 +170,7 @@ type Msg
     | GlobalKeyDown KeyEvent
     | Init Flags
     | LoadFromCouchHistory Json.Decode.Value
+    | JsMsgReceived Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | OnJsError Err
     | EMMsgReceived EditModeMsg
@@ -214,6 +217,9 @@ update message model =
 
         OnJsError err ->
             model |> addErrorToast err
+
+        JsMsgReceived encodedMsg ->
+            ( model, Cmd.none )
 
         DomFocusResultReceived (Err msg) ->
             model |> addErrorToast ( "DomFocusError", msg )
