@@ -171,7 +171,6 @@ type Msg
     | LoadFromCouchHistory Json.Decode.Value
     | JsMsgReceived Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
-    | OnJsError Err
     | EditModeMsgReceived EditModeMsg
     | NormalModeMsgReceived NormalModeMsg
 
@@ -242,9 +241,6 @@ update message model =
     case message of
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
-
-        OnJsError err ->
-            model |> addErrorToast err
 
         JsMsgReceived encodedMsg ->
             let
