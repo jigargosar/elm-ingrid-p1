@@ -1,4 +1,4 @@
-module CTreeZipper exposing (Zipper)
+module CTreeZipper exposing (Zipper, fromTree)
 
 import CTree
 
@@ -23,4 +23,8 @@ type Zipper d
 
 
 fromTree t =
-    ZipperModel t []
+    { focus = t
+    , before = []
+    , after = []
+    , crumbs = []
+    }
