@@ -206,9 +206,6 @@ app.ports.toJs.subscribe(({ msg, payload }) => {
       setCache('elm-main', payload)
       debouncedBackup(payload)
       break
-    case 'error':
-      console.error(...payload)
-      break
     case 'undo':
       undo()
       break
