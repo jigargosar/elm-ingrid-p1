@@ -206,7 +206,8 @@ isSelectedBlank model =
     ItemTree.isFragmentBlank model.cursor
 
 
-errorDecoder =
+errDecoder : Decoder Err
+errDecoder =
     Json.Decode.list Json.Decode.string
         |> Json.Decode.andThen
             (\errorStrings ->
@@ -234,7 +235,7 @@ fromJsDecoder =
                 in
                 case msg of
                     "error" ->
-                        payloadDecoder errorDecoder
+                        payloadDecoder errDecoder
                             |> Json.Decode.map F_Error
 
                     _ ->
