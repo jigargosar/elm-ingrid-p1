@@ -91,5 +91,20 @@ firstChild =
         )
 
 
+mapTree : (Tree d -> Tree d) -> Zipper d -> Zipper d
+mapTree fn =
+    map (\zm -> { zm | pivot = Pivot.mapC fn zm.pivot })
+
+
+mapDatum : (d -> d) -> Zipper d -> Zipper d
+mapDatum fn =
+    mapTree (CTree.mapDatum fn)
+
+
+fooZipper =
+    fromTree (CTree.fromDatum "Foo")
+        |> mapDatum (always "Bar")
+
+
 main =
-    div [ cx [] ] [ t "HW" ]
+    div [ cx [] ] [ t <| CTree.datum <| tree fooZipper ]

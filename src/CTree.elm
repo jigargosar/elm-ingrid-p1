@@ -1,4 +1,4 @@
-module CTree exposing (Tree, children, datum, fromDatum)
+module CTree exposing (Tree, children, datum, fromDatum, mapDatum)
 
 
 type alias Children d =
@@ -6,8 +6,8 @@ type alias Children d =
 
 
 type alias TreeModel d =
-    { d : d
-    , c : Children d
+    { datum : d
+    , children : Children d
     }
 
 
@@ -23,6 +23,11 @@ unwrap (Tree model) =
     model
 
 
+map : (TreeModel d -> TreeModel d) -> Tree d -> Tree d
+map fn =
+    unwrap >> fn >> wrap
+
+
 fromDatum : d -> Tree d
 fromDatum d =
     TreeModel d [] |> wrap
@@ -30,9 +35,14 @@ fromDatum d =
 
 datum : Tree d -> d
 datum =
-    unwrap >> .d
+    unwrap >> .datum
 
 
 children : Tree d -> Children d
 children =
-    unwrap >> .c
+    unwrap >> .children
+
+
+mapDatum : (d -> d) -> Tree d -> Tree d
+mapDatum fn =
+    map (\tm -> { tm | datum = fn tm.datum })
