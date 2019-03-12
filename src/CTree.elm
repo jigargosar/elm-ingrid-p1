@@ -1,4 +1,4 @@
-module CTree exposing (Children, Tree, children, datum, fromDatum)
+module CTree exposing (Tree, children, datum, fromDatum)
 
 
 type alias Children d =
