@@ -235,7 +235,8 @@ fromJsDecoder =
                             |> Json.Decode.map ErrorReceived
 
                     "history" ->
-                        Json.Decode.fail ""
+                        payloadDecoder Json.Decode.value
+                            |> Json.Decode.map HistoryDocReceived
 
                     _ ->
                         Json.Decode.fail <| "Invalid msg" ++ msg
