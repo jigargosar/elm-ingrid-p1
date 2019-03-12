@@ -13,6 +13,7 @@ module ItemTree exposing
     , indent
     , initialCursor
     , isFragmentBlank
+    , isLeaf
     , moveDown
     , moveUp
     , outdent

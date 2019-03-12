@@ -333,33 +333,30 @@ handleCommandMsg msg model =
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
-isEditingNewAndBlank : Model -> Bool
-isEditingNewAndBlank model =
-    model.inputMode == EditingSelected E_New && ItemTree.isFragmentBlank model.cursor
+isEditingNewBlankAndLeaf : Model -> Bool
+isEditingNewBlankAndLeaf model =
+    model.inputMode
+        == EditingSelected E_New
+        && ItemTree.isFragmentBlank model.cursor
+        && ItemTree.isLeaf model.cursor
 
 
 handleEditMsg : EditModeMsg -> Model -> ( Model, Cmd Msg )
 handleEditMsg msg model =
-    let
-        setNormalModeAndDeleteIfBlankAndLeaf =
-            setNormalMode
-                >> overCursor ItemTree.deleteIfBlankAndLeaf
-                >> Update.pure
-    in
     case msg of
         EM.New ->
-            ifElse isEditingNewAndBlank
-                setNormalModeAndDeleteIfBlankAndLeaf
+            ifElse isEditingNewBlankAndLeaf
+                (setNormalMode >> overCursor ItemTree.delete >> Update.pure)
                 (addNewAndSetEditingSelected >> ensureFocus)
                 model
 
         EM.Save ->
-            if isEditingNewAndBlank model then
-                setNormalModeAndDeleteIfBlankAndLeaf model
-
-            else
-                { model | inputMode = Normal }
-                    |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
+            ifElse isEditingNewBlankAndLeaf
+                (setNormalMode >> overCursor ItemTree.delete >> Update.pure)
+                (setNormalMode
+                    >> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
+                )
+                model
 
         EM.Cancel ->
             handleEditMsg EM.Save model
