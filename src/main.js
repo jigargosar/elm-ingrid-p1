@@ -1,4 +1,3 @@
-// noinspection JSUnresolvedVariable
 import { getCached, setCache } from './cache-helpers'
 import './main.scss'
 import { Elm } from './Main.elm'
