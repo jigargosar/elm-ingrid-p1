@@ -72,9 +72,6 @@ type FromJs
     | HistoryDocReceived Json.Encode.Value
 
 
-port onJsLoadFromCouchHistory : (Json.Encode.Value -> msg) -> Sub msg
-
-
 main =
     Browser.element
         { init = init
@@ -155,7 +152,6 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
-        , onJsLoadFromCouchHistory LoadFromCouchHistory
         , fromJs JsMsgReceived
         ]
 
@@ -168,7 +164,6 @@ type Msg
     = DomFocusResultReceived (Result String ())
     | GlobalKeyDown KeyEvent
     | Init Flags
-    | LoadFromCouchHistory Json.Decode.Value
     | JsMsgReceived Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | EditModeMsgReceived EditModeMsg
@@ -268,10 +263,6 @@ update message model =
 
         Init flags ->
             loadEncodedCursorAndCache flags.cache.cursor model
-                |> Update.andThen ensureFocus
-
-        LoadFromCouchHistory encodedCursor ->
-            loadEncodedCursorAndCache encodedCursor model
                 |> Update.andThen ensureFocus
 
         GlobalKeyDown _ ->
