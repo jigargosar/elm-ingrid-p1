@@ -1,4 +1,4 @@
-module CTreeZipper exposing (Zipper, appendGoL, appendGoR, fromTree, tree)
+module CTreeZipper exposing (Zipper, appendGoL, appendGoR, firstChild, fromTree, tree)
 
 import CTree exposing (Tree)
 import Html exposing (div)
@@ -31,6 +31,10 @@ type alias MaybeZipper d =
     Maybe (Zipper d)
 
 
+type alias MaybeZipperModel d =
+    Maybe (ZipperModel d)
+
+
 wrap =
     Zipper
 
@@ -41,6 +45,11 @@ unwrap (Zipper zm) =
 
 map fn =
     unwrap >> fn >> wrap
+
+
+mapMaybe : (ZipperModel d -> MaybeZipperModel d) -> Zipper d -> MaybeZipper d
+mapMaybe fn =
+    unwrap >> fn >> Maybe.map wrap
 
 
 fromTree : Tree d -> Zipper d
@@ -71,10 +80,15 @@ appendGoL t =
     map (\zm -> { zm | pivot = Pivot.appendGoL t zm.pivot })
 
 
-
---firstChild : Zipper d -> MaybeZipper d
---firstChild =
---    unwrap >> (\zm -> Pivot.getC zm.pivot)
+firstChild : Zipper d -> MaybeZipper d
+firstChild =
+    mapMaybe
+        (\zm ->
+            Pivot.getC zm.pivot
+                |> CTree.children
+                |> Pivot.fromList
+                |> Maybe.map (\np -> { zm | pivot = np, crumbs = zm.pivot :: zm.crumbs })
+        )
 
 
 main =
