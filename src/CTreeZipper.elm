@@ -3,8 +3,19 @@ module CTreeZipper exposing (Zipper)
 import CTree
 
 
+type alias Crumb d =
+    { datum : d
+    , before : List (CTree.Tree d)
+    , after : List (CTree.Tree d)
+    }
+
+
 type alias ZipperModel d =
-    { root : CTree.Tree d, cursor : List Int }
+    { focus : CTree.Tree d
+    , before : List (CTree.Tree d)
+    , after : List (CTree.Tree d)
+    , crumbs : List Crumb
+    }
 
 
 type Zipper d
