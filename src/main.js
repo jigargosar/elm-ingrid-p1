@@ -243,8 +243,8 @@ function undo() {
       if (pid) {
         dbGet(pid, historyDb)
           .then(R.tap(console.log))
+          .then(R.tap(sendHistoryDocMsg))
           .then(doc => {
-            sendHistoryDocMsg(doc)
             setCache(
               'redoHistoryIds',
               R.append(doc._id)(cachedRedoHistoryIds()),
