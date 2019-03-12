@@ -37,7 +37,6 @@ type ToJs
     = CacheCursor Json.Encode.Value
     | Undo
     | Redo
-    | Error (List String)
     | PersistHistory Json.Encode.Value
 
 
@@ -61,15 +60,8 @@ sendToJs msg =
         Redo ->
             encodeAndSend "redo" <| Json.Encode.null
 
-        Error strings ->
-            encodeAndSend "error" <| Json.Encode.list Json.Encode.string strings
-
         PersistHistory val ->
             encodeAndSend "persistHistory" val
-
-
-sendErrorToJs strList =
-    sendToJs <| Error strList
 
 
 
@@ -224,7 +216,7 @@ update message model =
             model |> addErrorToast err
 
         DomFocusResultReceived (Err msg) ->
-            model |> handleError ( "DomFocusError", msg )
+            model |> addErrorToast ( "DomFocusError", msg )
 
         DomFocusResultReceived (Ok ()) ->
             ( model, Cmd.none )
@@ -366,29 +358,11 @@ type alias ModelCmd =
     ( Model, Cmd Msg )
 
 
-handleError : Err -> Model -> ModelCmd
-handleError errorTuple =
-    let
-        ( title, detail ) =
-            errorTuple
-    in
-    addErrorToast errorTuple
-        >> Update.do (sendErrorToJs [ title, detail ])
-
-
 loadEncodedCursorAndCache : Json.Encode.Value -> Model -> ( Model, Cmd Msg )
 loadEncodedCursorAndCache encodedCursor model =
     let
         handleCursorDecodeError error =
-            let
-                title =
-                    "Cursor Decode Error"
-
-                desc =
-                    errorToString error
-            in
-            addErrorToast ( title, desc ) model
-                |> Update.do (sendErrorToJs [ title, desc ])
+            addErrorToast ( "Cursor Decode Error", errorToString error ) model
 
         loadCursor cursor =
             Update.pure (setCursor cursor model)
