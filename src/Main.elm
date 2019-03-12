@@ -223,6 +223,7 @@ errorDecoder =
             )
 
 
+fromJsDecoder : Decoder FromJs
 fromJsDecoder =
     Json.Decode.field "msg" Json.Decode.string
         |> Json.Decode.andThen
@@ -234,6 +235,7 @@ fromJsDecoder =
                 case msg of
                     "error" ->
                         payloadDecoder errorDecoder
+                            |> Json.Decode.map F_Error
 
                     _ ->
                         Json.Decode.fail ""
