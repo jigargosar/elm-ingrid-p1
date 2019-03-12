@@ -221,7 +221,7 @@ update message model =
             Toasty.update toastyConfig ToastyMsg subMsg model
 
         OnJsError err ->
-            model |> handleError err
+            model |> addErrorToast err
 
         DomFocusResultReceived (Err msg) ->
             model |> handleError ( "DomFocusError", msg )

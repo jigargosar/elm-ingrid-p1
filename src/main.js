@@ -90,7 +90,7 @@ const checkCouchDbAvailability = R.pipe(
   fetch,
   R.then(R.invoker(0, 'json')),
   R.then(tapLog('CouchDb Fetch:')),
-  R.otherwise(sendErrorWithTitle('CouchDB Fetch Error')),
+  R.otherwise(logAndsendErrorWithTitle('CouchDB Fetch Error')),
 )
 
 function cachedRedoHistoryIds() {
@@ -120,7 +120,7 @@ function initHistory() {
     dbGet(R.last(redoHistoryIds), historyDb)
       .then(tapLog('fetched last history doc'))
       .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
-      .catch(sendErrorWithTitle('Init History Error'))
+      .catch(logAndsendErrorWithTitle('Init History Error'))
   }
 }
 
@@ -142,7 +142,7 @@ function send(value, portName) {
   }
 }
 
-function onJsError(title, desc) {
+function sendErrorWithTitleAndDesc(title, desc) {
   validate('SS', arguments)
   send([title, desc], 'onJsError')
 }
@@ -163,7 +163,7 @@ function onJsError(title, desc) {
 //       app.ports.pouchItemChanged.send(pouchDocToItem(change.doc))
 //     }
 //   })
-//   .on('error', error => sendErrorWithTitle('item changes error', error))
+//   .on('error', error => logAndsendErrorWithTitle('item changes error', error))
 //
 // app.ports.newItemDoc.subscribe(function([parent, idx]) {
 //   validate('A', arguments)
@@ -177,13 +177,13 @@ function onJsError(title, desc) {
 //     }),
 //   )
 //     .then(() => db.put(itemToPouchDoc(newItem)))
-//     .catch(sendErrorWithTitle)
+//     .catch(logAndsendErrorWithTitle)
 // })
 
-function sendErrorWithTitle(title) {
+function logAndsendErrorWithTitle(title) {
   return function(error) {
     console.error(title, error)
-    onJsError(title, error.message)
+    sendErrorWithTitleAndDesc(title, error.message)
   }
 }
 
@@ -191,7 +191,7 @@ function backup(model) {
   const cAt = Date.now()
   db.put({ _id: `${cAt}`, model, cAt })
     .then(R.tap(R.partial(console.log, ['backup put res'])))
-    .catch(sendErrorWithTitle('Pouch Backup Failed'))
+    .catch(logAndsendErrorWithTitle('Pouch Backup Failed'))
 }
 
 const debouncedBackup = debounce(backup, ms('5s'), {
@@ -217,6 +217,7 @@ app.ports.toJs.subscribe(({ msg, payload }) => {
       break
     default:
       console.error('Invalid msg', msg, payload)
+      sendErrorWithTitleAndDesc('Invalid msg', msg)
       break
   }
 })
@@ -238,7 +239,7 @@ function undo() {
               R.append(doc._id)(cachedRedoHistoryIds()),
             )
           })
-          .catch(sendErrorWithTitle('HistoryDb Undo Error'))
+          .catch(logAndsendErrorWithTitle('HistoryDb Undo Error'))
       } else {
         console.log('reachedRootUndoState')
       }
@@ -270,7 +271,7 @@ function redo() {
     .then(R.tap(console.log))
     .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
     .then(() => setCache('redoHistoryIds', newRedoHistoryIds))
-    .catch(sendErrorWithTitle('HistoryDb Undo Error'))
+    .catch(logAndsendErrorWithTitle('HistoryDb Undo Error'))
 }
 
 function persistHistory(cursor) {
@@ -294,9 +295,9 @@ function persistHistory(cursor) {
         return historyDb
           .put(newHistoryItem)
           .then(() => setCache('redoHistoryIds', [newId]))
-          .catch(sendErrorWithTitle('HistoryDb Error'))
+          .catch(logAndsendErrorWithTitle('HistoryDb Error'))
       } else {
-        onJsError(
+        sendErrorWithTitleAndDesc(
           'HistoryDb Persist',
           'Ignoring duplicate cursor history ',
         )
@@ -308,7 +309,7 @@ function persistHistory(cursor) {
       .put(newHistoryItem)
       .then(R.tap(console.log))
       .then(() => setCache('redoHistoryIds', [newId]))
-      .catch(sendErrorWithTitle('HistoryDb Error'))
+      .catch(logAndsendErrorWithTitle('HistoryDb Error'))
   }
 }
 
@@ -333,7 +334,7 @@ function persistHistory(cursor) {
 //     console.log('bulkItemDocs: docs', docs)
 //     db.bulkDocs(docs)
 //       .then(res => console.log('ports.bulkItemDocs res', res))
-//       .catch(sendErrorWithTitle)
+//       .catch(logAndsendErrorWithTitle)
 //   }
 // }
 //
