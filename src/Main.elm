@@ -161,8 +161,7 @@ subscriptions _ =
 
 
 type Msg
-    = NOP
-    | DomFocusResultReceived (Result String ())
+    = DomFocusResultReceived (Result String ())
     | GlobalKeyDown KeyEvent
     | Init Flags
     | LoadFromCouchHistory Json.Decode.Value
@@ -246,9 +245,6 @@ fromJsDecoder =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
-        NOP ->
-            ( model, Cmd.none )
-
         ToastyMsg subMsg ->
             Toasty.update toastyConfig ToastyMsg subMsg model
 
@@ -518,8 +514,6 @@ fragmentHotKeyDecoder ke =
             [ ( HotKey.is "Enter", CM.New )
             , ( HotKey.is " ", CM.Edit )
             , ( HotKey.isCtrl " ", CM.RotateActionable )
-
-            --            , ( HotKey.isShift "Enter", NOP )
             , ( HotKey.is "ArrowUp", CM.Prev )
             , ( HotKey.is "ArrowDown", CM.Next )
             , ( HotKey.isMeta "ArrowUp", CM.MoveUp )
@@ -548,7 +542,6 @@ fragmentEditorHotKeyDecoder ke =
             , ( HotKey.isMeta "Enter", EM.Save )
             , ( HotKey.is "Escape", EM.Cancel )
 
-            --            , ( HotKey.isShift "Enter", NOP )
             --            , ( HotKey.isShift "Tab", EM.Outdent )
             --            , ( HotKey.is "Tab", EM.Indent )
             ]
