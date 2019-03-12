@@ -346,9 +346,10 @@ handleEditMsg msg model =
     case msg of
         EM.New ->
             ifElse isEditingNewBlankAndLeaf
-                (setNormalMode >> overCursor ItemTree.delete >> Update.pure)
-                (addNew >> setEditingNew >> ensureFocus)
+                (overCursor ItemTree.delete >> setNormalMode)
+                (addNew >> setEditingNew)
                 model
+                |> Update.pure
 
         EM.Save ->
             ifElse isEditingNewBlankAndLeaf
