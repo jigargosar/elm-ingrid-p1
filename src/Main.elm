@@ -206,6 +206,40 @@ isSelectedBlank model =
     ItemTree.isFragmentBlank model.cursor
 
 
+errorDecoder =
+    Json.Decode.list Json.Decode.string
+        |> Json.Decode.andThen
+            (\errorStrings ->
+                case errorStrings of
+                    [] ->
+                        Json.Decode.fail "Empty Payload for fromJs msg 'error'"
+
+                    fst :: rest ->
+                        Json.Decode.succeed
+                            ( fst
+                            , List.head rest
+                                |> Maybe.withDefault "<no error description provided>"
+                            )
+            )
+
+
+fromJsDecoder =
+    Json.Decode.field "msg" Json.Decode.string
+        |> Json.Decode.andThen
+            (\msg ->
+                let
+                    payloadDecoder =
+                        Json.Decode.field "payload"
+                in
+                case msg of
+                    "error" ->
+                        payloadDecoder errorDecoder
+
+                    _ ->
+                        Json.Decode.fail ""
+            )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
