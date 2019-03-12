@@ -103,14 +103,14 @@ type EditType
     | E_Existing
 
 
-type EditorMode
+type InputMode
     = CommandMode
     | EditSelected EditType
 
 
 type alias Model =
     { cursor : ItemZipper
-    , editorMode : EditorMode
+    , inputMode : InputMode
     , seed : Random.Seed
     , toasties : Toasty.Stack Toasties.Toast
     }
@@ -124,7 +124,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     update (Init flags)
         { cursor = ItemTree.initialCursor
-        , editorMode = CommandMode
+        , inputMode = CommandMode
         , seed = Random.initialSeed flags.now
         , toasties = Toasty.initialState
         }
@@ -141,7 +141,7 @@ setCursor =
 
 
 setEditingNew model =
-    { model | editorMode = EditSelected E_New }
+    { model | inputMode = EditSelected E_New }
 
 
 
@@ -194,7 +194,7 @@ fragInputDomId itemId =
 
 isEditingSelected : Model -> Bool
 isEditingSelected model =
-    case model.editorMode of
+    case model.inputMode of
         EditSelected _ ->
             True
 
@@ -204,7 +204,7 @@ isEditingSelected model =
 
 isEditingNew : Model -> Bool
 isEditingNew model =
-    model.editorMode == EditSelected E_New
+    model.inputMode == EditSelected E_New
 
 
 isSelectedBlank model =
@@ -257,7 +257,7 @@ handleCommandMsg msg model =
 
         CM.New ->
             if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = CommandMode }
+                { model | inputMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
                     |> Update.pure
 
@@ -271,7 +271,7 @@ handleCommandMsg msg model =
                     |> Update.andThen ensureFocus
 
         CM.Edit ->
-            { model | editorMode = EditSelected E_Existing }
+            { model | inputMode = EditSelected E_Existing }
                 |> Update.pure
 
         CM.Delete ->
@@ -310,7 +310,7 @@ handleEditMsg msg model =
     case msg of
         EM.New ->
             if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = CommandMode }
+                { model | inputMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
                     |> Update.pure
 
@@ -325,22 +325,22 @@ handleEditMsg msg model =
 
         EM.Save ->
             if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = CommandMode }
+                { model | inputMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
                     |> Update.pure
 
             else
-                { model | editorMode = CommandMode }
+                { model | inputMode = CommandMode }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
         EM.Cancel ->
             if isEditingNew model && isSelectedBlank model then
-                { model | editorMode = CommandMode }
+                { model | inputMode = CommandMode }
                     |> overCursor ItemTree.deleteIfBlankAndLeaf
                     |> Update.pure
 
             else
-                { model | editorMode = CommandMode }
+                { model | inputMode = CommandMode }
                     |> updateCursorAndCacheWithHistory ItemTree.deleteIfBlankAndLeaf
 
         EM.LineChanged newContent ->
@@ -459,7 +459,7 @@ generateId model =
 ensureFocus model =
     let
         domIdFn =
-            case model.editorMode of
+            case model.inputMode of
                 EditSelected _ ->
                     fragInputDomId
 
