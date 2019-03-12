@@ -297,7 +297,7 @@ handleCommandMsg msg model =
             ( model, sendToJs Redo )
 
         CM.New ->
-            (addNew >> setEditingNew) model |> ensureFocus
+            (addNewLeaf >> setEditingNew) model |> ensureFocus
 
         CM.Edit ->
             ( { model | inputMode = EditingSelected E_Existing }, Cmd.none )
@@ -347,7 +347,7 @@ handleEditMsg msg model =
         EM.New ->
             ifElse isEditingNewBlankAndLeaf
                 (overCursor ItemTree.delete >> setNormalMode)
-                (addNew >> setEditingNew)
+                (addNewLeaf >> setEditingNew)
                 model
                 |> Update.pure
 
@@ -461,7 +461,7 @@ mapModelWithNewId fn =
     generateId >> (\( id, model ) -> fn id model)
 
 
-addNew =
+addNewLeaf =
     mapModelWithNewId (\id -> overCursor (ItemTree.appendNew id))
 
 
