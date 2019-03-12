@@ -1,6 +1,7 @@
 module CTreeZipper exposing (Zipper, fromTree)
 
 import CTree
+import Pivot exposing (Pivot)
 
 
 type alias Crumb d =
@@ -11,10 +12,8 @@ type alias Crumb d =
 
 
 type alias ZipperModel d =
-    { focus : CTree.Tree d
-    , before : List (CTree.Tree d)
-    , after : List (CTree.Tree d)
-    , crumbs : List (Crumb d)
+    { pivot : Pivot d
+    , crumbs : List (Pivot d)
     }
 
 
@@ -22,9 +21,9 @@ type Zipper d
     = Zipper (ZipperModel d)
 
 
+fromTree : CTree.Tree d -> Zipper d
 fromTree t =
-    { focus = t
-    , before = []
-    , after = []
-    , crumbs = []
-    }
+    Zipper
+        { pivot = Pivot.singleton t
+        , crumbs = []
+        }
