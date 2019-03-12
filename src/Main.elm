@@ -68,8 +68,8 @@ port fromJs : (Json.Encode.Value -> msg) -> Sub msg
 
 
 type FromJs
-    = F_Error Err
-    | F_LoadHistory Json.Encode.Value
+    = ErrorReceived Err
+    | HistoryDocReceived Json.Encode.Value
 
 
 port onJsLoadFromCouchHistory : (Json.Encode.Value -> msg) -> Sub msg
@@ -232,10 +232,13 @@ fromJsDecoder =
                 case msg of
                     "error" ->
                         payloadDecoder errDecoder
-                            |> Json.Decode.map F_Error
+                            |> Json.Decode.map ErrorReceived
+
+                    "history" ->
+                        Json.Decode.fail ""
 
                     _ ->
-                        Json.Decode.fail ""
+                        Json.Decode.fail <| "Invalid msg" ++ msg
             )
 
 
@@ -261,7 +264,7 @@ update message model =
                 |> Result.Extra.unpack handleDecodeError
                     (\msg ->
                         case msg of
-                            F_Error err ->
+                            ErrorReceived err ->
                                 addErrorToast err model
 
                             _ ->
