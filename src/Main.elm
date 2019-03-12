@@ -151,7 +151,7 @@ toastyConfig =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
-        [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
+        [ Browser.Events.onKeyDown <| Json.Decode.succeed GlobalKeyDown
         , fromJs JsMsgReceived
         ]
 
@@ -162,7 +162,7 @@ subscriptions _ =
 
 type Msg
     = DomFocusResultReceived (Result String ())
-    | GlobalKeyDown KeyEvent
+    | GlobalKeyDown
     | Init Flags
     | JsMsgReceived Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
@@ -265,7 +265,7 @@ update message model =
             loadEncodedCursorAndCache flags.cache.cursor model
                 |> Update.andThen ensureFocus
 
-        GlobalKeyDown _ ->
+        GlobalKeyDown ->
             ensureFocus model
 
         NormalModeMsgReceived msg ->
