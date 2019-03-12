@@ -161,10 +161,10 @@ subscriptions _ =
 
 
 type Msg
-    = DomFocusResultReceived (Result String ())
-    | GlobalKeyDown
-    | Init Flags
+    = Init Flags
     | JsMsgReceived Json.Decode.Value
+    | GlobalKeyDown
+    | DomFocusResultReceived (Result String ())
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | EditModeMsgReceived EditModeMsg
     | NormalModeMsgReceived NormalModeMsg
