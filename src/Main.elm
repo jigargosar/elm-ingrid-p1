@@ -212,15 +212,15 @@ errDecoder =
         |> Json.Decode.andThen
             (\errorStrings ->
                 case errorStrings of
-                    [] ->
-                        Json.Decode.fail "Empty Payload for fromJs msg 'error'"
-
                     fst :: rest ->
                         Json.Decode.succeed
                             ( fst
                             , List.head rest
                                 |> Maybe.withDefault "<no error description provided>"
                             )
+
+                    _ ->
+                        Json.Decode.fail "Empty Payload for fromJs msg 'error'"
             )
 
 
