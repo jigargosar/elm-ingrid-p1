@@ -14,7 +14,7 @@ type alias ZipperModel d =
     { focus : CTree.Tree d
     , before : List (CTree.Tree d)
     , after : List (CTree.Tree d)
-    , crumbs : List Crumb
+    , crumbs : List (Crumb d)
     }
 
 
