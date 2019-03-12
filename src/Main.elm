@@ -72,9 +72,6 @@ type FromJs
     | F_LoadHistory Json.Encode.Value
 
 
-port onJsError : (Err -> msg) -> Sub msg
-
-
 port onJsLoadFromCouchHistory : (Json.Encode.Value -> msg) -> Sub msg
 
 
@@ -154,7 +151,6 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ Browser.Events.onKeyDown <| Json.Decode.map GlobalKeyDown HotKey.keyEventDecoder
-        , onJsError OnJsError
         , onJsLoadFromCouchHistory LoadFromCouchHistory
         , fromJs JsMsgReceived
         ]

@@ -142,9 +142,15 @@ function send(value, portName) {
   }
 }
 
+function sendMsg(msg, payload) {
+  validate('S*', arguments)
+  send({ msg, payload }, 'fromJs')
+}
+
 function sendErrorWithTitleAndDesc(title, desc) {
   validate('SS', arguments)
-  send([title, desc], 'onJsError')
+  // send([title, desc], 'onJsError')
+  sendMsg('error', [title, desc])
 }
 
 // db.allDocs({ include_docs: true }).then(({ rows }) => {
