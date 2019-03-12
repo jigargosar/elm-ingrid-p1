@@ -1,25 +1,38 @@
-module CTree exposing (CTree, Forest, datum, forest, fromDatum)
+module CTree exposing (Children, Tree, children, datum, fromDatum)
 
 
-type alias Forest a =
-    List (CTree a)
+type alias Children d =
+    List (Tree d)
 
 
-emptyForest =
-    []
+type alias TreeModel d =
+    { d : d
+    , c : Children d
+    }
 
 
-type CTree a
-    = CTree a (Forest a)
+type Tree d
+    = Tree (TreeModel d)
 
 
+wrap =
+    Tree
+
+
+unwrap (Tree model) =
+    model
+
+
+fromDatum : d -> Tree d
 fromDatum d =
-    CTree d emptyForest
+    TreeModel d [] |> wrap
 
 
-datum (CTree d _) =
-    d
+datum : Tree d -> d
+datum =
+    unwrap >> .d
 
 
-forest (CTree _ f) =
-    f
+children : Tree d -> Children d
+children =
+    unwrap >> .c
