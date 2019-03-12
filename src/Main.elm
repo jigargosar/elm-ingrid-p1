@@ -256,7 +256,13 @@ update message model =
             model |> addErrorToast err
 
         JsMsgReceived encodedMsg ->
-            ( model, Cmd.none )
+            let
+                handleDecodeError : Json.Decode.Error -> ModelCmd
+                handleDecodeError decodeError =
+                    addErrorToast ( "Cursor Decode Error", errorToString decodeError ) model
+            in
+            Json.Decode.decodeValue fromJsDecoder encodedMsg
+                |> Result.Extra.unpack handleDecodeError (\_ -> ( model, Cmd.none ))
 
         DomFocusResultReceived (Err msg) ->
             model |> addErrorToast ( "DomFocusError", msg )
