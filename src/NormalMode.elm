@@ -1,7 +1,7 @@
-module CommandMode exposing (CommandModeMsg(..))
+module NormalMode exposing (NormalModeMsg(..))
 
 
-type CommandModeMsg
+type NormalModeMsg
     = New
     | Prev
     | Edit

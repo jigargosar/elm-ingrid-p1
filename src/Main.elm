@@ -4,7 +4,6 @@ import BasicsX exposing (..)
 import Browser
 import Browser.DomX as Dom
 import Browser.Events
-import CommandMode as CM exposing (CommandModeMsg)
 import EditMode as EM exposing (EditModeMsg)
 import HotKey exposing (KeyEvent)
 import Html exposing (Html, div, input)
@@ -18,6 +17,7 @@ import ItemTree exposing (ItemTree)
 import Json.Decode exposing (Decoder, decodeValue, errorToString)
 import Json.Encode
 import List.Extra
+import NormalMode as NM exposing (NormalModeMsg)
 import Random exposing (Generator)
 import Result.Extra
 import Tachyons exposing (classes)
@@ -172,8 +172,8 @@ type Msg
     | JsMsgReceived Json.Decode.Value
     | ToastyMsg (Toasty.Msg Toasties.Toast)
     | OnJsError Err
-    | EMMsgReceived EditModeMsg
-    | CMMsgReceived CommandModeMsg
+    | EditModeMsgReceived EditModeMsg
+    | NormalModeMsgReceived NormalModeMsg
 
 
 fragDomId : String -> String
@@ -281,55 +281,55 @@ update message model =
         GlobalKeyDown _ ->
             ensureFocus model
 
-        CMMsgReceived msg ->
+        NormalModeMsgReceived msg ->
             handleCommandMsg msg model
 
-        EMMsgReceived msg ->
+        EditModeMsgReceived msg ->
             handleEditMsg msg model
 
 
 handleCommandMsg msg model =
     case msg of
-        CM.Undo ->
+        NM.Undo ->
             ( model, sendToJs Undo )
 
-        CM.Redo ->
+        NM.Redo ->
             ( model, sendToJs Redo )
 
-        CM.New ->
-            (addNewLeaf >> setEditingNew) model |> ensureFocus
+        NM.New ->
+            ( (addNewLeaf >> setEditingNew) model, Cmd.none )
 
-        CM.Edit ->
+        NM.Edit ->
             ( { model | inputMode = EditingSelected E_Existing }, Cmd.none )
 
-        CM.Delete ->
+        NM.Delete ->
             model |> updateCursorAndCacheWithHistory ItemTree.delete
 
-        CM.CollapseOrPrev ->
+        NM.CollapseOrPrev ->
             model |> updateCursorAndCacheWithHistory ItemTree.collapseOrParent
 
-        CM.ExpandOrNext ->
+        NM.ExpandOrNext ->
             model |> updateCursorAndCacheWithHistory ItemTree.expandOrNext
 
-        CM.Prev ->
+        NM.Prev ->
             updateCursorAndCache ItemTree.backward model
 
-        CM.Next ->
+        NM.Next ->
             updateCursorAndCache ItemTree.forward model
 
-        CM.MoveUp ->
+        NM.MoveUp ->
             updateCursorAndCacheWithHistory ItemTree.moveUp model
 
-        CM.MoveDown ->
+        NM.MoveDown ->
             updateCursorAndCacheWithHistory ItemTree.moveDown model
 
-        CM.Outdent ->
+        NM.Outdent ->
             updateCursorAndCacheWithHistory ItemTree.outdent model
 
-        CM.Indent ->
+        NM.Indent ->
             updateCursorAndCacheWithHistory ItemTree.indent model
 
-        CM.RotateActionable ->
+        NM.RotateActionable ->
             updateCursorAndCacheWithHistory ItemTree.rotateActionable model
 
 
@@ -492,22 +492,22 @@ fragmentHotKeyDecoder ke =
     let
         labelKeyMap : List ( KeyEvent -> Bool, ( Msg, Bool ) )
         labelKeyMap =
-            [ ( HotKey.is "Enter", CM.New )
-            , ( HotKey.is " ", CM.Edit )
-            , ( HotKey.isCtrl " ", CM.RotateActionable )
-            , ( HotKey.is "ArrowUp", CM.Prev )
-            , ( HotKey.is "ArrowDown", CM.Next )
-            , ( HotKey.isMeta "ArrowUp", CM.MoveUp )
-            , ( HotKey.isMeta "ArrowDown", CM.MoveDown )
-            , ( HotKey.isShift "Tab", CM.Outdent )
-            , ( HotKey.is "Tab", CM.Indent )
-            , ( HotKey.is "ArrowLeft", CM.CollapseOrPrev )
-            , ( HotKey.is "ArrowRight", CM.ExpandOrNext )
-            , ( HotKey.is "Delete", CM.Delete )
-            , ( HotKey.isMeta "z", CM.Undo )
-            , ( HotKey.isKeyMetaShift "z", CM.Redo )
+            [ ( HotKey.is "Enter", NM.New )
+            , ( HotKey.is " ", NM.Edit )
+            , ( HotKey.isCtrl " ", NM.RotateActionable )
+            , ( HotKey.is "ArrowUp", NM.Prev )
+            , ( HotKey.is "ArrowDown", NM.Next )
+            , ( HotKey.isMeta "ArrowUp", NM.MoveUp )
+            , ( HotKey.isMeta "ArrowDown", NM.MoveDown )
+            , ( HotKey.isShift "Tab", NM.Outdent )
+            , ( HotKey.is "Tab", NM.Indent )
+            , ( HotKey.is "ArrowLeft", NM.CollapseOrPrev )
+            , ( HotKey.is "ArrowRight", NM.ExpandOrNext )
+            , ( HotKey.is "Delete", NM.Delete )
+            , ( HotKey.isMeta "z", NM.Undo )
+            , ( HotKey.isKeyMetaShift "z", NM.Redo )
             ]
-                |> List.map (overSecond (CMMsgReceived >> addSecond True))
+                |> List.map (overSecond (NormalModeMsgReceived >> addSecond True))
     in
     labelKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
@@ -526,7 +526,7 @@ fragmentEditorHotKeyDecoder ke =
             --            , ( HotKey.isShift "Tab", EM.Outdent )
             --            , ( HotKey.is "Tab", EM.Indent )
             ]
-                |> List.map (overSecond (EMMsgReceived >> addSecond True))
+                |> List.map (overSecond (EditModeMsgReceived >> addSecond True))
     in
     inputKeyMap
         |> List.Extra.find (Tuple.first >> applyTo ke)
@@ -690,7 +690,7 @@ viewFragmentEditor _ tree =
         [ id <| fragInputDomId <| Item.Tree.id tree
         , cx [ ph1, mr1, w_100, bn ]
         , value <| ItemTree.treeFragment tree
-        , onInput <| EMMsgReceived << EM.LineChanged
+        , onInput <| EditModeMsgReceived << EM.LineChanged
         , HotKey.preventDefaultOnKeyDownEvent fragmentEditorHotKeyDecoder
         ]
         []
