@@ -1,11 +1,15 @@
 module CTreeZipper exposing (Zipper)
 
-import CTree exposing (Tree)
+import CTree
 
 
 type alias ZipperModel d =
-    { root : Tree d, cursor : List Int }
+    { root : CTree.Tree d, cursor : List Int }
 
 
 type Zipper d
     = Zipper (ZipperModel d)
+
+
+fromTree t =
+    ZipperModel t []
