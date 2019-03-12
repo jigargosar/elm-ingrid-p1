@@ -1,4 +1,4 @@
-module CTreeZipper exposing (Zipper, fromTree, tree)
+module CTreeZipper exposing (Zipper, appendGoL, appendGoR, fromTree, tree)
 
 import CTree exposing (Tree)
 import Pivot exposing (Pivot)
@@ -33,6 +33,10 @@ unwrap (Zipper zm) =
     zm
 
 
+map fn =
+    unwrap >> fn >> wrap
+
+
 fromTree : Tree d -> Zipper d
 fromTree t =
     Zipper
@@ -47,6 +51,10 @@ tree (Zipper zm) =
 
 
 appendGoR : Tree d -> Zipper d -> Zipper d
-appendGoR t (Zipper zm) =
-    { zm | pivot = Pivot.appendGoR t zm.pivot }
-        |> wrap
+appendGoR t =
+    map (\zm -> { zm | pivot = Pivot.appendGoR t zm.pivot })
+
+
+appendGoL : Tree d -> Zipper d -> Zipper d
+appendGoL t =
+    map (\zm -> { zm | pivot = Pivot.appendGoL t zm.pivot })
