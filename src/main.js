@@ -119,7 +119,7 @@ function initHistory() {
   if (redoHistoryIds.length > 0) {
     dbGet(R.last(redoHistoryIds), historyDb)
       .then(tapLog('fetched last history doc'))
-      .then(doc => send(doc.cursor, 'onJsLoadFromCouchHistory'))
+      .then(doc => sendMsg('history', doc.cursor))
       .catch(logAndsendErrorWithTitle('Init History Error'))
   }
 }
